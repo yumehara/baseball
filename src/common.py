@@ -57,9 +57,9 @@ def divide_period_query_train(sample_No):
     if sample_No == 1:
         return 'index > {}'.format(DIVIDE_1)
     elif sample_No == 2:
-        return 'index <= {} & index > {}'.format(DIVIDE_1, DIVIDE_2)
+        return 'index <= {} | index > {}'.format(DIVIDE_1, DIVIDE_2)
     elif sample_No == 3:
-        return 'index <= {} & index > {}'.format(DIVIDE_2, DIVIDE_3)
+        return 'index <= {} | index > {}'.format(DIVIDE_2, DIVIDE_3)
     elif sample_No == 4:
         return 'index <= {}'.format(DIVIDE_3)
 
