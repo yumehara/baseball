@@ -1,23 +1,40 @@
 # coding:utf-8
 import os
-import Preprocess_All as all
+import Preprocess_All as merge
 import Preprocess_ball as ball
 import Preprocess_pitch as pitch
 import Preprocess_player_2017 as play2017
 import Preprocess_player as player
-import Predict_Ball as pred_b
+import Predict_Ball as pred_ball
+import Predict_Course as pred_course
+
+forBall = True
+forCourse = False
+
+submit_No = 24
+
+# play2017.preprocess()
+# player.preprocess(forBall)      # 穴埋めあり
+# player.preprocess(forCourse)    # 穴埋めなし
+
+# ball.preprocess()
+# pitch.preprocess()
 
 
-# play2017.preprocess_player()
-# player.preprocess_player()
+# サブモデルなしコース予測用 前処理
+# use_sub_model = False
+# merge.preprocess(submit_No, use_sub_model, forCourse)
+# print('--- preprocess for course ---')
 
-# ball.preprocess_ball()
-# pitch.preprocess_pitch()
+# サブモデルなしコース予測
+# pred_course.train_predict(submit_No, use_sub_model)
+# print('--- predict course w/o sub ---')
 
-#all.preprocess_all(22, False)
+# サブモデルあり球種予測用 前処理
+use_sub_model = True
+merge.preprocess(submit_No, use_sub_model, forBall)
+print('--- preprocess for ball ---')
 
-print('preprocess_All complete')
-
-pred_b.Train_Ball(22, False)
-
-print('predict complete')
+# サブモデルあり球種予測
+pred_ball.train_predict(submit_No, use_sub_model)
+print('--- predict ball w/ sub ---')

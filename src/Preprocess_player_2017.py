@@ -1,10 +1,11 @@
 # coding:utf-8
+import gc
 import numpy as np
 import pandas as pd
 import feather
 import common
 
-def preprocess_player():
+def preprocess():
     
     train_pitch_org = pd.read_feather(common.TRAIN_PITCH)
     print(train_pitch_org.shape)
@@ -79,6 +80,7 @@ def preprocess_player():
         # 投手出力
         pitch_ball.to_feather(OUT_PIT)
         print(OUT_PIT, pitch_ball.shape)
+        del pitch_ball
 
         # 野手
         # 打席数
@@ -99,4 +101,5 @@ def preprocess_player():
         # 野手出力
         bat_ball.to_feather(OUT_BAT)
         print(OUT_BAT, bat_ball.shape)
-
+        del bat_ball
+        del train_pitch

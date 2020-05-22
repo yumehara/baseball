@@ -1,10 +1,11 @@
 # coding:utf-8
+import gc
 import numpy as np
 import pandas as pd
 import feather
 import common
 
-def preprocess_ball():
+def preprocess():
     OUTPUT = common.BALL_2017
 
     train_pitch = pd.read_feather(common.TRAIN_PITCH)

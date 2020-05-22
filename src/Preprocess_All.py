@@ -1,18 +1,22 @@
 # coding:utf-8
 import os
+import gc
 import pandas as pd
 import feather
 import common
 
-def preprocess_all(model_No, use_sub_model):
+def preprocess(model_No, use_sub_model, is_Ball):
 
     # 出力先のフォルダ作成
     os.makedirs(common.OUTPUT_PATH.format(model_No), exist_ok=True)
 
+    # 球種予測の場合
+    isBall = 1 if is_Ball else 0
+
     for sample_No in range(1, common.DIVIDE_NUM+1):
         ALL_PITCH = common.ALL_PITCH
-        ALL_PITCHER = common.ALLPITCHER.format(sample_No)
-        ALL_PLAYER = common.ALLPLAYER.format(sample_No)
+        ALL_PITCHER = common.ALLPITCHER.format(isBall, sample_No)
+        ALL_PLAYER = common.ALLPLAYER.format(isBall, sample_No)
 
         SUB_BALL = common.PREDICT_BALL.format(model_No, model_No, sample_No)
         SUB_COURSE = common.PREDICT_COURSE.format(model_No, model_No, sample_No)
@@ -36,6 +40,8 @@ def preprocess_all(model_No, use_sub_model):
         merge_all = pd.merge(all_pitch, all_pitcher, left_on=['投手ID', '年度', 'pit_bat'], right_on=['選手ID', '年度', 'pit_bat'], how='left')
         merge_all = pd.merge(merge_all, all_player, left_on=['打者ID', '年度'], right_on=['選手ID', '年度'], how='left', suffixes=['_pit', '_bat'])
         merge_all = pd.merge(merge_all, all_player.drop(columns=['batter_cnt', 'bat_game_cnt']), left_on=['捕手ID', '年度'], right_on=['選手ID', '年度'], how='left')
+
+        del all_pitch, all_pitcher, all_player
 
         # player同士の組み合わせ
         merge_all['salary_dif_p-b'] = merge_all['salary_pit'] - merge_all['salary_bat']
@@ -109,16 +115,21 @@ def preprocess_all(model_No, use_sub_model):
         if not use_sub_model:
             # 出力(sub-modelなし)
             merge_all.to_feather(OUTPUT)
-            print(OUTPUT)
+            print(OUTPUT, merge_all.shape)
         else:
-            sub_ball = pd.read_feather(SUB_BALL)
-            sub_course = pd.read_feather(SUB_COURSE)
-            print(sub_ball.shape)
-            print(sub_course.shape)
+            if is_Ball:
+                merge_sub = pd.read_feather(SUB_COURSE)
+            else:
+                merge_sub = pd.read_feather(SUB_BALL)
+            
             # 予測結果を特徴量に加える
-            merge_sub = pd.concat([merge_all, sub_ball], axis=1)
-            merge_sub = pd.concat([merge_sub, sub_course], axis=1)
+            merge_sub = pd.concat([merge_all, merge_sub], axis=1)
             print(merge_sub.shape)
             # 出力(sub-modelあり)
             merge_sub.to_feather(OUTPUT_SUB)
-            print(OUTPUT_SUB)
+            print(OUTPUT_SUB, merge_sub.shape)
+            del merge_sub
+
+        del merge_all
+    
+    gc.collect()

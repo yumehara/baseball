@@ -9,18 +9,18 @@ TRAIN_PLAYER = '../data/train_player.f'
 TEST_PLAYER = '../data/test_player.f'
 
 # Preprocess_player_2017.py
-PLAYER_PIT_2017 = '../intermediate/player/pit_2017_7_{}.f'
-PLAYER_BAT_2017 = '../intermediate/player/bat_2017_7_{}.f'
+PLAYER_PIT_2017 = '../intermediate/player/pit_2017_{}.f'
+PLAYER_BAT_2017 = '../intermediate/player/bat_2017_{}.f'
 
 # Preprocess_player
-ALLPITCHER = '../intermediate/player/all_pitcher_16_{}.f'
-ALLPLAYER = '../intermediate/player/all_player_16_{}.f'
+ALLPITCHER = '../intermediate/player/all_pitcher_{}_{}.f'
+ALLPLAYER = '../intermediate/player/all_player_{}_{}.f'
 
 # Preprocess_ball.py
-BALL_2017 = '../intermediate/pitch/ball_2017_5.f'
+BALL_2017 = '../intermediate/pitch/ball_2017.f'
 
 # Preprocess_pitch.py
-ALL_PITCH = '../intermediate/pitch/all_pitch_14.f'
+ALL_PITCH = '../intermediate/pitch/all_pitch.f'
 
 # Preprocess_All.py
 PREDICT_BALL = '../intermediate/{}/ball_predict_{}_{}.f'
@@ -30,12 +30,17 @@ ALL_MERGE = '../intermediate/{}/all_merge_{}_{}.f'
 ALL_MERGE_SUB = '../intermediate/{}/all_merge_{}_{}_sub.f'
 
 OUTPUT_PATH = '../intermediate/{}'
+SUBMIT_PATH = '../submit/{}'
 
 # Predit_Ball.py
 SUBMIT_BALL_CSV = '../submit/{}/ball_{}.csv'
 SUBMIT_BALL_F = '../submit/{}/ball_{}_{}.f'
 SUBMIT_BALL_SUB_CSV = '../submit/{}/ball_{}_sub.csv'
 
+# Predit_Course.py
+SUBMIT_COURSE_CSV = '../submit/{}/course_{}.csv'
+SUBMIT_COURSE_F = '../submit/{}/course_{}_{}.f'
+SUBMIT_COURSE_SUB_CSV = '../submit/{}/course_{}_sub.csv'
 
 # 分割数
 DIVIDE_NUM = 4

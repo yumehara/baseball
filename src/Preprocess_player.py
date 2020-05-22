@@ -1,10 +1,11 @@
 # coding:utf-8
+import gc
 import numpy as np
 import pandas as pd
 import feather
 import common
 
-def preprocess_player():
+def preprocess(is_fill):
 
     train_player = pd.read_feather(common.TRAIN_PLAYER)
     test_player = pd.read_feather(common.TEST_PLAYER)
@@ -63,10 +64,13 @@ def preprocess_player():
         '年俸': 'salary',
     }, inplace=True)
 
+    # 情報がない選手を平均で埋めるかどうか
+    isBall = 1 if is_fill else 0
+
     for sample_No in range(1, common.DIVIDE_NUM+1):
 
-        OUT_PITCHER = common.ALLPITCHER.format(sample_No)
-        OUT_ALLPLAYER = common.ALLPLAYER.format(sample_No)
+        OUT_PITCHER = common.ALLPITCHER.format(isBall, sample_No)
+        OUT_ALLPLAYER = common.ALLPLAYER.format(isBall, sample_No)
 
         # 2017年の成績(1/4ずつ)
         pit_2017 = pd.read_feather(common.PLAYER_PIT_2017.format(sample_No))
@@ -87,20 +91,22 @@ def preprocess_player():
         all_pitcher.loc[(all_pitcher['投手ID'].isnull()) & (all_pitcher['foreigner']==1), '投手ID'] = -1
         all_pitcher.loc[all_pitcher['投手ID'].isnull(), '投手ID'] = 0
 
-        # 日本人平均
-        RightLeft = ['R_L', 'R_R', 'L_R', 'L_L']
-        for RL in RightLeft:
-            pit_mean = all_pitcher[(all_pitcher['foreigner']==0)&(all_pitcher['投手ID']!=0)&(all_pitcher['pit_bat']==RL)].mean()
-            condition = (all_pitcher['投手ID']==0)&(all_pitcher['pit_bat']==RL)
-            # 平均で埋めない
-            #fill_ball(condition, pit_mean, all_pitcher)
+        # 情報がない投手
+        if is_fill:
+            RightLeft = ['R_L', 'R_R', 'L_R', 'L_L']
+            # 日本人平均
+            for RL in RightLeft:
+                pit_mean = all_pitcher[(all_pitcher['foreigner']==0)&(all_pitcher['投手ID']!=0)&(all_pitcher['pit_bat']==RL)].mean()
+                condition = (all_pitcher['投手ID']==0)&(all_pitcher['pit_bat']==RL)
+                # 平均で埋める
+                fill_ball(condition, pit_mean, all_pitcher)
 
-        #外国人平均
-        for RL in RightLeft:
-            pit_mean = all_pitcher[(all_pitcher['foreigner']==1)&(all_pitcher['投手ID']!=-1)&(all_pitcher['pit_bat']==RL)].mean()
-            condition = (all_pitcher['投手ID']==-1)&(all_pitcher['pit_bat']==RL)
-            # 平均で埋めない
-            #fill_ball(condition, pit_mean, all_pitcher)
+            #外国人平均
+            for RL in RightLeft:
+                pit_mean = all_pitcher[(all_pitcher['foreigner']==1)&(all_pitcher['投手ID']!=-1)&(all_pitcher['pit_bat']==RL)].mean()
+                condition = (all_pitcher['投手ID']==-1)&(all_pitcher['pit_bat']==RL)
+                # 平均で埋める
+                fill_ball(condition, pit_mean, all_pitcher)
 
         # 各球種のストレートに対する比率
         ball_not_straight = ['curve', 'slider', 'shoot', 'fork', 'changeup', 'sinker', 'cutball']
@@ -135,7 +141,8 @@ def preprocess_player():
 
         # 投手のみ出力
         all_pitcher.to_feather(OUT_PITCHER)
-        print(OUT_PITCHER)
+        print(OUT_PITCHER, all_pitcher.shape)
+        del all_pitcher
 
 
         # 打者(全選手)
@@ -143,26 +150,32 @@ def preprocess_player():
         all_batter = all_batter.merge(bat_2017, left_on='選手ID', right_on='打者ID', how='left')
 
         all_batter.loc[all_batter['打者ID'].isnull(), '打者ID'] = 0
-        # 投手以外
-        bat_mean = all_batter[(all_batter['打者ID']!=0)&(all_batter['位置']!='投手')].mean()
-        condition = (all_batter['打者ID']==0)&(all_batter['位置']!='投手')
-        # 平均で埋めない
-        #all_batter.loc[condition, 'batter_cnt'] = bat_mean['batter_cnt']
-        #all_batter.loc[condition, 'bat_game_cnt'] = bat_mean['bat_game_cnt']
 
-        # 投手
-        bat_mean = all_batter[(all_batter['打者ID']!=0)&(all_batter['位置']=='投手')].mean()
-        condition = (all_batter['打者ID']==0)&(all_batter['位置']=='投手')
-        # 平均で埋めない
-        #all_batter.loc[condition, 'batter_cnt'] = bat_mean['batter_cnt']
-        #all_batter.loc[condition, 'bat_game_cnt'] = bat_mean['bat_game_cnt']
+        # 情報がない打者
+        if is_fill:
+            # 投手以外
+            bat_mean = all_batter[(all_batter['打者ID']!=0)&(all_batter['位置']!='投手')].mean()
+            condition = (all_batter['打者ID']==0)&(all_batter['位置']!='投手')
+            # 平均で埋める
+            all_batter.loc[condition, 'batter_cnt'] = bat_mean['batter_cnt']
+            all_batter.loc[condition, 'bat_game_cnt'] = bat_mean['bat_game_cnt']
+
+            # 投手
+            bat_mean = all_batter[(all_batter['打者ID']!=0)&(all_batter['位置']=='投手')].mean()
+            condition = (all_batter['打者ID']==0)&(all_batter['位置']=='投手')
+            # 平均で埋める
+            all_batter.loc[condition, 'batter_cnt'] = bat_mean['batter_cnt']
+            all_batter.loc[condition, 'bat_game_cnt'] = bat_mean['bat_game_cnt']
 
         # 不要な列を削除
         all_batter.drop(columns=['打者ID', '位置', '投'], inplace=True)
 
         # 全選手出力
         all_batter.to_feather(OUT_ALLPLAYER)
-        print(OUT_ALLPLAYER)
+        print(OUT_ALLPLAYER, all_batter.shape)
+        del all_batter
+
+    del all_player
 
 
 # 情報がない選手

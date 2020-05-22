@@ -1,10 +1,11 @@
 # coding:utf-8
+import gc
 import numpy as np
 import pandas as pd
 import feather
 import common
 
-def preprocess_pitch():
+def preprocess():
     
     train_pitch = pd.read_feather(common.TRAIN_PITCH)
     test_pitch = pd.read_feather(common.TEST_PITCH)
@@ -162,3 +163,6 @@ def preprocess_pitch():
         ], inplace=True)
     # 出力
     all_pitch.to_feather(OUTPUT)
+    print(OUTPUT, all_pitch.shape)
+    
+    del all_pitch
