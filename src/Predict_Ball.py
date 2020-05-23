@@ -81,7 +81,7 @@ def train_predict(model_No, use_sub_model):
             'metric' : 'multi_logloss',
             'num_class' : 8,
             'seed' : 0,
-            'learning_rate' : 0.1,
+            'learning_rate' : 0.01,
             'lambda_l1': 6.9923570049658075, 
             'lambda_l2': 0.002378623984798833, 
             'num_leaves': 18, 

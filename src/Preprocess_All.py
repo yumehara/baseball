@@ -5,18 +5,17 @@ import pandas as pd
 import feather
 import common
 
-def preprocess(model_No, use_sub_model, is_Ball):
+def preprocess(model_No, use_sub_model):
 
     # 出力先のフォルダ作成
     os.makedirs(common.OUTPUT_PATH.format(model_No), exist_ok=True)
 
-    # 球種予測の場合
-    isBall = 1 if is_Ball else 0
+    is_fill = 1 # 穴埋めあり
 
     for sample_No in range(1, common.DIVIDE_NUM+1):
         ALL_PITCH = common.ALL_PITCH
-        ALL_PITCHER = common.ALLPITCHER.format(isBall, sample_No)
-        ALL_PLAYER = common.ALLPLAYER.format(isBall, sample_No)
+        ALL_PITCHER = common.ALLPITCHER.format(is_fill, sample_No)
+        ALL_PLAYER = common.ALLPLAYER.format(is_fill, sample_No)
 
         SUB_BALL = common.PREDICT_BALL.format(model_No, model_No, sample_No)
         SUB_COURSE = common.PREDICT_COURSE.format(model_No, model_No, sample_No)
