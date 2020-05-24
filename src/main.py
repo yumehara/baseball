@@ -21,7 +21,7 @@ pitch.preprocess()
 
 # サブモデルなしコース予測用 前処理
 use_sub_model = False
-merge.preprocess(submit_No, use_sub_model)
+merge.preprocess(submit_No, use_sub_model, False)
 print('--- preprocess for course ---')
 
 # サブモデルなしコース予測
@@ -30,7 +30,7 @@ print('--- predict course w/o sub ---')
 
 # サブモデルあり球種予測用 前処理
 use_sub_model = True
-merge.preprocess(submit_No, use_sub_model)
+merge.preprocess(submit_No, use_sub_model, True)
 print('--- preprocess for ball ---')
 
 # サブモデルあり球種予測

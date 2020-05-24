@@ -5,7 +5,7 @@ import pandas as pd
 import feather
 import common
 
-def preprocess(model_No, use_sub_model):
+def preprocess(model_No, use_sub_model, is_Ball):
 
     # 出力先のフォルダ作成
     os.makedirs(common.OUTPUT_PATH.format(model_No), exist_ok=True)
