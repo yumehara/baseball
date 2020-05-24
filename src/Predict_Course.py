@@ -47,7 +47,8 @@ def train_predict(model_No, use_sub_model):
 
         # train
         train = all_pitch.dropna(subset=['course'])
-        train = train.query(common.divide_period_query_train(sample_No))
+        # 特徴量で集計した部分を抜かない
+        #train = train.query(common.divide_period_query_train(sample_No))
         print(train.shape)
 
         # test
@@ -75,7 +76,7 @@ def train_predict(model_No, use_sub_model):
             'metric' : 'multi_logloss',
             'num_class' : 13,
             'seed' : 0,
-            'learning_rate' : 0.01,
+            'learning_rate' : 0.1,
             'lambda_l1': 8.769293390201968, 
             'lambda_l2': 3.913949617576324e-05, 
             'num_leaves': 6, 
@@ -150,6 +151,7 @@ def train_predict(model_No, use_sub_model):
     
     cv_ave = 0
     for cv in best_cv:
+        print('CV = {}'.format(cv))
         cv_ave = cv_ave + cv
     
     cv_ave = cv_ave / common.DIVIDE_NUM

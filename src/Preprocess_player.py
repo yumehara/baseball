@@ -64,13 +64,11 @@ def preprocess(is_fill):
         '年俸': 'salary',
     }, inplace=True)
 
-    # 情報がない選手を平均で埋めるかどうか
-    isBall = 1 if is_fill else 0
 
     for sample_No in range(1, common.DIVIDE_NUM+1):
 
-        OUT_PITCHER = common.ALLPITCHER.format(isBall, sample_No)
-        OUT_ALLPLAYER = common.ALLPLAYER.format(isBall, sample_No)
+        OUT_PITCHER = common.ALLPITCHER.format(sample_No)
+        OUT_ALLPLAYER = common.ALLPLAYER.format(sample_No)
 
         # 2017年の成績(1/4ずつ)
         pit_2017 = pd.read_feather(common.PLAYER_PIT_2017.format(sample_No))

@@ -9,7 +9,7 @@ import Predict_Ball as pred_ball
 import Predict_Course as pred_course
 
 
-submit_No = 25
+submit_No = 27
 
 # playerごと
 play2017.preprocess()

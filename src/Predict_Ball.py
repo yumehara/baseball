@@ -81,7 +81,7 @@ def train_predict(model_No, use_sub_model):
             'metric' : 'multi_logloss',
             'num_class' : 8,
             'seed' : 0,
-            'learning_rate' : 0.01,
+            'learning_rate' : 0.1,
             'lambda_l1': 6.9923570049658075, 
             'lambda_l2': 0.002378623984798833, 
             'num_leaves': 18, 
@@ -153,6 +153,7 @@ def train_predict(model_No, use_sub_model):
     
     cv_ave = 0
     for cv in best_cv:
+        print('CV = {}'.format(cv))
         cv_ave = cv_ave + cv
     
     cv_ave = cv_ave / common.DIVIDE_NUM

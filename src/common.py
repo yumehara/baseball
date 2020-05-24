@@ -13,8 +13,8 @@ PLAYER_PIT_2017 = '../intermediate/player/pit_2017_{}.f'
 PLAYER_BAT_2017 = '../intermediate/player/bat_2017_{}.f'
 
 # Preprocess_player
-ALLPITCHER = '../intermediate/player/all_pitcher_{}_{}.f'
-ALLPLAYER = '../intermediate/player/all_player_{}_{}.f'
+ALLPITCHER = '../intermediate/player/all_pitcher_{}.f'
+ALLPLAYER = '../intermediate/player/all_player_{}.f'
 
 # Preprocess_ball.py
 BALL_2017 = '../intermediate/pitch/ball_2017.f'
@@ -44,9 +44,22 @@ SUBMIT_COURSE_SUB_CSV = '../submit/{}/course_{}_sub.csv'
 
 # 分割数
 DIVIDE_NUM = 4
-DIVIDE_1 = 60000
-DIVIDE_2 = 120000
-DIVIDE_3 = 180000
+DIVIDE_1 = 60860
+DIVIDE_2 = 120081
+DIVIDE_3 = 180856
+DIVIDE_4 = 257116
+
+# DIVIDE_NUM = 5
+# DIVIDE_1 = 51506
+# DIVIDE_2 = 100844
+# DIVIDE_3 = 150063
+# DIVIDE_4 = 200447
+
+# DIVIDE_NUM = 3
+# DIVIDE_1 = 80792
+# DIVIDE_2 = 160391
+# DIVIDE_3 = 257116
+# DIVIDE_4 = 257116
 
 def divide_period_query_pre(sample_No):
     if sample_No == 1:
@@ -56,7 +69,9 @@ def divide_period_query_pre(sample_No):
     elif sample_No == 3:
         return 'index > {} & index <= {}'.format(DIVIDE_2, DIVIDE_3)
     elif sample_No == 4:
-        return 'index > {}'.format(DIVIDE_3)
+        return 'index > {} & index <= {}'.format(DIVIDE_3, DIVIDE_4)
+    elif sample_No == 5:
+        return 'index > {}'.format(DIVIDE_4)
 
 def divide_period_query_train(sample_No):
     if sample_No == 1:
@@ -66,7 +81,9 @@ def divide_period_query_train(sample_No):
     elif sample_No == 3:
         return 'index <= {} | index > {}'.format(DIVIDE_2, DIVIDE_3)
     elif sample_No == 4:
-        return 'index <= {}'.format(DIVIDE_3)
+        return 'index <= {} | index > {}'.format(DIVIDE_3, DIVIDE_4)
+    elif sample_No == 5:
+        return 'index <= {}'.format(DIVIDE_4)
 
 def lightgbm_cv(lgb_param, lgb_train):
     cv_results = lgb.cv(lgb_param, lgb_train,
