@@ -10,6 +10,7 @@ TEST_PLAYER = '../data/test_player.f'
 
 # Preprocess_player_2017.py
 PLAYER_PIT_2017 = '../intermediate/player/pit_2017_{}.f'
+PLAYER_CAT_2017 = '../intermediate/player/cat_2017_{}.f'
 PLAYER_BAT_2017 = '../intermediate/player/bat_2017_{}.f'
 
 # Preprocess_player
@@ -43,11 +44,11 @@ SUBMIT_COURSE_F = '../submit/{}/course_{}_{}.f'
 SUBMIT_COURSE_SUB_CSV = '../submit/{}/course_{}_sub.csv'
 
 # 分割数
-# DIVIDE_NUM = 4
-# DIVIDE_1 = 60860
-# DIVIDE_2 = 120081
-# DIVIDE_3 = 180856
-# DIVIDE_4 = 257116
+DIVIDE_NUM = 4
+DIVIDE_1 = 60860
+DIVIDE_2 = 120081
+DIVIDE_3 = 180856
+DIVIDE_4 = 257116
 
 # DIVIDE_NUM = 5
 # DIVIDE_1 = 51506
@@ -55,13 +56,13 @@ SUBMIT_COURSE_SUB_CSV = '../submit/{}/course_{}_sub.csv'
 # DIVIDE_3 = 150063
 # DIVIDE_4 = 200447
 
-DIVIDE_NUM = 3
-DIVIDE_1 = 80792
-DIVIDE_2 = 160391
-DIVIDE_3 = 257116
-DIVIDE_4 = 257116
+# DIVIDE_NUM = 3
+# DIVIDE_1 = 80792
+# DIVIDE_2 = 160391
+# DIVIDE_3 = 257116
+# DIVIDE_4 = 257116
 
-def divide_period_query_pre(sample_No):
+def divide_period_query_train(sample_No):
     if sample_No == 1:
         return 'index <= {}'.format(DIVIDE_1)
     elif sample_No == 2:
@@ -73,7 +74,7 @@ def divide_period_query_pre(sample_No):
     elif sample_No == 5:
         return 'index > {}'.format(DIVIDE_4)
 
-def divide_period_query_train(sample_No):
+def divide_period_query_pre(sample_No):
     if sample_No == 1:
         return 'index > {}'.format(DIVIDE_1)
     elif sample_No == 2:

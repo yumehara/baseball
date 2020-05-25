@@ -17,6 +17,7 @@ def preprocess():
 
         # 出力先
         OUT_PIT = common.PLAYER_PIT_2017.format(sample_No)
+        OUT_CAT = common.PLAYER_CAT_2017.format(sample_No)
         OUT_BAT = common.PLAYER_BAT_2017.format(sample_No)
 
         # 左右
@@ -81,6 +82,40 @@ def preprocess():
         pitch_ball.to_feather(OUT_PIT)
         print(OUT_PIT, pitch_ball.shape)
         del pitch_ball
+
+        # 捕手
+        # 球種
+        catch_ball = train_pitch[['捕手ID','pit_bat','ball']]
+        catch_ball = pd.get_dummies(catch_ball, columns=['ball'])
+
+        groupby_cat = catch_ball.groupby(['捕手ID','pit_bat']).sum()
+        groupby_cat.rename(columns={
+            'ball_0': 'straight',
+            'ball_1': 'curve',
+            'ball_2': 'slider',
+            'ball_3': 'shoot',
+            'ball_4': 'fork',
+            'ball_5': 'changeup',
+            'ball_6': 'sinker',
+            'ball_7': 'cutball',
+        }, inplace=True)
+        catch_ball = groupby_cat.reset_index(inplace=False)
+
+        catch_ball['total'] = (catch_ball['straight'] + catch_ball['curve'] + catch_ball['slider'] + catch_ball['shoot'] 
+                            + catch_ball['fork'] + catch_ball['changeup'] + catch_ball['sinker'] + catch_ball['cutball'])
+
+        # コース
+        catch_course = train_pitch[['捕手ID','pit_bat','course']]
+        catch_course = pd.get_dummies(catch_course, columns=['course'])
+        catch_course = catch_course.groupby(['捕手ID','pit_bat']).sum().reset_index()
+
+        # 捕手実績まとめ
+        catch_ball = catch_ball.merge(catch_course, on=['捕手ID','pit_bat'], how='left')
+
+        # 捕手出力
+        catch_ball.to_feather(OUT_CAT)
+        print(OUT_CAT, catch_ball.shape)
+        del catch_ball
 
         # 野手
         # 打席数
