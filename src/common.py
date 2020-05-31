@@ -62,7 +62,7 @@ DIVIDE_4 = 257116
 # DIVIDE_3 = 257116
 # DIVIDE_4 = 257116
 
-def divide_period_query_train(sample_No):
+def divide_period_query_pre(sample_No):
     if sample_No == 1:
         return 'index <= {}'.format(DIVIDE_1)
     elif sample_No == 2:
@@ -74,7 +74,7 @@ def divide_period_query_train(sample_No):
     elif sample_No == 5:
         return 'index > {}'.format(DIVIDE_4)
 
-def divide_period_query_pre(sample_No):
+def divide_period_query_train(sample_No):
     if sample_No == 1:
         return 'index > {}'.format(DIVIDE_1)
     elif sample_No == 2:

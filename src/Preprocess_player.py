@@ -107,9 +107,13 @@ def preprocess(is_fill):
                 fill_ball(condition, pit_mean, all_pitcher)
 
         # 各球種のストレートに対する比率
-        ball_not_straight = ['curve', 'slider', 'shoot', 'fork', 'changeup', 'sinker', 'cutball']
-        for ball in ball_not_straight:
-            all_pitcher[ball] = all_pitcher[ball] / all_pitcher['straight']
+        # ball_not_straight = ['curve', 'slider', 'shoot', 'fork', 'changeup', 'sinker', 'cutball']
+        # for ball in ball_not_straight:
+        #     all_pitcher[ball] = all_pitcher[ball] / all_pitcher['straight']
+
+        ball_kind = ['straight', 'curve', 'slider', 'shoot', 'fork', 'changeup', 'sinker', 'cutball']
+        for ball in ball_kind:
+            all_pitcher[ball] = all_pitcher[ball] / all_pitcher['total']
 
         # コースの比率
         course_kind = ['course_0', 'course_1', 'course_2', 'course_3', 'course_4', 'course_5', 'course_6', 
@@ -132,9 +136,10 @@ def preprocess(is_fill):
 
         # 不要な列を削除
         all_pitcher.drop(columns=[
-            'straight', '投手ID', '位置', '投',
-            'course_0', 'course_1', 'course_2', 'course_3', 'course_4', 'course_5', 'course_6', 
-            'course_7', 'course_8', 'course_9', 'course_10', 'course_11', 'course_12'
+            '投手ID', '位置', '投',
+            # 'straight', 
+            # 'course_0', 'course_1', 'course_2', 'course_3', 'course_4', 'course_5', 'course_6', 
+            # 'course_7', 'course_8', 'course_9', 'course_10', 'course_11', 'course_12'
         ], inplace=True)
 
         # 投手のみ出力

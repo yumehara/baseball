@@ -68,6 +68,68 @@ def preprocess(model_No, use_sub_model, is_Ball):
         merge_all['rank_x_year_dif_b-c'] = merge_all['rank_x_year_bat'] - merge_all['rank_x_year']
         merge_all['bmi_dif_b-c'] = merge_all['bmi_bat'] - merge_all['bmi']
 
+        # 球種の組合せ
+        ball_kind = ['straight', 'curve', 'slider', 'shoot', 'fork', 'changeup', 'sinker', 'cutball']
+        
+        for ball in ball_kind:
+            target = 'sub_' + ball
+            bc_src = 'bc_' + ball
+            merge_all[target] = merge_all[bc_src] - merge_all[ball]
+
+        for ball in ball_kind:
+            target = 'div_' + ball
+            bc_src = 'bc_' + ball
+            merge_all[target] = merge_all[bc_src] / merge_all[ball]
+
+        for ball in ball_kind:
+            target = 'mul_' + ball
+            bc_src = 'bc_' + ball
+            merge_all[target] = merge_all[bc_src] * merge_all[ball]
+
+        for ball in ball_kind:
+            target = 'ave_' + ball
+            bc_src = 'bc_' + ball
+            merge_all[target] = (merge_all[bc_src] + merge_all[ball])/2
+
+        for ball in ball_kind:
+            target = 'rate_' + ball
+            ave_src = 'ave_' + ball
+            merge_all[target] = merge_all[ave_src] /(1-merge_all['ave_straight'])
+    
+        ball_kind_bc = list(map(lambda x: 'bc_' + x, ball_kind))
+        merge_all.drop(columns=ball_kind, inplace=True)
+        merge_all.drop(columns=ball_kind_bc, inplace=True)
+
+        # コースの組合せ
+        course_kind = ['course_0', 'course_1', 'course_2', 'course_3', 'course_4', 'course_5', 'course_6', 
+                'course_7', 'course_8', 'course_9', 'course_10', 'course_11', 'course_12',
+               'high_str', 'high_ball', 'mid_str', 'low_str', 'low_ball', 
+               'left_str', 'left_ball', 'center_str', 'right_str', 'right_ball']
+
+        for course in course_kind:
+            target = 'sub_' + course
+            bc_src = 'bc_' + course
+            merge_all[target] = merge_all[bc_src] - merge_all[course]
+
+        for course in course_kind:
+            target = 'div_' + course
+            bc_src = 'bc_' + course
+            merge_all[target] = merge_all[bc_src] / merge_all[course]
+
+        for course in course_kind:
+            target = 'mul_' + course
+            bc_src = 'bc_' + course
+            merge_all[target] = merge_all[bc_src] * merge_all[course]
+
+        for course in course_kind:
+            target = 'ave_' + course
+            bc_src = 'bc_' + course
+            merge_all[target] = (merge_all[bc_src] + merge_all[course])/2
+
+        course_kind_bc = list(map(lambda x: 'bc_' + x, course_kind))
+        merge_all.drop(columns=course_kind, inplace=True)
+        merge_all.drop(columns=course_kind_bc, inplace=True)
+
         # ダミー変数
         merge_all = pd.get_dummies(merge_all, columns=['pit_bat'])
 
