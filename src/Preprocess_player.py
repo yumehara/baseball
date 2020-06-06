@@ -5,7 +5,7 @@ import pandas as pd
 import feather
 import common
 
-def preprocess(is_fill):
+def preprocess(is_fill, is_year_2017 = True):
 
     train_player = pd.read_feather(common.TRAIN_PLAYER)
     test_player = pd.read_feather(common.TEST_PLAYER)
@@ -64,15 +64,21 @@ def preprocess(is_fill):
         '年俸': 'salary',
     }, inplace=True)
 
+    divide_num = common.get_divide_num(is_year_2017)
 
-    for sample_No in range(1, common.DIVIDE_NUM+1):
+    for sample_No in range(1, divide_num):
 
-        OUT_PITCHER = common.ALLPITCHER.format(sample_No)
-        OUT_ALLPLAYER = common.ALLPLAYER.format(sample_No)
+        if is_year_2017:
+            OUT_PITCHER = common.ALLPITCHER.format(sample_No)
+            OUT_ALLPLAYER = common.ALLPLAYER.format(sample_No)
+            pit_2017 = pd.read_feather(common.PLAYER_PIT_2017.format(sample_No))
+            bat_2017 = pd.read_feather(common.PLAYER_BAT_2017.format(sample_No))
+        else:
+            OUT_PITCHER = common.ALLPITCHER_2018.format(sample_No)
+            OUT_ALLPLAYER = common.ALLPLAYER_2018.format(sample_No)
+            pit_2017 = pd.read_feather(common.PLAYER_PIT_2018.format(sample_No))
+            bat_2017 = pd.read_feather(common.PLAYER_BAT_2018.format(sample_No))
 
-        # 2017年の成績(1/4ずつ)
-        pit_2017 = pd.read_feather(common.PLAYER_PIT_2017.format(sample_No))
-        bat_2017 = pd.read_feather(common.PLAYER_BAT_2017.format(sample_No))
         print(pit_2017.shape)
         print(bat_2017.shape)
 

@@ -5,21 +5,31 @@ import pandas as pd
 import feather
 import common
 
-def preprocess(model_No, use_sub_model, is_Ball):
+def preprocess(model_No, use_sub_model, is_Ball, is_year_2017 = True):
 
     # 出力先のフォルダ作成
     os.makedirs(common.OUTPUT_PATH.format(model_No), exist_ok=True)
 
-    for sample_No in range(1, common.DIVIDE_NUM+1):
+    divide_num = common.get_divide_num(is_year_2017)
+
+    for sample_No in range(1, divide_num):
         ALL_PITCH = common.ALL_PITCH
-        ALL_PITCHER = common.ALLPITCHER.format(sample_No)
-        ALL_PLAYER = common.ALLPLAYER.format(sample_No)
+        
+        if is_year_2017:
+            ALL_PITCHER = common.ALLPITCHER.format(sample_No)
+            ALL_PLAYER = common.ALLPLAYER.format(sample_No)
 
-        SUB_BALL = common.PREDICT_BALL.format(model_No, model_No, sample_No)
-        SUB_COURSE = common.PREDICT_COURSE.format(model_No, model_No, sample_No)
+            SUB_BALL = common.PREDICT_BALL.format(model_No, model_No, sample_No)
+            SUB_COURSE = common.PREDICT_COURSE.format(model_No, model_No, sample_No)
 
-        OUTPUT = common.ALL_MERGE.format(model_No, model_No, sample_No)
-        OUTPUT_SUB = common.ALL_MERGE_SUB.format(model_No, model_No, sample_No)
+            OUTPUT = common.ALL_MERGE.format(model_No, model_No, sample_No)
+            OUTPUT_SUB = common.ALL_MERGE_SUB.format(model_No, model_No, sample_No)
+        else:
+            ALL_PITCHER = common.ALLPITCHER_2018.format(sample_No)
+            ALL_PLAYER = common.ALLPLAYER_2018.format(sample_No)
+
+            OUTPUT = common.ALL_MERGE_2018.format(model_No, model_No, sample_No)
+
 
         # 投球情報
         all_pitch = pd.read_feather(ALL_PITCH)

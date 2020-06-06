@@ -8,7 +8,7 @@ import feather
 import common
 
 def train_predict(model_No, use_sub_model):
-
+    
     # 出力先のフォルダ作成
     os.makedirs(common.SUBMIT_PATH.format(model_No), exist_ok=True)
 
@@ -130,7 +130,7 @@ def train_predict(model_No, use_sub_model):
             print(OUT_SUBMODEL, submodel.shape)
 
     column_cnt = len(train_d.columns)
-
+    
     # 結果まとめ
     result = common.SUBMIT_COURSE_F.format(model_No, model_No, 1)
     print(result)
@@ -158,6 +158,8 @@ def train_predict(model_No, use_sub_model):
     print('CV(ave) = {}'.format(cv_ave))
 
     # 出力
+    OUT_PREDICT_COURSE = common.COURSE_2018.format(model_No)
+    df.to_feather(OUT_PREDICT_COURSE)
     df = df.reset_index()
     df.to_csv(SUBMIT, header=False, index=False)
     print(SUBMIT)

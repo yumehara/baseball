@@ -13,20 +13,21 @@ def train_predict(model_No, use_sub_model):
     os.makedirs(common.SUBMIT_PATH.format(model_No), exist_ok=True)
     
     best_cv = []
-    for sample_No in range(1, common.DIVIDE_NUM+1):
+    divide_num = len(common.DIVIDE_TEST)
+    for sample_No in range(1, divide_num + 1):
         
-        if use_sub_model:
-            ALL_MERGE = common.ALL_MERGE_SUB.format(model_No, model_No, sample_No)
-            SUBMIT = common.SUBMIT_BALL_SUB_CSV.format(model_No, model_No)
-        else:
-            ALL_MERGE = common.ALL_MERGE.format(model_No, model_No, sample_No)
-            SUBMIT = common.SUBMIT_BALL_CSV.format(model_No, model_No)
+        # if use_sub_model:
+        #     ALL_MERGE = common.ALL_MERGE_SUB.format(model_No, model_No, sample_No)
+        #     SUBMIT = common.SUBMIT_BALL2_SUB_CSV.format(model_No, model_No)
+        # else:
+        ALL_MERGE = common.ALL_MERGE_2018.format(model_No, model_No, sample_No)
+        SUBMIT = common.SUBMIT_BALL2_CSV.format(model_No, model_No)
 
-        SUBMIT_F = common.SUBMIT_BALL_F.format(model_No, model_No, sample_No)
-        OUT_SUBMODEL = common.PREDICT_BALL.format(model_No, model_No, sample_No)
+        SUBMIT_F = common.SUBMIT_BALL2_F.format(model_No, model_No, sample_No)
+        # OUT_SUBMODEL = common.PREDICT_BALL.format(model_No, model_No, sample_No)
 
         all_pitch = pd.read_feather(ALL_MERGE)
-        
+        '''
         # sub-modelを使用するとき
         if use_sub_model:
             all_pitch['predict_high_str'] = all_pitch['predict_0'] + all_pitch['predict_3'] + all_pitch['predict_6'] 
@@ -47,13 +48,12 @@ def train_predict(model_No, use_sub_model):
                 'predict_0','predict_1','predict_2','predict_3','predict_4','predict_5','predict_6',
                 'predict_7','predict_8','predict_9','predict_10','predict_11','predict_12'
             ], inplace=True)
-
+        '''
         column_cnt = len(all_pitch.columns)
         print(all_pitch.shape)
 
         # train
         train = all_pitch.dropna(subset=['course'])
-        train = train.query(common.divide_period_query_train(sample_No))
         print(train.shape)
 
         # test
@@ -116,7 +116,7 @@ def train_predict(model_No, use_sub_model):
             }, inplace=True)
         submit_f.to_feather(SUBMIT_F)
         print(SUBMIT_F, submit_f.shape)
-
+        '''
         # コース予測で使用
         if not use_sub_model:
             train_predict = lgb_model.predict(train_d, num_iteration = lgb_model.best_iteration)
@@ -131,26 +131,38 @@ def train_predict(model_No, use_sub_model):
             
             submodel.to_feather(OUT_SUBMODEL)
             print(OUT_SUBMODEL, submodel.shape)
-
+        '''
     column_cnt = len(train_d.columns)
     
     # 結果まとめ
-    result = common.SUBMIT_BALL_F.format(model_No, model_No, 1)
+    result = common.BALL_2018.format(model_No)
     print(result)
     df = pd.read_feather(result)
     columns = ['predict_straight', 'predict_curve', 'predict_slider', 'predict_shoot', 
                'predict_fork', 'predict_changeup', 'predict_sinker', 'predict_cutball']
 
-    for i in range(2, common.DIVIDE_NUM+1):
-        result = common.SUBMIT_BALL_F.format(model_No, model_No, i)
+    sample_no = 1
+    for div in DIVIDE_TEST:
+        result = SUBMIT_BALL2_F.format(model_No, model_No, sample_no)
         print(result)
+        sample_no = sample_no + 1
+        
         temp = pd.read_feather(result)
         for c in columns:
+            temp.loc[temp.index <= div, c] = 0
             df[c] = df[c] + temp[c]
 
-    for c in columns:
-        df[c] = df[c] / common.DIVIDE_NUM
+    count = 1
+    df['count'] = count
+    for div in DIVIDE_TEST:
+        count = count + 1
+        df.loc[df.index > div, 'count'] = count
     
+    for c in columns:
+        df[c] = df[c] / df['count']
+
+    df.drop(columns=['count'], inplace=True)
+
     cv_ave = 0
     for cv in best_cv:
         print('CV = {}'.format(cv))
@@ -160,8 +172,6 @@ def train_predict(model_No, use_sub_model):
     print('CV(ave) = {}'.format(cv_ave))
 
     # 出力
-    OUT_PREDICT_BALL = common.BALL_2018.format(model_No)
-    df.to_feather(OUT_PREDICT_BALL)
     df = df.reset_index()
     df.to_csv(SUBMIT, header=False, index=False)
     print(SUBMIT)
