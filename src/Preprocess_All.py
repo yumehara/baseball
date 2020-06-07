@@ -13,9 +13,9 @@ def preprocess(model_No, use_sub_model, is_Ball, is_year_2017 = True):
     divide_num = common.get_divide_num(is_year_2017)
 
     for sample_No in range(1, divide_num):
-        ALL_PITCH = common.ALL_PITCH
         
         if is_year_2017:
+            ALL_PITCH = common.ALL_PITCH
             ALL_PITCHER = common.ALLPITCHER.format(sample_No)
             ALL_PLAYER = common.ALLPLAYER.format(sample_No)
 
@@ -25,11 +25,11 @@ def preprocess(model_No, use_sub_model, is_Ball, is_year_2017 = True):
             OUTPUT = common.ALL_MERGE.format(model_No, model_No, sample_No)
             OUTPUT_SUB = common.ALL_MERGE_SUB.format(model_No, model_No, sample_No)
         else:
+            ALL_PITCH = common.ALL_PITCH_2018.format(sample_No)
             ALL_PITCHER = common.ALLPITCHER_2018.format(sample_No)
             ALL_PLAYER = common.ALLPLAYER_2018.format(sample_No)
 
             OUTPUT = common.ALL_MERGE_2018.format(model_No, model_No, sample_No)
-
 
         # 投球情報
         all_pitch = pd.read_feather(ALL_PITCH)

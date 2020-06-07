@@ -27,8 +27,12 @@ ALLPLAYER_2018 = '../intermediate/player/all_player_2018_{}.f'
 # Preprocess_ball.py
 BALL_2017 = '../intermediate/pitch/ball_2017.f'
 
+# Preprocess_ball_2018.py
+BALL_2018 = '../intermediate/pitch/ball_2018_{}.f'
+
 # Preprocess_pitch.py
 ALL_PITCH = '../intermediate/pitch/all_pitch.f'
+ALL_PITCH_2018 = '../intermediate/pitch/all_pitch_2018_{}.f'
 
 # Preprocess_All.py
 PREDICT_BALL = '../intermediate/{}/ball_predict_{}_{}.f'
@@ -46,13 +50,13 @@ SUBMIT_PATH = '../submit/{}'
 SUBMIT_BALL_CSV = '../submit/{}/ball_{}.csv'
 SUBMIT_BALL_F = '../submit/{}/ball_{}_{}.f'
 SUBMIT_BALL_SUB_CSV = '../submit/{}/ball_{}_sub.csv'
-BALL_2018 = '../intermediate/{}/ball_predict_2018.f'
+PREDICT_BALL_2018 = '../intermediate/{}/ball_predict_2018.f'
 
 # Predit_Course.py
 SUBMIT_COURSE_CSV = '../submit/{}/course_{}.csv'
 SUBMIT_COURSE_F = '../submit/{}/course_{}_{}.f'
 SUBMIT_COURSE_SUB_CSV = '../submit/{}/course_{}_sub.csv'
-COURSE_2018 = '../intermediate/{}/course_predict_2018.f'
+PREDICT_COURSE_2018 = '../intermediate/{}/course_predict_2018.f'
 
 # Predit_Ball_2018.py
 SUBMIT_BALL2_CSV = '../submit/{}/ball2_{}.csv'

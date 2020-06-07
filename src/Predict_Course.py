@@ -158,7 +158,7 @@ def train_predict(model_No, use_sub_model):
     print('CV(ave) = {}'.format(cv_ave))
 
     # 出力
-    OUT_PREDICT_COURSE = common.COURSE_2018.format(model_No)
+    OUT_PREDICT_COURSE = common.PREDICT_COURSE_2018.format(model_No)
     df.to_feather(OUT_PREDICT_COURSE)
     df = df.reset_index()
     df.to_csv(SUBMIT, header=False, index=False)

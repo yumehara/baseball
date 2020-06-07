@@ -13,8 +13,8 @@ def train_predict(model_No, use_sub_model):
     os.makedirs(common.SUBMIT_PATH.format(model_No), exist_ok=True)
     
     best_cv = []
-    divide_num = len(common.DIVIDE_TEST)
-    for sample_No in range(1, divide_num + 1):
+    divide_num = common.get_divide_num(False)
+    for sample_No in range(1, divide_num):
         
         # if use_sub_model:
         #     ALL_MERGE = common.ALL_MERGE_SUB.format(model_No, model_No, sample_No)
@@ -135,15 +135,15 @@ def train_predict(model_No, use_sub_model):
     column_cnt = len(train_d.columns)
     
     # 結果まとめ
-    result = common.BALL_2018.format(model_No)
+    result = common.PREDICT_BALL_2018.format(model_No)
     print(result)
     df = pd.read_feather(result)
     columns = ['predict_straight', 'predict_curve', 'predict_slider', 'predict_shoot', 
                'predict_fork', 'predict_changeup', 'predict_sinker', 'predict_cutball']
 
     sample_no = 1
-    for div in DIVIDE_TEST:
-        result = SUBMIT_BALL2_F.format(model_No, model_No, sample_no)
+    for div in common.DIVIDE_TEST:
+        result = common.SUBMIT_BALL2_F.format(model_No, model_No, sample_no)
         print(result)
         sample_no = sample_no + 1
         
@@ -154,7 +154,7 @@ def train_predict(model_No, use_sub_model):
 
     count = 1
     df['count'] = count
-    for div in DIVIDE_TEST:
+    for div in common.DIVIDE_TEST:
         count = count + 1
         df.loc[df.index > div, 'count'] = count
     

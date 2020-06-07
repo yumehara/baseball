@@ -10,10 +10,10 @@ def preprocess(model_No):
     test_pitch_org = pd.read_feather(common.TEST_PITCH)
     print(test_pitch_org.shape)
 
-    predict_ball = pd.read_feather(common.BALL_2018.format(model_No))
+    predict_ball = pd.read_feather(common.PREDICT_BALL_2018.format(model_No))
     print(predict_ball.shape)
 
-    predict_course = pd.read_feather(common.COURSE_2018.format(model_No))
+    predict_course = pd.read_feather(common.PREDICT_COURSE_2018.format(model_No))
     print(predict_course.shape)
 
     test_pitch_org = pd.concat([test_pitch_org, predict_ball], axis=1)

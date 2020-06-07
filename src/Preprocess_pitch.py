@@ -5,13 +5,10 @@ import pandas as pd
 import feather
 import common
 
-def preprocess():
+def preprocess(is_year_2017 = True):
     
     train_pitch = pd.read_feather(common.TRAIN_PITCH)
     test_pitch = pd.read_feather(common.TEST_PITCH)
-
-    INPUT_BALL2017 = common.BALL_2017
-    OUTPUT = common.ALL_PITCH
 
     test_pitch['球種'] = None
     test_pitch['投球位置区域'] = None
@@ -32,9 +29,7 @@ def preprocess():
     all_pitch.loc[all_pitch['投手投球左右']=='R', 'pitch_LR']=0
     all_pitch.loc[all_pitch['打者打席左右']=='L', 'bat_LR']=1
     all_pitch.loc[all_pitch['打者打席左右']=='R', 'bat_LR']=0
-    # 2017年のデータをマージ
-    train_ball = pd.read_feather(INPUT_BALL2017)
-    all_pitch = all_pitch.merge(train_ball, on=['ball_cnt', 'pit_bat'], how='left')
+    
     # 一塁走者ID, 二塁走者ID, 三塁走者ID
     all_pitch['first'] = 0
     all_pitch['second'] = 0
@@ -149,7 +144,7 @@ def preprocess():
     all_pitch['pre_ball_strike'] = groupby_batter['プレイ前ストライク数'].diff().fillna(0) + all_pitch['pre_ball_foul']
     all_pitch['pre_foul_sum'] = all_pitch['打席内投球数'] - all_pitch['ball_count_sum']
     # ダミー変数
-    all_pitch = pd.get_dummies(all_pitch, columns=['ball_cnt'])
+    # all_pitch = pd.get_dummies(all_pitch, columns=['ball_cnt'])
     # 不要な列を削除
     all_pitch.drop(columns=[
             '日付', '時刻', 
@@ -161,8 +156,29 @@ def preprocess():
             '一塁手ID', '二塁手ID', '三塁手ID', '遊撃手ID', '左翼手ID', '中堅手ID', '右翼手ID', 
             '成績対象投手ID', '成績対象打者ID',
         ], inplace=True)
-    # 出力
-    all_pitch.to_feather(OUTPUT)
-    print(OUTPUT, all_pitch.shape)
+
+    if is_year_2017:
+        # 2017年のデータをマージ
+        train_ball = pd.read_feather(common.BALL_2017)
+        output = all_pitch.merge(train_ball, on=['ball_cnt', 'pit_bat'], how='left')
+        # ダミー変数
+        output = pd.get_dummies(output, columns=['ball_cnt'])
+        # 出力
+        output.to_feather(common.ALL_PITCH)
+        print(common.ALL_PITCH, output.shape)
+        del output
+    else:
+        divide_num = common.get_divide_num(is_year_2017)
+        for sample_No in range(1, divide_num):
+            # 2018年のデータをマージ
+            test_ball = pd.read_feather(common.BALL_2018.format(sample_No))
+            output = all_pitch.merge(test_ball, on=['ball_cnt', 'pit_bat'], how='left')
+            # ダミー変数
+            output = pd.get_dummies(output, columns=['ball_cnt'])
+            # 出力
+            OUTPUT = common.ALL_PITCH_2018.format(sample_No)
+            output.to_feather(OUTPUT)
+            print(OUTPUT, output.shape)
+            del output
     
     del all_pitch
