@@ -100,6 +100,61 @@ def preprocess(model_No, use_sub_model, is_Ball):
             target = 'rate_' + ball
             ave_src = 'ave_' + ball
             merge_all[target] = merge_all[ave_src] /(1-merge_all['ave_straight'])
+        
+        # 投手と捕手の組合せ
+        for ball in ball_kind:
+            target = 'sub_p_c_' + ball
+            cat = ball + '_cat'
+            merge_all[target] = merge_all[ball] - merge_all[cat]
+        
+        for ball in ball_kind:
+            target = 'sub_bc_c_' + ball
+            cat = ball + '_cat'
+            bc_src = 'bc_' + ball
+            merge_all[target] = merge_all[bc_src] - merge_all[cat]
+
+        for ball in ball_kind:
+            target = 'div_p_c_' + ball
+            cat = ball + '_cat'
+            merge_all[target] = merge_all[ball] / merge_all[cat]
+        
+        for ball in ball_kind:
+            target = 'div_bc_c_' + ball
+            cat = ball + '_cat'
+            bc_src = 'bc_' + ball
+            merge_all[target] = merge_all[bc_src] / merge_all[cat]
+        
+        for ball in ball_kind:
+            target = 'mul_p_c_' + ball
+            cat = ball + '_cat'
+            merge_all[target] = merge_all[ball] * merge_all[cat]
+        
+        for ball in ball_kind:
+            target = 'mul_bc_c_' + ball
+            cat = ball + '_cat'
+            bc_src = 'bc_' + ball
+            merge_all[target] = merge_all[bc_src] * merge_all[cat]
+        
+        for ball in ball_kind:
+            target = 'ave_p_c_' + ball
+            cat = ball + '_cat'
+            merge_all[target] = (merge_all[ball] + merge_all[cat])/2
+        
+        for ball in ball_kind:
+            target = 'ave_bc_c_' + ball
+            cat = ball + '_cat'
+            bc_src = 'bc_' + ball
+            merge_all[target] = (merge_all[bc_src] + merge_all[cat])/2
+        
+        for ball in ball_kind:
+            target = 'rate_p_c_' + ball
+            ave_src = 'ave_p_c_' + ball
+            merge_all[target] = merge_all[ave_src] /(1-merge_all['ave_p_c_straight'])
+        
+        for ball in ball_kind:
+            target = 'rate_bc_c_' + ball
+            ave_src = 'ave_bc_c_' + ball
+            merge_all[target] = merge_all[ave_src] /(1-merge_all['ave_bc_c_straight'])
     
         ball_kind_bc = list(map(lambda x: 'bc_' + x, ball_kind))
         merge_all.drop(columns=ball_kind, inplace=True)
@@ -130,6 +185,51 @@ def preprocess(model_No, use_sub_model, is_Ball):
             target = 'ave_' + course
             bc_src = 'bc_' + course
             merge_all[target] = (merge_all[bc_src] + merge_all[course])/2
+        
+        # 投手と捕手の組合せ
+        for course in course_kind:
+            target = 'sub_p_c_' + course
+            cat = course + '_cat'
+            merge_all[target] = merge_all[course] - merge_all[cat]
+        
+        for course in course_kind:
+            target = 'sub_bc_c_' + course
+            cat = course + '_cat'
+            bc_src = 'bc_' + course
+            merge_all[target] = merge_all[bc_src] - merge_all[cat]
+        
+        for course in course_kind:
+            target = 'div_p_c_' + course
+            cat = course + '_cat'
+            merge_all[target] = merge_all[course] / merge_all[cat]
+        
+        for course in course_kind:
+            target = 'div_bc_c_' + course
+            cat = course + '_cat'
+            bc_src = 'bc_' + course
+            merge_all[target] = merge_all[bc_src] / merge_all[cat]
+        
+        for course in course_kind:
+            target = 'mul_p_c_' + course
+            cat = course + '_cat'
+            merge_all[target] = merge_all[course] * merge_all[cat]
+        
+        for course in course_kind:
+            target = 'mul_bc_c_' + course
+            cat = course + '_cat'
+            bc_src = 'bc_' + course
+            merge_all[target] = merge_all[bc_src] * merge_all[cat]
+
+        for course in course_kind:
+            target = 'ave_p_c_' + course
+            cat = course + '_cat'
+            merge_all[target] = (merge_all[course] + merge_all[cat])/2
+        
+        for course in course_kind:
+            target = 'ave_bc_c_' + course
+            cat = course + '_cat'
+            bc_src = 'bc_' + course
+            merge_all[target] = (merge_all[bc_src] + merge_all[cat])/2
 
         course_kind_bc = list(map(lambda x: 'bc_' + x, course_kind))
         merge_all.drop(columns=course_kind, inplace=True)
