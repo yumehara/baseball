@@ -68,13 +68,16 @@ def preprocess(is_fill):
     for sample_No in range(1, common.DIVIDE_NUM+1):
 
         OUT_PITCHER = common.ALLPITCHER.format(sample_No)
+        OUT_CATCHER = common.ALLCATCHER.format(sample_No)
         OUT_ALLPLAYER = common.ALLPLAYER.format(sample_No)
 
         # 2017年の成績(1/4ずつ)
         pit_2017 = pd.read_feather(common.PLAYER_PIT_2017.format(sample_No))
         bat_2017 = pd.read_feather(common.PLAYER_BAT_2017.format(sample_No))
+        cat_2017 = pd.read_feather(common.PLAYER_CAT_2017.format(sample_No))
         print(pit_2017.shape)
         print(bat_2017.shape)
+        print(cat_2017.shape)
 
         # 投手のみ
         all_pitcher = all_player[all_player['位置']=='投手'].copy()
@@ -89,9 +92,9 @@ def preprocess(is_fill):
         all_pitcher.loc[(all_pitcher['投手ID'].isnull()) & (all_pitcher['foreigner']==1), '投手ID'] = -1
         all_pitcher.loc[all_pitcher['投手ID'].isnull(), '投手ID'] = 0
 
+        RightLeft = ['R_L', 'R_R', 'L_R', 'L_L']
         # 情報がない投手
         if is_fill:
-            RightLeft = ['R_L', 'R_R', 'L_R', 'L_L']
             # 日本人平均
             for RL in RightLeft:
                 pit_mean = all_pitcher[(all_pitcher['foreigner']==0)&(all_pitcher['投手ID']!=0)&(all_pitcher['pit_bat']==RL)].mean()
@@ -106,47 +109,54 @@ def preprocess(is_fill):
                 # 平均で埋める
                 fill_ball(condition, pit_mean, all_pitcher)
 
-        # 各球種のストレートに対する比率
-        # ball_not_straight = ['curve', 'slider', 'shoot', 'fork', 'changeup', 'sinker', 'cutball']
-        # for ball in ball_not_straight:
-        #     all_pitcher[ball] = all_pitcher[ball] / all_pitcher['straight']
-
-        ball_kind = ['straight', 'curve', 'slider', 'shoot', 'fork', 'changeup', 'sinker', 'cutball']
-        for ball in ball_kind:
-            all_pitcher[ball] = all_pitcher[ball] / all_pitcher['total']
-
-        # コースの比率
-        course_kind = ['course_0', 'course_1', 'course_2', 'course_3', 'course_4', 'course_5', 'course_6', 
-                        'course_7', 'course_8', 'course_9', 'course_10', 'course_11', 'course_12']
-        for course in course_kind:
-            all_pitcher[course] = all_pitcher[course] / all_pitcher['total']
-
-        # コースの種類
-        all_pitcher['high_str'] = all_pitcher['course_0'] + all_pitcher['course_3'] + all_pitcher['course_6'] 
-        all_pitcher['high_ball'] = all_pitcher['course_9'] + all_pitcher['course_10'] 
-        all_pitcher['mid_str'] = all_pitcher['course_1'] + all_pitcher['course_4'] + all_pitcher['course_7'] 
-        all_pitcher['low_str'] = all_pitcher['course_2'] + all_pitcher['course_5'] + all_pitcher['course_8'] 
-        all_pitcher['low_ball'] = all_pitcher['course_11'] + all_pitcher['course_12'] 
-
-        all_pitcher['left_str'] = all_pitcher['course_0'] + all_pitcher['course_1'] + all_pitcher['course_2'] 
-        all_pitcher['left_ball'] = all_pitcher['course_9'] + all_pitcher['course_11'] 
-        all_pitcher['center_str'] = all_pitcher['course_3'] + all_pitcher['course_4'] + all_pitcher['course_5'] 
-        all_pitcher['right_str'] = all_pitcher['course_6'] + all_pitcher['course_7'] + all_pitcher['course_8'] 
-        all_pitcher['right_ball'] = all_pitcher['course_10'] + all_pitcher['course_12'] 
+        # 特徴量を計算
+        calc_feature(all_pitcher)
 
         # 不要な列を削除
-        all_pitcher.drop(columns=[
-            '投手ID', '位置', '投',
-            # 'straight', 
-            # 'course_0', 'course_1', 'course_2', 'course_3', 'course_4', 'course_5', 'course_6', 
-            # 'course_7', 'course_8', 'course_9', 'course_10', 'course_11', 'course_12'
-        ], inplace=True)
+        all_pitcher.drop(columns=['投手ID', '位置', '投'], inplace=True)
 
         # 投手のみ出力
         all_pitcher.to_feather(OUT_PITCHER)
         print(OUT_PITCHER, all_pitcher.shape)
         del all_pitcher
 
+        # 捕手のみ
+        all_catcher = all_player[all_player['位置']=='捕手'].copy()
+        all_catcher['dummy'] = 1
+
+        dummy = pd.DataFrame({
+            'dummy': [1, 1, 1, 1],
+            'pit_bat': ['R_L', 'R_R', 'L_L', 'L_R']
+        })
+        all_catcher = all_catcher.merge(dummy, on='dummy', how='outer')
+        all_catcher.drop(columns=['dummy'], inplace=True)
+
+        all_catcher = all_catcher.merge(cat_2017, left_on=['選手ID','pit_bat'], right_on=['捕手ID','pit_bat'], how='left')
+        all_catcher.loc[all_catcher['捕手ID'].isnull(), '捕手ID'] = 0
+
+        # 情報がない投手
+        if is_fill:
+            for RL in RightLeft:
+                cat_mean = all_catcher[(all_catcher['捕手ID']!=0)&(all_catcher['pit_bat']==RL)].mean()
+                cat_mean['pit_game_cnt'] = 0
+                cat_mean['pit_inning_cnt'] = 0
+                cat_mean['pit_batter_cnt'] = 0
+                condition = (all_catcher['捕手ID']==0)&(all_catcher['pit_bat']==RL)
+                # 平均で埋める
+                fill_ball(condition, cat_mean, all_catcher)
+
+            all_catcher.drop(columns=['pit_game_cnt', 'pit_inning_cnt', 'pit_batter_cnt'], inplace=True)
+
+        # 特徴量を計算
+        calc_feature(all_catcher)
+
+        # 不要な列を削除
+        all_catcher.drop(columns=['捕手ID', '位置', '投'], inplace=True)
+
+        # 捕手のみ出力
+        all_catcher.to_feather(OUT_CATCHER)
+        print(OUT_CATCHER, all_catcher.shape)
+        del all_catcher
 
         # 打者(全選手)
         all_batter = all_player.copy()
@@ -191,3 +201,27 @@ def fill_ball(condition, source, target):
     ]
     for ball in ball_kind:
         target.loc[condition, ball] = source[ball]
+
+def calc_feature(target):
+    ball_kind = ['straight', 'curve', 'slider', 'shoot', 'fork', 'changeup', 'sinker', 'cutball']
+    for ball in ball_kind:
+        target[ball] = target[ball] / target['total']
+
+    # コースの比率
+    course_kind = ['course_0', 'course_1', 'course_2', 'course_3', 'course_4', 'course_5', 'course_6', 
+                    'course_7', 'course_8', 'course_9', 'course_10', 'course_11', 'course_12']
+    for course in course_kind:
+        target[course] = target[course] / target['total']
+
+    # コースの種類
+    target['high_str'] = target['course_0'] + target['course_3'] + target['course_6'] 
+    target['high_ball'] = target['course_9'] + target['course_10'] 
+    target['mid_str'] = target['course_1'] + target['course_4'] + target['course_7'] 
+    target['low_str'] = target['course_2'] + target['course_5'] + target['course_8'] 
+    target['low_ball'] = target['course_11'] + target['course_12'] 
+
+    target['left_str'] = target['course_0'] + target['course_1'] + target['course_2'] 
+    target['left_ball'] = target['course_9'] + target['course_11'] 
+    target['center_str'] = target['course_3'] + target['course_4'] + target['course_5'] 
+    target['right_str'] = target['course_6'] + target['course_7'] + target['course_8'] 
+    target['right_ball'] = target['course_10'] + target['course_12']

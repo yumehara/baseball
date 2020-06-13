@@ -15,6 +15,7 @@ PLAYER_BAT_2017 = '../intermediate/player/bat_2017_{}.f'
 
 # Preprocess_player
 ALLPITCHER = '../intermediate/player/all_pitcher_{}.f'
+ALLCATCHER = '../intermediate/player/all_catcher_{}.f'
 ALLPLAYER = '../intermediate/player/all_player_{}.f'
 
 # Preprocess_ball.py

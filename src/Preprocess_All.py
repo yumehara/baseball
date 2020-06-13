@@ -13,6 +13,7 @@ def preprocess(model_No, use_sub_model, is_Ball):
     for sample_No in range(1, common.DIVIDE_NUM+1):
         ALL_PITCH = common.ALL_PITCH
         ALL_PITCHER = common.ALLPITCHER.format(sample_No)
+        ALL_CATCHER = common.ALLCATCHER.format(sample_No)
         ALL_PLAYER = common.ALLPLAYER.format(sample_No)
 
         SUB_BALL = common.PREDICT_BALL.format(model_No, model_No, sample_No)
@@ -29,6 +30,10 @@ def preprocess(model_No, use_sub_model, is_Ball):
         all_pitcher = pd.read_feather(ALL_PITCHER)
         print(all_pitcher.shape)
 
+        # 捕手情報
+        all_catcher = pd.read_feather(ALL_CATCHER)
+        print(all_catcher.shape)
+
         # 打者情報
         all_player = pd.read_feather(ALL_PLAYER)
         print(all_player.shape)
@@ -36,7 +41,7 @@ def preprocess(model_No, use_sub_model, is_Ball):
         # Join
         merge_all = pd.merge(all_pitch, all_pitcher, left_on=['投手ID', '年度', 'pit_bat'], right_on=['選手ID', '年度', 'pit_bat'], how='left')
         merge_all = pd.merge(merge_all, all_player, left_on=['打者ID', '年度'], right_on=['選手ID', '年度'], how='left', suffixes=['_pit', '_bat'])
-        merge_all = pd.merge(merge_all, all_player.drop(columns=['batter_cnt', 'bat_game_cnt']), left_on=['捕手ID', '年度'], right_on=['選手ID', '年度'], how='left')
+        merge_all = pd.merge(merge_all, all_catcher, left_on=['捕手ID', '年度', 'pit_bat'], right_on=['選手ID', '年度', 'pit_bat'], how='left', suffixes=['', '_cat'])
 
         del all_pitch, all_pitcher, all_player
 
