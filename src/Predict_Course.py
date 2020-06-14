@@ -6,21 +6,25 @@ import pandas as pd
 import lightgbm as lgb
 import feather
 import common
+import time
 
 def train_predict(model_No, use_sub_model):
 
     # 出力先のフォルダ作成
     os.makedirs(common.SUBMIT_PATH.format(model_No), exist_ok=True)
 
+    start = time.time()
     best_cv = []
     for sample_No in range(1, common.DIVIDE_NUM+1):
         
         if use_sub_model:
             ALL_MERGE = common.ALL_MERGE_SUB.format(model_No, model_No, sample_No)
             SUBMIT = common.SUBMIT_COURSE_SUB_CSV.format(model_No, model_No)
+            FI_RESULT = common.FI_COURSE_SUB_F.format(model_No, sample_No)
         else:
             ALL_MERGE = common.ALL_MERGE.format(model_No, model_No, sample_No)
             SUBMIT = common.SUBMIT_COURSE_CSV.format(model_No, model_No)
+            FI_RESULT = common.FI_COURSE_F.format(model_No, sample_No)
 
         SUBMIT_F = common.SUBMIT_COURSE_F.format(model_No, model_No, sample_No)
         OUT_SUBMODEL = common.PREDICT_COURSE.format(model_No, model_No, sample_No)
@@ -47,8 +51,7 @@ def train_predict(model_No, use_sub_model):
 
         # train
         train = all_pitch.dropna(subset=['course'])
-        # 特徴量で集計した部分を抜かない
-        #train = train.query(common.divide_period_query_train(sample_No))
+        train = train.query(common.divide_period_query_train(sample_No))
         print(train.shape)
 
         # test
@@ -85,18 +88,31 @@ def train_predict(model_No, use_sub_model):
             'bagging_freq': 4, 
             'min_child_samples': 50
         }
+        t1 = time.time()
 
         lgb_train = lgb.Dataset(train_d, train['course'])
         # cross-varidation
         cv, best_iter = common.lightgbm_cv(lgb_param, lgb_train)
         best_cv.append(cv)
+
+        t2 = time.time()
+        print('lgb.cv: {} [s]'.format(t2 - t1))
+
         # train
         lgb_model = lgb.train(lgb_param, lgb_train, num_boost_round=best_iter)
 
-        # fi = common.feature_importance(lgb_model).tail(30)
+        t3 = time.time()
+        print('lgb.train: {} [s]'.format(t3 - t2))
+
+        # feature importance
+        fi = common.feature_importance(lgb_model)
+        fi.to_feather(FI_RESULT)
 
         # predict
         predict = lgb_model.predict(test_d, num_iteration = lgb_model.best_iteration)
+
+        t4 = time.time()
+        print('lgb.predict: {} [s]'.format(t4 - t3))
 
         # result
         submit = pd.DataFrame(predict)
@@ -161,5 +177,8 @@ def train_predict(model_No, use_sub_model):
     df = df.reset_index()
     df.to_csv(SUBMIT, header=False, index=False)
     print(SUBMIT)
+    
+    end = time.time()
+    print('Predict_Course: {} [s]'.format(end - start))
 
     print('signate submit --competition-id=276 ./{} --note feat={}_cv={}'.format(SUBMIT, column_cnt, cv_ave))

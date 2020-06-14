@@ -38,11 +38,15 @@ SUBMIT_PATH = '../submit/{}'
 SUBMIT_BALL_CSV = '../submit/{}/ball_{}.csv'
 SUBMIT_BALL_F = '../submit/{}/ball_{}_{}.f'
 SUBMIT_BALL_SUB_CSV = '../submit/{}/ball_{}_sub.csv'
+FI_BALL_F = '../submit/{}/ball_fi_{}.f'
+FI_BALL_SUB_F = '../submit/{}/ball_fi_{}_sub.f'
 
 # Predit_Course.py
 SUBMIT_COURSE_CSV = '../submit/{}/course_{}.csv'
 SUBMIT_COURSE_F = '../submit/{}/course_{}_{}.f'
 SUBMIT_COURSE_SUB_CSV = '../submit/{}/course_{}_sub.csv'
+FI_COURSE_F = '../submit/{}/course_fi_{}.f'
+FI_COURSE_SUB_F = '../submit/{}/course_fi_{}_sub.f'
 
 # 分割数
 DIVIDE_NUM = 4
@@ -105,5 +109,6 @@ def feature_importance(lgb_model):
     fi = lgb_model.feature_importance()
     fn = lgb_model.feature_name()
     df_feature_importance = pd.DataFrame({'feat_name':fn, 'feat_imp':fi})
-    df_feature_importance.sort_values('feat_imp', inplace=True)
+    df_feature_importance.sort_values('feat_imp', inplace=True, ascending=False)
+    df_feature_importance.reset_index(inplace=True, drop=True)
     return df_feature_importance

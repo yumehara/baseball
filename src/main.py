@@ -19,20 +19,15 @@ player.preprocess(True)      # 穴埋めあり
 ball.preprocess()
 pitch.preprocess()
 
-# サブモデルなしコース予測用 前処理
+# サブモデルなし 前処理
 use_sub_model = False
-merge.preprocess(submit_No, use_sub_model, False)
-print('--- preprocess for course ---')
+merge.preprocess(submit_No, use_sub_model, True)
+print('--- preprocess ---')
+
+# サブモデルなし球種予測
+pred_ball.train_predict(submit_No, use_sub_model)
+print('--- predict ball w/o sub ---')
 
 # サブモデルなしコース予測
 pred_course.train_predict(submit_No, use_sub_model)
 print('--- predict course w/o sub ---')
-
-# サブモデルあり球種予測用 前処理
-use_sub_model = True
-merge.preprocess(submit_No, use_sub_model, True)
-print('--- preprocess for ball ---')
-
-# サブモデルあり球種予測
-pred_ball.train_predict(submit_No, use_sub_model)
-print('--- predict ball w/ sub ---')
