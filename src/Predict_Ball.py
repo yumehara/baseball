@@ -15,6 +15,7 @@ def train_predict(model_No, use_sub_model):
     
     start = time.time()
     best_cv = []
+    iter_num = 1400
     for sample_No in range(1, common.DIVIDE_NUM+1):
         
         if use_sub_model:
@@ -79,7 +80,7 @@ def train_predict(model_No, use_sub_model):
             'ball'
         ], axis=1)
 
-        lgb_param = {
+        lgb_param_gbdt = {
             'objective' : 'multiclass',
             'boosting_type': 'gbdt',
             'metric' : 'multi_logloss',
@@ -94,12 +95,29 @@ def train_predict(model_No, use_sub_model):
             'bagging_freq': 4, 
             'min_child_samples': 20
         }
+        lgb_param_dart = {
+            'objective' : 'multiclass',
+            'boosting_type': 'dart',
+            'metric' : 'multi_logloss',
+            'num_class' : 8,
+            'seed' : 0,
+            'learning_rate' : 0.1,
+            'lambda_l1': 3.2650173236383515, 
+            'lambda_l2': 0.0006692176426537234, 
+            'num_leaves': 39, 
+            'feature_fraction': 0.552, 
+            'bagging_fraction': 1.0, 
+            'bagging_freq': 0, 
+            'min_child_samples': 50
+        }
+        lgb_param = lgb_param_dart
         t1 = time.time()
 
         lgb_train = lgb.Dataset(train_d, train['ball'])
         # cross-varidation
-        cv, best_iter = common.lightgbm_cv(lgb_param, lgb_train)
-        best_cv.append(cv)
+        if sample_No == 1:
+            cv, best_iter = common.lightgbm_cv(lgb_param, lgb_train, iter_num)
+            best_cv.append(cv)
 
         t2 = time.time()
         print('lgb.cv: {} [s]'.format(t2 - t1))
@@ -173,8 +191,9 @@ def train_predict(model_No, use_sub_model):
         print('CV = {}'.format(cv))
         cv_ave = cv_ave + cv
     
-    cv_ave = cv_ave / common.DIVIDE_NUM
-    print('CV(ave) = {}'.format(cv_ave))
+    if len(best_cv) > 0:
+        cv_ave = cv_ave / len(best_cv)
+        print('CV(ave) = {}'.format(cv_ave))
 
     # 出力
     df = df.reset_index()

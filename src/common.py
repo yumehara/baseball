@@ -91,9 +91,9 @@ def divide_period_query_train(sample_No):
     elif sample_No == 5:
         return 'index <= {}'.format(DIVIDE_4)
 
-def lightgbm_cv(lgb_param, lgb_train):
+def lightgbm_cv(lgb_param, lgb_train, num_round):
     cv_results = lgb.cv(lgb_param, lgb_train,
-                    num_boost_round=15000,
+                    num_boost_round=num_round,
                     early_stopping_rounds=100,
                     verbose_eval=100,
                     nfold=4)
