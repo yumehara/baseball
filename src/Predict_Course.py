@@ -15,7 +15,7 @@ def train_predict(model_No, use_sub_model):
 
     start = time.time()
     best_cv = []
-    iter_num = 500
+    iter_num = 2000
     for sample_No in range(1, common.DIVIDE_NUM+1):
         
         if use_sub_model:
@@ -96,13 +96,13 @@ def train_predict(model_No, use_sub_model):
             'num_class' : 13,
             'seed' : 0,
             'learning_rate' : 0.1,
-            'lambda_l1': 3.2650173236383515, 
-            'lambda_l2': 0.0006692176426537234, 
-            'num_leaves': 39, 
-            'feature_fraction': 0.552, 
-            'bagging_fraction': 1.0, 
-            'bagging_freq': 0, 
-            'min_child_samples': 50
+            'lambda_l1': 8.074719414659954, 
+            'lambda_l2': 1.5919119266007067, 
+            'num_leaves': 6, 
+            'feature_fraction': 0.516, 
+            'bagging_fraction': 0.7965160701163017, 
+            'bagging_freq': 5, 
+            'min_child_samples': 20
         }
         lgb_param = lgb_param_dart
         t1 = time.time()
