@@ -48,6 +48,10 @@ SUBMIT_COURSE_SUB_CSV = '../submit/{}/course_{}_sub.csv'
 FI_COURSE_F = '../submit/{}/course_fi_{}.f'
 FI_COURSE_SUB_F = '../submit/{}/course_fi_{}_sub.f'
 
+# ensemble.py
+SUBMIT_BALL_ENSMBL_CSV = '../submit/{}/ball_ensmbl_{}_{}.csv'
+SUBMIT_COURSE_ENSMBL_CSV = '../submit/{}/course_ensmbl_{}_{}.csv'
+
 # 分割数
 DIVIDE_NUM = 4
 DIVIDE_1 = 60860
