@@ -8,14 +8,14 @@ import feather
 import common
 import time
 
-def train_predict(model_No, use_sub_model):
+def train_predict(model_No, use_sub_model, is_gbdt):
 
     # 出力先のフォルダ作成
     os.makedirs(common.SUBMIT_PATH.format(model_No), exist_ok=True)
 
     start = time.time()
     best_cv = []
-    iter_num = 2000
+    
     for sample_No in range(1, common.DIVIDE_NUM+1):
         
         if use_sub_model:
@@ -104,14 +104,23 @@ def train_predict(model_No, use_sub_model):
             'bagging_freq': 5, 
             'min_child_samples': 20
         }
-        lgb_param = lgb_param_dart
+        if is_gbdt:
+            lgb_param = lgb_param_gbdt
+            iter_num = 10000
+        else:
+            lgb_param = lgb_param_dart
+            iter_num = 2000
+        
+        # シードをfoldごとに変える
+        lgb_param['seed'] = sample_No
+        
         t1 = time.time()
 
         lgb_train = lgb.Dataset(train_d, train['course'])
         # cross-varidation
-        if sample_No == 1:
-            cv, best_iter = common.lightgbm_cv(lgb_param, lgb_train, iter_num)
-            best_cv.append(cv)
+        # if sample_No == 1:
+        cv, best_iter = common.lightgbm_cv(lgb_param, lgb_train, iter_num)
+        best_cv.append(cv)
 
         t2 = time.time()
         print('lgb.cv: {} [s]'.format(t2 - t1))
