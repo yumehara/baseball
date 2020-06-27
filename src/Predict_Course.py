@@ -111,9 +111,6 @@ def train_predict(model_No, use_sub_model, is_gbdt):
             lgb_param = lgb_param_dart
             iter_num = 2000
         
-        # シードをfoldごとに変える
-        lgb_param['seed'] = sample_No
-        
         t1 = time.time()
 
         lgb_train = lgb.Dataset(train_d, train['course'])

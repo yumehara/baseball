@@ -10,15 +10,15 @@ import Predict_Course as pred_course
 import ensemble as ensmbl
 
 
-submit_No = "35"
+submit_No = "36"
 
-# # playerごと
-# play2017.preprocess()
-# player.preprocess(True)      # 穴埋めあり
+# playerごと
+play2017.preprocess()
+player.preprocess(True)      # 穴埋めあり
 
-# # 投球ごと
-# ball.preprocess()
-# pitch.preprocess()
+# 投球ごと
+ball.preprocess()
+pitch.preprocess()
 
 # # サブモデルなし 前処理
 use_sub_model = False
