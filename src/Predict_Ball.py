@@ -110,20 +110,23 @@ def train_predict(model_No, use_sub_model, is_gbdt):
             'bagging_freq': 0, 
             'min_child_samples': 50
         }
+        is_cv = True
         if is_gbdt:
             lgb_param = lgb_param_gbdt
             iter_num = 10000
         else:
             lgb_param = lgb_param_dart
             iter_num = 1400
+            if sample_No != 1:
+                is_cv = False
 
         t1 = time.time()
 
         lgb_train = lgb.Dataset(train_d, train['ball'])
         # cross-varidation
-        # if sample_No == 1:
-        cv, best_iter = common.lightgbm_cv(lgb_param, lgb_train, iter_num)
-        best_cv.append(cv)
+        if is_cv:
+            cv, best_iter = common.lightgbm_cv(lgb_param, lgb_train, iter_num)
+            best_cv.append(cv)
 
         t2 = time.time()
         print('lgb.cv: {} [s]'.format(t2 - t1))
