@@ -54,16 +54,16 @@ SUBMIT_COURSE_ENSMBL_CSV = '../submit/{}/course_ensmbl_{}_{}.csv'
 
 # 分割数
 DIVIDE_NUM = 4
-# DIVIDE_1 = 60860
-# DIVIDE_2 = 120081
-# DIVIDE_3 = 180856
-# DIVIDE_4 = 257116
+DIVIDE_1 = 60860
+DIVIDE_2 = 120081
+DIVIDE_3 = 180856
+DIVIDE_4 = 257116
 
 # DIVIDE_NUM = 5
-DIVIDE_1 = 51506
-DIVIDE_2 = 100844
-DIVIDE_3 = 150063
-DIVIDE_4 = 200447
+# DIVIDE_1 = 51506
+# DIVIDE_2 = 100844
+# DIVIDE_3 = 150063
+# DIVIDE_4 = 200447
 
 # DIVIDE_NUM = 3
 # DIVIDE_1 = 80792
@@ -74,40 +74,28 @@ DIVIDE_4 = 200447
 def divide_period_query_pre(sample_No):
     if sample_No == 1:
         return 'index <= {}'.format(DIVIDE_1)
-    # elif sample_No == 2:
-    #     return 'index > {} & index <= {}'.format(DIVIDE_1, DIVIDE_2)
-    # elif sample_No == 3:
-    #     return 'index > {} & index <= {}'.format(DIVIDE_2, DIVIDE_3)
-    # elif sample_No == 4:
-    #     return 'index > {} & index <= {}'.format(DIVIDE_3, DIVIDE_4)
+    elif sample_No == 2:
+        return 'index > {} & index <= {}'.format(DIVIDE_1, DIVIDE_2)
+    elif sample_No == 3:
+        return 'index > {} & index <= {}'.format(DIVIDE_2, DIVIDE_3)
+    elif sample_No == 4:
+        return 'index > {} & index <= {}'.format(DIVIDE_3, DIVIDE_4)
     # elif sample_No == 5:
     #     return 'index > {}'.format(DIVIDE_4)
-    elif sample_No == 2:
-        return 'index <= {}'.format(DIVIDE_2)
-    elif sample_No == 3:
-        return 'index <= {}'.format(DIVIDE_3)
-    elif sample_No == 4:
-        return 'index <= {}'.format(DIVIDE_4)
     else:
         raise Exception('index error')
 
 def divide_period_query_train(sample_No):
     if sample_No == 1:
         return 'index > {}'.format(DIVIDE_1)
-    # elif sample_No == 2:
-    #     return 'index <= {} | index > {}'.format(DIVIDE_1, DIVIDE_2)
-    # elif sample_No == 3:
-    #     return 'index <= {} | index > {}'.format(DIVIDE_2, DIVIDE_3)
-    # elif sample_No == 4:
-    #     return 'index <= {} | index > {}'.format(DIVIDE_3, DIVIDE_4)
+    elif sample_No == 2:
+        return 'index <= {} | index > {}'.format(DIVIDE_1, DIVIDE_2)
+    elif sample_No == 3:
+        return 'index <= {} | index > {}'.format(DIVIDE_2, DIVIDE_3)
+    elif sample_No == 4:
+        return 'index <= {} | index > {}'.format(DIVIDE_3, DIVIDE_4)
     # elif sample_No == 5:
     #     return 'index <= {}'.format(DIVIDE_4)
-    elif sample_No == 2:
-        return 'index > {}'.format(DIVIDE_2)
-    elif sample_No == 3:
-        return 'index > {}'.format(DIVIDE_3)
-    elif sample_No == 4:
-        return 'index > {}'.format(DIVIDE_4)
     else:
         raise Exception('index error')
 
