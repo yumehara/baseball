@@ -10,7 +10,7 @@ import Predict_Course as pred_course
 import ensemble as ensmbl
 
 
-submit_No = "39"
+submit_No = "40"
 
 # playerごと
 play2017.preprocess()
@@ -26,7 +26,7 @@ merge.preprocess(submit_No, use_sub_model, True)
 print('--- preprocess ---')
 
 # サブモデルなし球種予測
-use_gbdt = True
+use_gbdt = False
 pred_ball.train_predict(submit_No, use_sub_model, use_gbdt)
 print('--- predict ball w/o sub ---')
 

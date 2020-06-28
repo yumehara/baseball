@@ -52,6 +52,9 @@ FI_COURSE_SUB_F = '../submit/{}/course_fi_{}_sub.f'
 SUBMIT_BALL_ENSMBL_CSV = '../submit/{}/ball_ensmbl_{}_{}.csv'
 SUBMIT_COURSE_ENSMBL_CSV = '../submit/{}/course_ensmbl_{}_{}.csv'
 
+# log
+LOG_SUBMIT = '../submit/{}/log.txt'
+
 # 分割数
 DIVIDE_NUM = 4
 DIVIDE_1 = 60860
@@ -120,3 +123,8 @@ def feature_importance(lgb_model):
     df_feature_importance.sort_values('feat_imp', inplace=True, ascending=False)
     df_feature_importance.reset_index(inplace=True, drop=True)
     return df_feature_importance
+
+def write_log(model_No, content):
+    with open(LOG_SUBMIT.format(model_No), mode='a') as f:
+        f.write(content)
+        f.write('\n')
