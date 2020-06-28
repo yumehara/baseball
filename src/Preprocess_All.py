@@ -40,8 +40,8 @@ def preprocess(model_No, use_sub_model, is_Ball):
 
         # Join
         merge_all = pd.merge(all_pitch, all_pitcher, left_on=['投手ID', '年度', 'pit_bat'], right_on=['選手ID', '年度', 'pit_bat'], how='left')
-        merge_all = pd.merge(merge_all, all_player, left_on=['打者ID', '年度'], right_on=['選手ID', '年度'], how='left', suffixes=['_pit', '_bat'])
-        merge_all = pd.merge(merge_all, all_catcher, left_on=['捕手ID', '年度', 'pit_bat'], right_on=['選手ID', '年度', 'pit_bat'], how='left', suffixes=['', '_cat'])
+        merge_all = pd.merge(merge_all, all_player, left_on=['打者ID', '年度', 'pit_bat'], right_on=['選手ID', '年度', 'pit_bat'], how='left', suffixes=['_pit', '_bat'])
+        merge_all = pd.merge(merge_all, all_catcher, left_on=['捕手ID', '年度', 'pit_bat'], right_on=['選手ID', '年度', 'pit_bat'], how='left')
 
         del all_pitch, all_pitcher, all_player
 
@@ -77,84 +77,45 @@ def preprocess(model_No, use_sub_model, is_Ball):
         ball_kind = ['straight', 'curve', 'slider', 'shoot', 'fork', 'changeup', 'sinker', 'cutball']
         
         for ball in ball_kind:
-            target = 'sub_' + ball
-            bc_src = 'bc_' + ball
-            merge_all[target] = merge_all[bc_src] - merge_all[ball]
+            bc_ball = 'bc_' + ball
+            pit_ball = ball + '_pit'
+            bat_ball = ball + '_bat'
+            cat_ball = ball
 
-        for ball in ball_kind:
-            target = 'div_' + ball
-            bc_src = 'bc_' + ball
-            merge_all[target] = merge_all[bc_src] / merge_all[ball]
+            merge_all['sub_bc_p_' + ball] = merge_all[bc_ball] - merge_all[pit_ball]
+            merge_all['sub_p_c_' + ball] = merge_all[pit_ball] - merge_all[cat_ball]
+            merge_all['sub_bc_c_' + ball] = merge_all[bc_ball] - merge_all[cat_ball]
+            merge_all['sub_p_b_' + ball] = merge_all[pit_ball] - merge_all[bat_ball]
+            merge_all['sub_bc_b_' + ball] = merge_all[bc_ball] - merge_all[bat_ball]
+            merge_all['sub_b_c_' + ball] = merge_all[bat_ball] - merge_all[cat_ball]
 
-        for ball in ball_kind:
-            target = 'mul_' + ball
-            bc_src = 'bc_' + ball
-            merge_all[target] = merge_all[bc_src] * merge_all[ball]
+            merge_all['div_bc_p_' + ball] = merge_all[bc_ball] / merge_all[pit_ball]
+            merge_all['div_p_c_' + ball] = merge_all[pit_ball] / merge_all[cat_ball]
+            merge_all['div_bc_c_' + ball] = merge_all[bc_ball] / merge_all[cat_ball]
+            merge_all['div_p_b_' + ball] = merge_all[pit_ball] / merge_all[bat_ball]
+            merge_all['div_bc_b_' + ball] = merge_all[bc_ball] / merge_all[bat_ball]
+            merge_all['div_b_c_' + ball] = merge_all[bat_ball] / merge_all[cat_ball]
 
-        for ball in ball_kind:
-            target = 'ave_' + ball
-            bc_src = 'bc_' + ball
-            merge_all[target] = (merge_all[bc_src] + merge_all[ball])/2
+            merge_all['mul_bc_p_' + ball] = merge_all[bc_ball] * merge_all[pit_ball]
+            merge_all['mul_p_c_' + ball] = merge_all[pit_ball] * merge_all[cat_ball]
+            merge_all['mul_bc_c_' + ball] = merge_all[bc_ball] * merge_all[cat_ball]
+            merge_all['mul_p_b_' + ball] = merge_all[pit_ball] * merge_all[bat_ball]
+            merge_all['mul_bc_b_' + ball] = merge_all[bc_ball] * merge_all[bat_ball]
+            merge_all['mul_b_c_' + ball] = merge_all[bat_ball] * merge_all[cat_ball]
 
-        for ball in ball_kind:
-            target = 'rate_' + ball
-            ave_src = 'ave_' + ball
-            merge_all[target] = merge_all[ave_src] /(1-merge_all['ave_straight'])
-        
-        # 投手と捕手の組合せ
-        for ball in ball_kind:
-            target = 'sub_p_c_' + ball
-            cat = ball + '_cat'
-            merge_all[target] = merge_all[ball] - merge_all[cat]
-        
-        for ball in ball_kind:
-            target = 'sub_bc_c_' + ball
-            cat = ball + '_cat'
-            bc_src = 'bc_' + ball
-            merge_all[target] = merge_all[bc_src] - merge_all[cat]
+            merge_all['ave_bc_p_' + ball] = (merge_all[bc_ball] + merge_all[pit_ball])/2
+            merge_all['ave_p_c_' + ball] = (merge_all[pit_ball] + merge_all[cat_ball])/2
+            merge_all['ave_bc_c_' + ball] = (merge_all[bc_ball] + merge_all[cat_ball])/2
+            merge_all['ave_p_b_' + ball] = (merge_all[pit_ball] + merge_all[bat_ball])/2
+            merge_all['ave_bc_b_' + ball] = (merge_all[bc_ball] + merge_all[bat_ball])/2
+            merge_all['ave_b_c_' + ball] = (merge_all[bat_ball] + merge_all[cat_ball])/2
 
-        for ball in ball_kind:
-            target = 'div_p_c_' + ball
-            cat = ball + '_cat'
-            merge_all[target] = merge_all[ball] / merge_all[cat]
-        
-        for ball in ball_kind:
-            target = 'div_bc_c_' + ball
-            cat = ball + '_cat'
-            bc_src = 'bc_' + ball
-            merge_all[target] = merge_all[bc_src] / merge_all[cat]
-        
-        for ball in ball_kind:
-            target = 'mul_p_c_' + ball
-            cat = ball + '_cat'
-            merge_all[target] = merge_all[ball] * merge_all[cat]
-        
-        for ball in ball_kind:
-            target = 'mul_bc_c_' + ball
-            cat = ball + '_cat'
-            bc_src = 'bc_' + ball
-            merge_all[target] = merge_all[bc_src] * merge_all[cat]
-        
-        for ball in ball_kind:
-            target = 'ave_p_c_' + ball
-            cat = ball + '_cat'
-            merge_all[target] = (merge_all[ball] + merge_all[cat])/2
-        
-        for ball in ball_kind:
-            target = 'ave_bc_c_' + ball
-            cat = ball + '_cat'
-            bc_src = 'bc_' + ball
-            merge_all[target] = (merge_all[bc_src] + merge_all[cat])/2
-        
-        for ball in ball_kind:
-            target = 'rate_p_c_' + ball
-            ave_src = 'ave_p_c_' + ball
-            merge_all[target] = merge_all[ave_src] /(1-merge_all['ave_p_c_straight'])
-        
-        for ball in ball_kind:
-            target = 'rate_bc_c_' + ball
-            ave_src = 'ave_bc_c_' + ball
-            merge_all[target] = merge_all[ave_src] /(1-merge_all['ave_bc_c_straight'])
+            merge_all['rate_bc_p_' + ball] = merge_all['ave_bc_p_' + ball] /(1-merge_all['ave_bc_p_straight'])
+            merge_all['rate_p_c_' + ball] = merge_all['ave_p_c_' + ball] /(1-merge_all['ave_p_c_straight'])
+            merge_all['rate_bc_c_' + ball] = merge_all['ave_bc_c_' + ball] /(1-merge_all['ave_bc_c_straight'])
+            merge_all['rate_p_b_' + ball] = merge_all['ave_p_b_' + ball] /(1-merge_all['ave_p_b_straight'])
+            merge_all['rate_bc_b_' + ball] = merge_all['ave_bc_b_' + ball] /(1-merge_all['ave_bc_b_straight'])
+            merge_all['rate_b_c_' + ball] = merge_all['ave_b_c_' + ball] /(1-merge_all['ave_b_c_straight'])
     
         ball_kind_bc = list(map(lambda x: 'bc_' + x, ball_kind))
         merge_all.drop(columns=ball_kind, inplace=True)
@@ -167,69 +128,38 @@ def preprocess(model_No, use_sub_model, is_Ball):
                'left_str', 'left_ball', 'center_str', 'right_str', 'right_ball']
 
         for course in course_kind:
-            target = 'sub_' + course
-            bc_src = 'bc_' + course
-            merge_all[target] = merge_all[bc_src] - merge_all[course]
+            bc_course = 'bc_' + course
+            pit_course = course + '_pit'
+            bat_course = course + '_bat'
+            cat_course = course
 
-        for course in course_kind:
-            target = 'div_' + course
-            bc_src = 'bc_' + course
-            merge_all[target] = merge_all[bc_src] / merge_all[course]
+            merge_all['sub_bc_p_' + course] = merge_all[bc_course] - merge_all[pit_course]
+            merge_all['sub_p_c_' + course] = merge_all[pit_course] - merge_all[cat_course]
+            merge_all['sub_bc_c_' + course] = merge_all[bc_course] - merge_all[cat_course]
+            merge_all['sub_p_b_' + course] = merge_all[pit_course] - merge_all[bat_course]
+            merge_all['sub_bc_b_' + course] = merge_all[bc_course] - merge_all[bat_course]
+            merge_all['sub_b_c_' + course] = merge_all[bat_course] - merge_all[cat_course]
 
-        for course in course_kind:
-            target = 'mul_' + course
-            bc_src = 'bc_' + course
-            merge_all[target] = merge_all[bc_src] * merge_all[course]
+            merge_all['div_bc_p_' + course] = merge_all[bc_course] / merge_all[pit_course]
+            merge_all['div_p_c_' + course] = merge_all[pit_course] / merge_all[cat_course]
+            merge_all['div_bc_c_' + course] = merge_all[bc_course] / merge_all[cat_course]
+            merge_all['div_p_b_' + course] = merge_all[pit_course] / merge_all[bat_course]
+            merge_all['div_bc_b_' + course] = merge_all[bc_course] / merge_all[bat_course]
+            merge_all['div_b_c_' + course] = merge_all[bat_course] / merge_all[cat_course]
+            
+            merge_all['mul_bc_p_' + course] = merge_all[bc_course] * merge_all[pit_course]
+            merge_all['mul_p_c_' + course] = merge_all[pit_course] * merge_all[cat_course]
+            merge_all['mul_bc_c_' + course] = merge_all[bc_course] * merge_all[cat_course]
+            merge_all['mul_p_b_' + course] = merge_all[pit_course] * merge_all[bat_course]
+            merge_all['mul_bc_b_' + course] = merge_all[bc_course] * merge_all[bat_course]
+            merge_all['mul_b_c_' + course] = merge_all[bat_course] * merge_all[cat_course]
 
-        for course in course_kind:
-            target = 'ave_' + course
-            bc_src = 'bc_' + course
-            merge_all[target] = (merge_all[bc_src] + merge_all[course])/2
-        
-        # 投手と捕手の組合せ
-        for course in course_kind:
-            target = 'sub_p_c_' + course
-            cat = course + '_cat'
-            merge_all[target] = merge_all[course] - merge_all[cat]
-        
-        for course in course_kind:
-            target = 'sub_bc_c_' + course
-            cat = course + '_cat'
-            bc_src = 'bc_' + course
-            merge_all[target] = merge_all[bc_src] - merge_all[cat]
-        
-        for course in course_kind:
-            target = 'div_p_c_' + course
-            cat = course + '_cat'
-            merge_all[target] = merge_all[course] / merge_all[cat]
-        
-        for course in course_kind:
-            target = 'div_bc_c_' + course
-            cat = course + '_cat'
-            bc_src = 'bc_' + course
-            merge_all[target] = merge_all[bc_src] / merge_all[cat]
-        
-        for course in course_kind:
-            target = 'mul_p_c_' + course
-            cat = course + '_cat'
-            merge_all[target] = merge_all[course] * merge_all[cat]
-        
-        for course in course_kind:
-            target = 'mul_bc_c_' + course
-            cat = course + '_cat'
-            bc_src = 'bc_' + course
-            merge_all[target] = merge_all[bc_src] * merge_all[cat]
-
-        for course in course_kind:
-            target = 'ave_p_c_' + course
-            cat = course + '_cat'
-            merge_all[target] = (merge_all[course] + merge_all[cat])/2
-        
-        for course in course_kind:
-            target = 'ave_bc_c_' + course
-            cat = course + '_cat'
-            bc_src = 'bc_' + course
-            merge_all[target] = (merge_all[bc_src] + merge_all[cat])/2
+            merge_all['ave_bc_p_' + course] = (merge_all[bc_course] + merge_all[pit_course])/2
+            merge_all['ave_p_c_' + course] = (merge_all[pit_course] + merge_all[cat_course])/2
+            merge_all['ave_bc_c_' + course] = (merge_all[bc_course] + merge_all[cat_course])/2
+            merge_all['ave_p_b_' + course] = (merge_all[pit_course] + merge_all[bat_course])/2
+            merge_all['ave_bc_b_' + course] = (merge_all[bc_course] + merge_all[bat_course])/2
+            merge_all['ave_b_c_' + course] = (merge_all[bat_course] + merge_all[cat_course])/2
 
         course_kind_bc = list(map(lambda x: 'bc_' + x, course_kind))
         merge_all.drop(columns=course_kind, inplace=True)

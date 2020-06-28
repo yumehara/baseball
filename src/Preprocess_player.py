@@ -49,7 +49,7 @@ def preprocess(is_fill):
     # 不要な列を削除
     all_player.drop(
         columns=[
-            'チームID', 'チーム名', '選手名', '背番号', '打', '生年月日', 
+            'チームID', 'チーム名', '選手名', '背番号', '生年月日', 
             '出身高校ID', '出身高校名', '出身大学ID', '出身大学名', '社会人', 
             'ドラフト年', 'ドラフト種別', 
             '出身国', '出身地', '血液型', 'birth_day',
@@ -101,6 +101,9 @@ def preprocess(is_fill):
                 condition = (all_pitcher['投手ID']==0)&(all_pitcher['pit_bat']==RL)
                 # 平均で埋める
                 fill_ball(condition, pit_mean, all_pitcher)
+                all_pitcher.loc[condition, 'pit_game_cnt'] = pit_mean['pit_game_cnt']
+                all_pitcher.loc[condition, 'pit_inning_cnt'] = pit_mean['pit_inning_cnt']
+                all_pitcher.loc[condition, 'pit_batter_cnt'] = pit_mean['pit_batter_cnt']
 
             #外国人平均
             for RL in RightLeft:
@@ -108,12 +111,15 @@ def preprocess(is_fill):
                 condition = (all_pitcher['投手ID']==-1)&(all_pitcher['pit_bat']==RL)
                 # 平均で埋める
                 fill_ball(condition, pit_mean, all_pitcher)
+                all_pitcher.loc[condition, 'pit_game_cnt'] = pit_mean['pit_game_cnt']
+                all_pitcher.loc[condition, 'pit_inning_cnt'] = pit_mean['pit_inning_cnt']
+                all_pitcher.loc[condition, 'pit_batter_cnt'] = pit_mean['pit_batter_cnt']
 
         # 特徴量を計算
         calc_feature(all_pitcher)
 
         # 不要な列を削除
-        all_pitcher.drop(columns=['投手ID', '位置', '投'], inplace=True)
+        all_pitcher.drop(columns=['投手ID', '位置', '投', '打'], inplace=True)
 
         # 投手のみ出力
         all_pitcher.to_feather(OUT_PITCHER)
@@ -134,24 +140,20 @@ def preprocess(is_fill):
         all_catcher = all_catcher.merge(cat_2017, left_on=['選手ID','pit_bat'], right_on=['捕手ID','pit_bat'], how='left')
         all_catcher.loc[all_catcher['捕手ID'].isnull(), '捕手ID'] = 0
 
-        # 情報がない投手
+        # 情報がない捕手
         if is_fill:
             for RL in RightLeft:
                 cat_mean = all_catcher[(all_catcher['捕手ID']!=0)&(all_catcher['pit_bat']==RL)].mean()
-                cat_mean['pit_game_cnt'] = 0
-                cat_mean['pit_inning_cnt'] = 0
-                cat_mean['pit_batter_cnt'] = 0
                 condition = (all_catcher['捕手ID']==0)&(all_catcher['pit_bat']==RL)
                 # 平均で埋める
                 fill_ball(condition, cat_mean, all_catcher)
-
-            all_catcher.drop(columns=['pit_game_cnt', 'pit_inning_cnt', 'pit_batter_cnt'], inplace=True)
+                all_catcher.loc[condition, 'cat_game_cnt'] = cat_mean['cat_game_cnt']
 
         # 特徴量を計算
         calc_feature(all_catcher)
 
         # 不要な列を削除
-        all_catcher.drop(columns=['捕手ID', '位置', '投'], inplace=True)
+        all_catcher.drop(columns=['捕手ID', '位置', '投', '打'], inplace=True)
 
         # 捕手のみ出力
         all_catcher.to_feather(OUT_CATCHER)
@@ -160,28 +162,39 @@ def preprocess(is_fill):
 
         # 打者(全選手)
         all_batter = all_player.copy()
-        all_batter = all_batter.merge(bat_2017, left_on='選手ID', right_on='打者ID', how='left')
 
+        dummy2 = pd.DataFrame({
+            '打': ['左', '右', '左', '右'],
+            'pit_bat': ['R_L', 'R_R', 'L_L', 'L_R']
+        })
+        all_batter = all_batter.merge(dummy2, on='打', how='outer')
+        all_batter = all_batter.merge(bat_2017, left_on=['選手ID','pit_bat'], right_on=['打者ID','pit_bat'], how='left')
         all_batter.loc[all_batter['打者ID'].isnull(), '打者ID'] = 0
 
         # 情報がない打者
         if is_fill:
-            # 投手以外
-            bat_mean = all_batter[(all_batter['打者ID']!=0)&(all_batter['位置']!='投手')].mean()
-            condition = (all_batter['打者ID']==0)&(all_batter['位置']!='投手')
-            # 平均で埋める
-            all_batter.loc[condition, 'batter_cnt'] = bat_mean['batter_cnt']
-            all_batter.loc[condition, 'bat_game_cnt'] = bat_mean['bat_game_cnt']
+            for RL in RightLeft:
+                # 投手以外
+                bat_mean = all_batter[(all_batter['打者ID']!=0)&(all_batter['位置']!='投手')&(all_batter['pit_bat']==RL)].mean()
+                condition = (all_batter['打者ID']==0)&(all_batter['位置']!='投手')&(all_batter['pit_bat']==RL)
+                # 平均で埋める
+                fill_ball(condition, bat_mean, all_batter)
+                all_batter.loc[condition, 'batter_cnt'] = bat_mean['batter_cnt']
+                all_batter.loc[condition, 'bat_game_cnt'] = bat_mean['bat_game_cnt']
 
-            # 投手
-            bat_mean = all_batter[(all_batter['打者ID']!=0)&(all_batter['位置']=='投手')].mean()
-            condition = (all_batter['打者ID']==0)&(all_batter['位置']=='投手')
-            # 平均で埋める
-            all_batter.loc[condition, 'batter_cnt'] = bat_mean['batter_cnt']
-            all_batter.loc[condition, 'bat_game_cnt'] = bat_mean['bat_game_cnt']
+                # 投手
+                bat_mean = all_batter[(all_batter['打者ID']!=0)&(all_batter['位置']=='投手')&(all_batter['pit_bat']==RL)].mean()
+                condition = (all_batter['打者ID']==0)&(all_batter['位置']=='投手')&(all_batter['pit_bat']==RL)
+                # 平均で埋める
+                fill_ball(condition, bat_mean, all_batter)
+                all_batter.loc[condition, 'batter_cnt'] = bat_mean['batter_cnt']
+                all_batter.loc[condition, 'bat_game_cnt'] = bat_mean['bat_game_cnt']
+
+        # 特徴量を計算
+        calc_feature(all_batter)
 
         # 不要な列を削除
-        all_batter.drop(columns=['打者ID', '位置', '投'], inplace=True)
+        all_batter.drop(columns=['打者ID', '位置', '投', '打'], inplace=True)
 
         # 全選手出力
         all_batter.to_feather(OUT_ALLPLAYER)
@@ -195,7 +208,6 @@ def preprocess(is_fill):
 def fill_ball(condition, source, target):
     ball_kind = [
         'straight', 'curve', 'slider', 'shoot', 'fork', 'changeup', 'sinker', 'cutball', 'total',
-        'pit_game_cnt', 'pit_inning_cnt', 'pit_batter_cnt',
         'course_0', 'course_1', 'course_2', 'course_3', 'course_4', 'course_5', 'course_6', 
         'course_7', 'course_8', 'course_9', 'course_10', 'course_11', 'course_12'
     ]

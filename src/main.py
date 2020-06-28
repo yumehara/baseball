@@ -10,7 +10,7 @@ import Predict_Course as pred_course
 import ensemble as ensmbl
 
 
-submit_No = "38"
+submit_No = "39"
 
 # playerごと
 play2017.preprocess()
