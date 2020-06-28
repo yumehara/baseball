@@ -213,5 +213,4 @@ def train_predict(model_No, use_sub_model, is_gbdt):
     print('Predict_Ball: {} [s]'.format(end - start))
 
     signate_command = 'signate submit --competition-id=275 ./{} --note feat={}_cv={}'.format(SUBMIT, column_cnt, cv_ave)
-    print(signate_command)
     common.write_log(model_No, signate_command)

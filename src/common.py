@@ -128,3 +128,4 @@ def write_log(model_No, content):
     with open(LOG_SUBMIT.format(model_No), mode='a') as f:
         f.write(content)
         f.write('\n')
+        print(content)

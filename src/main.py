@@ -10,29 +10,29 @@ import Predict_Course as pred_course
 import ensemble as ensmbl
 
 
-submit_No = "40"
+submit_No = "41"
 
-# playerごと
-play2017.preprocess()
-player.preprocess(True)      # 穴埋めあり
+# # playerごと
+# play2017.preprocess()
+# player.preprocess(True)      # 穴埋めあり
 
-# 投球ごと
-ball.preprocess()
-pitch.preprocess()
+# # 投球ごと
+# ball.preprocess()
+# pitch.preprocess()
 
-# サブモデルなし 前処理
-use_sub_model = False
-merge.preprocess(submit_No, use_sub_model, True)
-print('--- preprocess ---')
+# # サブモデルなし 前処理
+# use_sub_model = False
+# merge.preprocess(submit_No, use_sub_model, True)
+# print('--- preprocess ---')
 
-# サブモデルなし球種予測
-use_gbdt = False
-pred_ball.train_predict(submit_No, use_sub_model, use_gbdt)
-print('--- predict ball w/o sub ---')
+# # サブモデルなし球種予測
+# use_gbdt = False
+# pred_ball.train_predict(submit_No, use_sub_model, use_gbdt)
+# print('--- predict ball w/o sub ---')
 
-# サブモデルなしコース予測
-pred_course.train_predict(submit_No, use_sub_model, use_gbdt)
-print('--- predict course w/o sub ---')
+# # サブモデルなしコース予測
+# pred_course.train_predict(submit_No, use_sub_model, use_gbdt)
+# print('--- predict course w/o sub ---')
 
 # アンサンブル(gbdt + dart)
-# ensmbl.ensemble(submit_No)
+ensmbl.ensemble(submit_No, 39, 40)

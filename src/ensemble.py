@@ -2,13 +2,10 @@ import os
 import pandas as pd
 import common
 
-def ensemble(model_No, isBall=True, isCourse=True):
+def ensemble(model_No, model_1, model_2, isBall=True, isCourse=True):
 
     # 出力先のフォルダ作成
     os.makedirs(common.SUBMIT_PATH.format(model_No), exist_ok=True)
-
-    model_1 = 32
-    model_2 = 33
 
     if isBall:
         ball_1_csv = common.SUBMIT_BALL_CSV.format(model_1, model_1)
@@ -30,7 +27,8 @@ def ensemble(model_No, isBall=True, isCourse=True):
 
         ball_ensemble.to_csv(submit_ball_csv, header=False, index=False)
         print(submit_ball_csv, ball_ensemble.shape)
-        print('signate submit --competition-id=275 ./{} --note ensemble_{}_{}'.format(submit_ball_csv, model_1, model_2))
+        signate_command = 'signate submit --competition-id=275 ./{} --note ensemble_{}_{}'.format(submit_ball_csv, model_1, model_2)
+        common.write_log(model_No, signate_command)
 
     if isCourse:
         course_1_csv = common.SUBMIT_COURSE_CSV.format(model_1, model_1)
@@ -52,6 +50,6 @@ def ensemble(model_No, isBall=True, isCourse=True):
 
         course_ensemble.to_csv(submit_course_csv, header=False, index=False)
         print(submit_course_csv, course_ensemble.shape)
-        print('signate submit --competition-id=276 ./{} --note ensemble_{}_{}'.format(submit_course_csv, model_1, model_2))
-
+        signate_command = 'signate submit --competition-id=276 ./{} --note ensemble_{}_{}'.format(submit_course_csv, model_1, model_2)
+        common.write_log(model_No, signate_command)
     
