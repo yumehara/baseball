@@ -11,7 +11,7 @@ import ensemble as ensmbl
 import common
 
 
-submit_No = '43'
+submit_No = '44'
 use_sub_model = False
 metric = common.M_ERROR
 boosting = common.DART
@@ -28,13 +28,13 @@ boosting = common.DART
 # merge.preprocess(submit_No, use_sub_model, True)
 # print('--- preprocess ---')
 
-# 球種予測
-pred_ball.train_predict(submit_No, use_sub_model, boosting, metric)
-print('--- predict ball w/o sub ---')
+# # 球種予測
+# pred_ball.train_predict(submit_No, use_sub_model, boosting, metric)
+# print('--- predict ball w/o sub ---')
 
-# コース予測
-pred_course.train_predict(submit_No, use_sub_model, boosting, metric)
-print('--- predict course w/o sub ---')
+# # コース予測
+# pred_course.train_predict(submit_No, use_sub_model, boosting, metric)
+# print('--- predict course w/o sub ---')
 
 # アンサンブル(gbdt + dart)
-# ensmbl.ensemble(submit_No, 39, 40)
+ensmbl.ensemble(submit_No, 42, 43)
