@@ -74,6 +74,14 @@ DIVIDE_4 = 257116
 # DIVIDE_3 = 257116
 # DIVIDE_4 = 257116
 
+# boosting
+GBDT = 'gbdt'
+DART = 'dart'
+
+# metric
+M_LOGLOSS = 'multi_logloss'
+M_ERROR = 'multi_error'
+
 def divide_period_query_pre(sample_No):
     if sample_No == 1:
         return 'index <= {}'.format(DIVIDE_1)
@@ -102,16 +110,17 @@ def divide_period_query_train(sample_No):
     else:
         raise Exception('index error')
 
-def lightgbm_cv(lgb_param, lgb_train, num_round):
+def lightgbm_cv(lgb_param, lgb_train, num_round, metric):
     cv_results = lgb.cv(lgb_param, lgb_train,
                     num_boost_round=num_round,
                     early_stopping_rounds=100,
                     verbose_eval=100,
                     nfold=4)
 
-    num_boost_round = len(cv_results['multi_error-mean'])
+    metric_mean = metric + '-mean'
+    num_boost_round = len(cv_results[metric_mean])
     print('Best num_boost_round:', num_boost_round)
-    best_cv_score = cv_results['multi_error-mean'][-1]
+    best_cv_score = cv_results[metric_mean][-1]
     print('Best CV score:', best_cv_score)
     best_iter = int(num_boost_round * 1.1)
     return best_cv_score, best_iter

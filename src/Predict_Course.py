@@ -8,7 +8,7 @@ import feather
 import common
 import time
 
-def train_predict(model_No, use_sub_model, is_gbdt):
+def train_predict(model_No, use_sub_model, boosting, metric):
 
     # 出力先のフォルダ作成
     os.makedirs(common.SUBMIT_PATH.format(model_No), exist_ok=True)
@@ -77,7 +77,7 @@ def train_predict(model_No, use_sub_model, is_gbdt):
         lgb_param_gbdt = {
             'objective' : 'multiclass',
             'boosting_type': 'gbdt',
-            'metric' : 'multi_error',
+            'metric' : metric,
             'num_class' : 13,
             'seed' : 0,
             'learning_rate' : 0.1,
@@ -92,7 +92,7 @@ def train_predict(model_No, use_sub_model, is_gbdt):
         lgb_param_dart = {
             'objective' : 'multiclass',
             'boosting_type': 'dart',
-            'metric' : 'multi_logloss',
+            'metric' : metric,
             'num_class' : 13,
             'seed' : 0,
             'learning_rate' : 0.1,
@@ -105,12 +105,15 @@ def train_predict(model_No, use_sub_model, is_gbdt):
             'min_child_samples': 20
         }
         is_cv = True
-        if is_gbdt:
+        if boosting == common.GBDT:
             lgb_param = lgb_param_gbdt
             iter_num = 10000
         else:
             lgb_param = lgb_param_dart
-            iter_num = 2000
+            if metric == common.M_LOGLOSS:
+                iter_num = 2000
+            else:
+                iter_num = 1300
             if sample_No != 1:
                 is_cv = False
         
@@ -119,7 +122,7 @@ def train_predict(model_No, use_sub_model, is_gbdt):
         lgb_train = lgb.Dataset(train_d, train['course'])
         # cross-varidation
         if is_cv:
-            cv, best_iter = common.lightgbm_cv(lgb_param, lgb_train, iter_num)
+            cv, best_iter = common.lightgbm_cv(lgb_param, lgb_train, iter_num, metric)
             best_cv.append(cv)
 
         t2 = time.time()
@@ -209,5 +212,5 @@ def train_predict(model_No, use_sub_model, is_gbdt):
     end = time.time()
     print('Predict_Course: {} [s]'.format(end - start))
 
-    signate_command = 'signate submit --competition-id=276 ./{} --note feat={}_cv={}'.format(SUBMIT, column_cnt, cv_ave)
+    signate_command = 'signate submit --competition-id=276 ./{} --note {}_{}_feat={}_cv={}'.format(SUBMIT, boosting, metric, column_cnt, cv_ave)
     common.write_log(model_No, signate_command)

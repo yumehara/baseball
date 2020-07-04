@@ -8,9 +8,13 @@ import Preprocess_player as player
 import Predict_Ball as pred_ball
 import Predict_Course as pred_course
 import ensemble as ensmbl
+import common
 
 
-submit_No = "42"
+submit_No = '43'
+use_sub_model = False
+metric = common.M_ERROR
+boosting = common.DART
 
 # # playerごと
 # play2017.preprocess()
@@ -20,18 +24,16 @@ submit_No = "42"
 # ball.preprocess()
 # pitch.preprocess()
 
-# # サブモデルなし 前処理
-use_sub_model = False
+# # 前処理
 # merge.preprocess(submit_No, use_sub_model, True)
 # print('--- preprocess ---')
 
-# サブモデルなし球種予測
-use_gbdt = True
-pred_ball.train_predict(submit_No, use_sub_model, use_gbdt)
+# 球種予測
+pred_ball.train_predict(submit_No, use_sub_model, boosting, metric)
 print('--- predict ball w/o sub ---')
 
-# サブモデルなしコース予測
-pred_course.train_predict(submit_No, use_sub_model, use_gbdt)
+# コース予測
+pred_course.train_predict(submit_No, use_sub_model, boosting, metric)
 print('--- predict course w/o sub ---')
 
 # アンサンブル(gbdt + dart)
