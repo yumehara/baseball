@@ -109,9 +109,9 @@ def lightgbm_cv(lgb_param, lgb_train, num_round):
                     verbose_eval=100,
                     nfold=4)
 
-    num_boost_round = len(cv_results['multi_logloss-mean'])
+    num_boost_round = len(cv_results['multi_error-mean'])
     print('Best num_boost_round:', num_boost_round)
-    best_cv_score = cv_results['multi_logloss-mean'][-1]
+    best_cv_score = cv_results['multi_error-mean'][-1]
     print('Best CV score:', best_cv_score)
     best_iter = int(num_boost_round * 1.1)
     return best_cv_score, best_iter

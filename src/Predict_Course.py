@@ -77,7 +77,7 @@ def train_predict(model_No, use_sub_model, is_gbdt):
         lgb_param_gbdt = {
             'objective' : 'multiclass',
             'boosting_type': 'gbdt',
-            'metric' : 'multi_logloss',
+            'metric' : 'multi_error',
             'num_class' : 13,
             'seed' : 0,
             'learning_rate' : 0.1,
