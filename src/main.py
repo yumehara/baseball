@@ -11,7 +11,7 @@ import ensemble as ensmbl
 import common
 
 
-submit_No = '43'
+submit_No = '45'
 use_sub_model = False
 metric = common.M_ERROR
 boosting = common.DART
@@ -38,10 +38,10 @@ boosting = common.DART
 # pred_course.train_predict(submit_No, use_sub_model, boosting, metric)
 # print('--- predict course w/o sub ---')
 
-# # アンサンブル(gbdt + dart)
-# ensmbl.ensemble(submit_No, 42, 43)
+# アンサンブル(gbdt + dart)
+ensmbl.ensemble(submit_No, 41, 44)
 
 # Tuning
 # python main.py 2>> tuning_0705.log
-pred_ball.tuning(submit_No, use_sub_model, boosting, metric)
+# pred_ball.tuning(submit_No, use_sub_model, boosting, metric)
 # pred_course.tuning(submit_No, use_sub_model, boosting, metric)
