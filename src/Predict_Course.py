@@ -8,6 +8,72 @@ import feather
 import common
 import time
 
+
+def preprocess(model_No, sample_No, use_sub_model):
+
+    if use_sub_model:
+        ALL_MERGE = common.ALL_MERGE_SUB.format(model_No, model_No, sample_No)
+    else:
+        ALL_MERGE = common.ALL_MERGE.format(model_No, model_No, sample_No)
+
+    all_pitch = pd.read_feather(ALL_MERGE)
+
+    # sub-modelを使用するとき
+    if use_sub_model:
+        all_pitch['predict_curve'] = all_pitch['predict_curve'] / all_pitch['predict_straight']
+        all_pitch['predict_slider'] = all_pitch['predict_slider'] / all_pitch['predict_straight']
+        all_pitch['predict_shoot'] = all_pitch['predict_shoot'] / all_pitch['predict_straight']
+        all_pitch['predict_fork'] = all_pitch['predict_fork'] / all_pitch['predict_straight']
+        all_pitch['predict_changeup'] = all_pitch['predict_changeup'] / all_pitch['predict_straight']
+        all_pitch['predict_sinker'] = all_pitch['predict_sinker'] / all_pitch['predict_straight']
+        all_pitch['predict_cutball'] = all_pitch['predict_cutball'] / all_pitch['predict_straight']
+        all_pitch.drop(columns=[
+            # 'predict_0', 'predict_1', 'predict_2', 'predict_3', 'predict_4', 'predict_5', 'predict_6',
+            # 'predict_7', 'predict_8', 'predict_9', 'predict_10', 'predict_11', 'predict_12',
+            'predict_straight'
+        ], inplace=True)
+
+    print(all_pitch.shape)
+
+    # train
+    train = all_pitch.dropna(subset=['course'])
+    train = train.query(common.divide_period_query_train(sample_No))
+    print(train.shape)
+
+    # test
+    test = all_pitch[all_pitch['course'].isnull()]
+    print(test.shape)
+
+    del all_pitch
+    gc.collect()
+
+    train_d = train.drop([
+        'No', 
+        'course', 
+        'ball'
+    ], axis=1)
+
+    test_d = test.drop([
+        'No', 
+        'course', 
+        'ball'
+    ], axis=1)
+
+    return train_d, test_d, train['course']
+
+
+def tuning(model_No, use_sub_model, boosting, metric):
+    
+    # 出力先のフォルダ作成
+    os.makedirs(common.SUBMIT_PATH.format(model_No), exist_ok=True)
+
+    sample_No = 1
+    train_d, _, train_y = preprocess(model_No, sample_No, use_sub_model)
+
+    filename = '../submit/{}/tuning_course_{}_{}.log'.format(model_No, boosting, metric)
+    common.tuning(train_d, train_y, 13, boosting, metric, filename)
+
+
 def train_predict(model_No, use_sub_model, boosting, metric):
 
     # 出力先のフォルダ作成
@@ -17,62 +83,18 @@ def train_predict(model_No, use_sub_model, boosting, metric):
     best_cv = []
     
     for sample_No in range(1, common.DIVIDE_NUM+1):
-        
+
         if use_sub_model:
-            ALL_MERGE = common.ALL_MERGE_SUB.format(model_No, model_No, sample_No)
             SUBMIT = common.SUBMIT_COURSE_SUB_CSV.format(model_No, model_No)
             FI_RESULT = common.FI_COURSE_SUB_F.format(model_No, sample_No)
         else:
-            ALL_MERGE = common.ALL_MERGE.format(model_No, model_No, sample_No)
             SUBMIT = common.SUBMIT_COURSE_CSV.format(model_No, model_No)
             FI_RESULT = common.FI_COURSE_F.format(model_No, sample_No)
-
+        
         SUBMIT_F = common.SUBMIT_COURSE_F.format(model_No, model_No, sample_No)
         OUT_SUBMODEL = common.PREDICT_COURSE.format(model_No, model_No, sample_No)
-
-        all_pitch = pd.read_feather(ALL_MERGE)
-
-        # sub-modelを使用するとき
-        if use_sub_model:
-            all_pitch['predict_curve'] = all_pitch['predict_curve'] / all_pitch['predict_straight']
-            all_pitch['predict_slider'] = all_pitch['predict_slider'] / all_pitch['predict_straight']
-            all_pitch['predict_shoot'] = all_pitch['predict_shoot'] / all_pitch['predict_straight']
-            all_pitch['predict_fork'] = all_pitch['predict_fork'] / all_pitch['predict_straight']
-            all_pitch['predict_changeup'] = all_pitch['predict_changeup'] / all_pitch['predict_straight']
-            all_pitch['predict_sinker'] = all_pitch['predict_sinker'] / all_pitch['predict_straight']
-            all_pitch['predict_cutball'] = all_pitch['predict_cutball'] / all_pitch['predict_straight']
-            all_pitch.drop(columns=[
-                # 'predict_0', 'predict_1', 'predict_2', 'predict_3', 'predict_4', 'predict_5', 'predict_6',
-                # 'predict_7', 'predict_8', 'predict_9', 'predict_10', 'predict_11', 'predict_12',
-                'predict_straight'
-            ], inplace=True)
-
-        column_cnt = len(all_pitch.columns)
-        print(all_pitch.shape)
-
-        # train
-        train = all_pitch.dropna(subset=['course'])
-        train = train.query(common.divide_period_query_train(sample_No))
-        print(train.shape)
-
-        # test
-        test = all_pitch[all_pitch['course'].isnull()]
-        print(test.shape)
-
-        del all_pitch
-        gc.collect()
-
-        train_d = train.drop([
-            'No', 
-            'course', 
-            'ball'
-        ], axis=1)
-
-        test_d = test.drop([
-            'No', 
-            'course', 
-            'ball'
-        ], axis=1)
+        
+        train_d, test_d, train_y = preprocess(model_No, sample_No, use_sub_model)
 
         lgb_param_gbdt = {
             'objective' : 'multiclass',
@@ -119,7 +141,7 @@ def train_predict(model_No, use_sub_model, boosting, metric):
         
         t1 = time.time()
 
-        lgb_train = lgb.Dataset(train_d, train['course'])
+        lgb_train = lgb.Dataset(train_d, train_y)
         # cross-varidation
         if is_cv:
             cv, best_iter = common.lightgbm_cv(lgb_param, lgb_train, iter_num, metric)

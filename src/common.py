@@ -1,6 +1,9 @@
 # coding:utf-8
 import pandas as pd
 import lightgbm as lgb
+import optuna.integration.lightgbm as lgb_tune
+import time
+from sklearn.model_selection import train_test_split
 
 TRAIN_PITCH = '../data/train_pitch.f'
 TEST_PITCH = '../data/test_pitch.f'
@@ -134,7 +137,42 @@ def feature_importance(lgb_model):
     return df_feature_importance
 
 def write_log(model_No, content):
-    with open(LOG_SUBMIT.format(model_No), mode='a') as f:
+    write_text(LOG_SUBMIT.format(model_No), content)
+
+def write_text(filename, content):
+    with open(filename, mode='a') as f:
         f.write(content)
         f.write('\n')
         print(content)
+
+def tuning(train_x, train_y, num_class, boosting, metric, logfile):
+    
+    start = time.time()
+
+    X_train, X_test, y_train, y_test = train_test_split(train_x, train_y, random_state=0, test_size=0.1, train_size=0.3)
+    print('X_train', X_train.shape)
+    print('y_train', y_train.shape)
+    print('X_test', X_test.shape)
+    print('y_test', y_test.shape)
+
+    lgb_train = lgb_tune.Dataset(X_train, y_train)
+    lgb_eval = lgb_tune.Dataset(X_test, y_test, reference=lgb_train)
+
+    lgb_param = {
+        'objective' : 'multiclass',
+        'boosting_type': boosting,
+        'metric' : metric,
+        'num_class' : num_class,
+    }
+    best_params, tuning_history = dict(), list()
+    lgb_model = lgb_tune.train(lgb_param, lgb_train,
+                        valid_sets=lgb_eval,
+                        verbose_eval=0,
+                        best_params=best_params,
+                        tuning_history=tuning_history)
+    
+    end = time.time()
+    tuning_time = 'tuning_Course: {} [s]'.format(end - start)
+    write_text(logfile, tuning_time)
+    write_text(logfile, 'Best Params:')
+    write_text(logfile, best_params)
