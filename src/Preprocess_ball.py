@@ -26,7 +26,7 @@ def preprocess():
     ball_total = train_ball_cnt.groupby(['ball_cnt', 'pit_bat']).sum().reset_index()
     ball_total.rename(columns={'ball_sum':'total'}, inplace=True)
     train_ball_cnt = train_ball_cnt.merge(ball_total[['ball_cnt', 'pit_bat', 'total']], on=['ball_cnt', 'pit_bat'], how='left')
-    train_ball_cnt['rate'] = train_ball_cnt['ball_sum'] / train_ball_cnt['total']
+    train_ball_cnt['rate'] = np.log1p(train_ball_cnt['ball_sum'] / train_ball_cnt['total'])
 
     train_ball_pivot = pd.pivot_table(train_ball_cnt[['ball_cnt', 'pit_bat', 'ball', 'rate']], index=['ball_cnt', 'pit_bat'], columns='ball', values='rate').reset_index()
     train_ball_pivot.rename(columns={
@@ -41,16 +41,6 @@ def preprocess():
     }, inplace=True)
 
     train_ball_pivot.fillna(0, inplace=True)
-
-    # train_ball_pivot['bc_curve'] = train_ball_pivot['bc_curve'] / train_ball_pivot['bc_straight'] 
-    # train_ball_pivot['bc_slider'] = train_ball_pivot['bc_slider'] / train_ball_pivot['bc_straight'] 
-    # train_ball_pivot['bc_shoot'] = train_ball_pivot['bc_shoot'] / train_ball_pivot['bc_straight'] 
-    # train_ball_pivot['bc_fork'] = train_ball_pivot['bc_fork'] / train_ball_pivot['bc_straight'] 
-    # train_ball_pivot['bc_changeup'] = train_ball_pivot['bc_changeup'] / train_ball_pivot['bc_straight'] 
-    # train_ball_pivot['bc_sinker'] = train_ball_pivot['bc_sinker'] / train_ball_pivot['bc_straight'] 
-    # train_ball_pivot['bc_cutball'] = train_ball_pivot['bc_cutball'] / train_ball_pivot['bc_straight'] 
-
-    # train_ball_pivot.drop(columns=['bc_straight'], inplace=True)
     print(train_ball_pivot.shape)
 
     # コース
@@ -94,10 +84,6 @@ def preprocess():
     train_course_pivot['bc_center_str'] = train_course_pivot['bc_course_3'] + train_course_pivot['bc_course_4'] + train_course_pivot['bc_course_5'] 
     train_course_pivot['bc_right_str'] = train_course_pivot['bc_course_6'] + train_course_pivot['bc_course_7'] + train_course_pivot['bc_course_8'] 
     train_course_pivot['bc_right_ball'] = train_course_pivot['bc_course_10'] + train_course_pivot['bc_course_12'] 
-
-    # train_course_pivot.drop(columns=[
-    #     'bc_course_0', 'bc_course_1', 'bc_course_2', 'bc_course_3', 'bc_course_4', 'bc_course_5', 
-    #     'bc_course_6', 'bc_course_7', 'bc_course_8', 'bc_course_9', 'bc_course_10', 'bc_course_11', 'bc_course_12'], inplace=True)
 
     print(train_course_pivot.shape)
 
