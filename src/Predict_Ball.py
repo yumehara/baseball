@@ -32,8 +32,6 @@ def preprocess(model_No, sample_No, use_sub_model):
         all_pitch['predict_right_ball'] = all_pitch['predict_10'] + all_pitch['predict_12']
 
         all_pitch.drop(columns=[
-            # 'predict_straight', 'predict_curve', 'predict_slider', 'predict_shoot',
-            # 'predict_fork', 'predict_changeup', 'predict_sinker', 'predict_cutball',
             'predict_0','predict_1','predict_2','predict_3','predict_4','predict_5','predict_6',
             'predict_7','predict_8','predict_9','predict_10','predict_11','predict_12'
         ], inplace=True)

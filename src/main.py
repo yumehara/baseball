@@ -11,32 +11,36 @@ import ensemble as ensmbl
 import common
 
 
-submit_No = '46'
+submit_No = '47'
 use_sub_model = False
-metric = common.M_ERROR
-boosting = common.DART
+metric = common.M_LOGLOSS
+boosting = common.GBDT
 
-# os.environ['NUMEXPR_MAX_THREADS'] = '24'
 
-# playerごと
-play2017.preprocess()
-player.preprocess(True)      # 穴埋めあり
+# # playerごと
+# play2017.preprocess()
+# player.preprocess(True)      # 穴埋めあり
 
-# 投球ごと
-ball.preprocess()
-pitch.preprocess()
+# # 投球ごと
+# ball.preprocess()
+# pitch.preprocess()
 
-# 前処理
-merge.preprocess(submit_No, use_sub_model, True)
-print('--- preprocess ---')
+# # 前処理
+# merge.preprocess(submit_No, use_sub_model, True)
+# print('--- preprocess ---')
 
-# 球種予測
-pred_ball.train_predict(submit_No, use_sub_model, boosting, metric)
-print('--- predict ball w/o sub ---')
+# # 球種予測
+# pred_ball.train_predict(submit_No, use_sub_model, boosting, metric)
+# print('--- predict ball w/o sub ---')
 
 # コース予測
-pred_course.train_predict(submit_No, use_sub_model, boosting, metric)
+pred_course.train_predict2(submit_No, False, boosting, metric, 'LR')
 print('--- predict course w/o sub ---')
+
+pred_course.train_predict2(submit_No, False, boosting, metric, 'HL')
+print('--- predict course w/o sub ---')
+
+pred_course.ensemble_RLHL(submit_No)
 
 # # アンサンブル(gbdt + dart)
 # ensmbl.ensemble(submit_No, 41, 44)

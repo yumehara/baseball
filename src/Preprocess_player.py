@@ -38,8 +38,8 @@ def preprocess(is_fill):
 
     # 球団ごとの年棒順位
     all_player['salary_rank'] = all_player.groupby(['年度', 'チームID'])['年俸'].rank(ascending=False)
-    all_player['rank_year'] = np.log1p(all_player['salary_rank']/ all_player['play_year'])
-    all_player['rank_x_year'] = np.log1p(all_player['salary_rank'] * all_player['play_year'])
+    all_player['rank_year'] = all_player['salary_rank']/ all_player['play_year']
+    all_player['rank_x_year'] = all_player['salary_rank'] * all_player['play_year']
     all_player['salary_year'] = np.log1p(all_player['年俸']/ all_player['play_year'])
     all_player['salary_x_year'] = np.log1p(all_player['年俸'] * all_player['play_year'])
 
@@ -217,13 +217,13 @@ def fill_ball(condition, source, target):
 def calc_feature(target):
     ball_kind = ['straight', 'curve', 'slider', 'shoot', 'fork', 'changeup', 'sinker', 'cutball']
     for ball in ball_kind:
-        target[ball] = np.log1p(target[ball] / target['total'])
+        target[ball] = target[ball] / target['total']
 
     # コースの比率
     course_kind = ['course_0', 'course_1', 'course_2', 'course_3', 'course_4', 'course_5', 'course_6', 
                     'course_7', 'course_8', 'course_9', 'course_10', 'course_11', 'course_12']
     for course in course_kind:
-        target[course] = np.log1p(target[course] / target['total'])
+        target[course] = target[course] / target['total']
 
     # コースの種類
     target['high_str'] = target['course_0'] + target['course_3'] + target['course_6'] 

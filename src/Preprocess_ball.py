@@ -26,7 +26,7 @@ def preprocess():
     ball_total = train_ball_cnt.groupby(['ball_cnt', 'pit_bat']).sum().reset_index()
     ball_total.rename(columns={'ball_sum':'total'}, inplace=True)
     train_ball_cnt = train_ball_cnt.merge(ball_total[['ball_cnt', 'pit_bat', 'total']], on=['ball_cnt', 'pit_bat'], how='left')
-    train_ball_cnt['rate'] = np.log1p(train_ball_cnt['ball_sum'] / train_ball_cnt['total'])
+    train_ball_cnt['rate'] = train_ball_cnt['ball_sum'] / train_ball_cnt['total']
 
     train_ball_pivot = pd.pivot_table(train_ball_cnt[['ball_cnt', 'pit_bat', 'ball', 'rate']], index=['ball_cnt', 'pit_bat'], columns='ball', values='rate').reset_index()
     train_ball_pivot.rename(columns={
