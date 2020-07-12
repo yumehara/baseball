@@ -5,7 +5,7 @@ import pandas as pd
 import feather
 import common
 
-def preprocess(model_No, use_sub_model, is_Ball):
+def preprocess(model_No, use_sub_model):
 
     # 出力先のフォルダ作成
     os.makedirs(common.OUTPUT_PATH.format(model_No), exist_ok=True)
@@ -16,8 +16,8 @@ def preprocess(model_No, use_sub_model, is_Ball):
         ALL_CATCHER = common.ALLCATCHER.format(sample_No)
         ALL_PLAYER = common.ALLPLAYER.format(sample_No)
 
-        SUB_BALL = common.PREDICT_BALL.format(model_No, model_No, sample_No)
-        SUB_COURSE = common.PREDICT_COURSE.format(model_No, model_No, sample_No)
+        # SUB_BALL = common.PREDICT_BALL.format(model_No, model_No, sample_No)
+        SUB_COURSE = common.SUBMIT_COURSE_RLHL_F.format(model_No, model_No, sample_No)
 
         OUTPUT = common.ALL_MERGE.format(model_No, model_No, sample_No)
         OUTPUT_SUB = common.ALL_MERGE_SUB.format(model_No, model_No, sample_No)
@@ -211,10 +211,7 @@ def preprocess(model_No, use_sub_model, is_Ball):
             merge_all.to_feather(OUTPUT)
             print(OUTPUT, merge_all.shape)
         else:
-            if is_Ball:
-                merge_sub = pd.read_feather(SUB_COURSE)
-            else:
-                merge_sub = pd.read_feather(SUB_BALL)
+            merge_sub = pd.read_feather(SUB_COURSE)
             
             # 予測結果を特徴量に加える
             merge_sub = pd.concat([merge_all, merge_sub], axis=1)

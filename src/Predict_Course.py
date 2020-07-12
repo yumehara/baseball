@@ -18,16 +18,16 @@ def preprocess(model_No, sample_No, use_sub_model, use_RLHL=False):
 
     all_pitch = pd.read_feather(ALL_MERGE)
 
-    # sub-modelを使用するとき
-    if use_sub_model:
-        all_pitch['predict_curve'] = all_pitch['predict_curve'] / all_pitch['predict_straight']
-        all_pitch['predict_slider'] = all_pitch['predict_slider'] / all_pitch['predict_straight']
-        all_pitch['predict_shoot'] = all_pitch['predict_shoot'] / all_pitch['predict_straight']
-        all_pitch['predict_fork'] = all_pitch['predict_fork'] / all_pitch['predict_straight']
-        all_pitch['predict_changeup'] = all_pitch['predict_changeup'] / all_pitch['predict_straight']
-        all_pitch['predict_sinker'] = all_pitch['predict_sinker'] / all_pitch['predict_straight']
-        all_pitch['predict_cutball'] = all_pitch['predict_cutball'] / all_pitch['predict_straight']
-        all_pitch.drop(columns=['predict_straight'], inplace=True)
+    # # sub-modelを使用するとき
+    # if use_sub_model:
+    #     all_pitch['predict_curve'] = all_pitch['predict_curve'] / all_pitch['predict_straight']
+    #     all_pitch['predict_slider'] = all_pitch['predict_slider'] / all_pitch['predict_straight']
+    #     all_pitch['predict_shoot'] = all_pitch['predict_shoot'] / all_pitch['predict_straight']
+    #     all_pitch['predict_fork'] = all_pitch['predict_fork'] / all_pitch['predict_straight']
+    #     all_pitch['predict_changeup'] = all_pitch['predict_changeup'] / all_pitch['predict_straight']
+    #     all_pitch['predict_sinker'] = all_pitch['predict_sinker'] / all_pitch['predict_straight']
+    #     all_pitch['predict_cutball'] = all_pitch['predict_cutball'] / all_pitch['predict_straight']
+    #     all_pitch.drop(columns=['predict_straight'], inplace=True)
 
     if use_RLHL:
         cond1 = all_pitch.columns.str.contains('_str_pit')
@@ -448,18 +448,18 @@ def ensemble_RLHL(model_No):
         submit.reset_index(inplace=True)
         print(submit.shape)
 
-        SUBMIT_COURSE_RLHL_F = '../submit/{}/course_RLHL_{}_{}.f'.format(model_No, model_No, sample_No)
+        RLHL_F = common.SUBMIT_COURSE_RLHL_F.format(model_No, model_No, sample_No)
         submit_f = submit.drop(columns=['index'])
         submit_f.rename(columns={
             0: 'predict_0', 1: 'predict_1', 2: 'predict_2', 3: 'predict_3',
             4: 'predict_4', 5: 'predict_5', 6: 'predict_6', 7: 'predict_7',
             8: 'predict_8', 9: 'predict_9', 10: 'predict_10', 11: 'predict_11', 12: 'predict_12'
         }, inplace=True)
-        submit_f.to_feather(SUBMIT_COURSE_RLHL_F)
-        print(SUBMIT_COURSE_RLHL_F, submit_f.shape)
+        submit_f.to_feather(RLHL_F)
+        print(RLHL_F, submit_f.shape)
 
     # 結果まとめ
-    result = '../submit/{}/course_RLHL_{}_{}.f'.format(model_No, model_No, 1)
+    result = common.SUBMIT_COURSE_RLHL_F.format(model_No, model_No, 1)
     print(result)
     df = pd.read_feather(result)
     columns = ['predict_0', 'predict_1', 'predict_2', 'predict_3', 
@@ -467,7 +467,7 @@ def ensemble_RLHL(model_No):
             'predict_8', 'predict_9', 'predict_10', 'predict_11', 'predict_12']
 
     for i in range(2, common.DIVIDE_NUM+1):
-        result = '../submit/{}/course_RLHL_{}_{}.f'.format(model_No, model_No, i)
+        result = common.SUBMIT_COURSE_RLHL_F.format(model_No, model_No, i)
         print(result)
         temp = pd.read_feather(result)
         for c in columns:

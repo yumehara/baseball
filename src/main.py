@@ -12,9 +12,8 @@ import common
 
 
 submit_No = '47'
-use_sub_model = False
-metric = common.M_LOGLOSS
-boosting = common.GBDT
+metric = common.M_ERROR
+boosting = common.DART
 
 
 # # playerごと
@@ -26,21 +25,33 @@ boosting = common.GBDT
 # pitch.preprocess()
 
 # # 前処理
-# merge.preprocess(submit_No, use_sub_model, True)
+# use_sub_model = False
+# merge.preprocess(submit_No, use_sub_model)
+# print('--- preprocess ---')
+
+# # コース予測サブモデル(LRHL)
+# pred_course.train_predict2(submit_No, False, boosting, metric, 'LR')
+# pred_course.train_predict2(submit_No, False, boosting, metric, 'HL')
+# pred_course.ensemble_RLHL(submit_No)
+
+# # 前処理
+# use_sub_model = True
+# merge.preprocess(submit_No, use_sub_model)
 # print('--- preprocess ---')
 
 # # 球種予測
+# use_sub_model = True
 # pred_ball.train_predict(submit_No, use_sub_model, boosting, metric)
-# print('--- predict ball w/o sub ---')
+# print('--- predict ball ---')
 
 # コース予測
-pred_course.train_predict2(submit_No, False, boosting, metric, 'LR')
-print('--- predict course w/o sub ---')
+use_sub_model = True
+pred_course.train_predict(submit_No, use_sub_model, boosting, metric)
+print('--- predict course ---')
 
-pred_course.train_predict2(submit_No, False, boosting, metric, 'HL')
-print('--- predict course w/o sub ---')
 
-pred_course.ensemble_RLHL(submit_No)
+
+
 
 # # アンサンブル(gbdt + dart)
 # ensmbl.ensemble(submit_No, 41, 44)
