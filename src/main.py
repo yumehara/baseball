@@ -11,9 +11,9 @@ import ensemble as ensmbl
 import common
 
 
-submit_No = '47'
+submit_No = '49'
 metric = common.M_ERROR
-boosting = common.DART
+boosting = common.GBDT
 
 
 # # playerごと
@@ -29,10 +29,16 @@ boosting = common.DART
 # merge.preprocess(submit_No, use_sub_model)
 # print('--- preprocess ---')
 
+# # コース予測
+# use_sub_model = False
+# pred_course.train_predict(submit_No, use_sub_model, boosting, metric)
+# print('--- predict course ---')
+
 # # コース予測サブモデル(LRHL)
 # pred_course.train_predict2(submit_No, False, boosting, metric, 'LR')
 # pred_course.train_predict2(submit_No, False, boosting, metric, 'HL')
 # pred_course.ensemble_RLHL(submit_No)
+# print('--- predict course sub ---')
 
 # # 前処理
 # use_sub_model = True
@@ -44,17 +50,12 @@ boosting = common.DART
 # pred_ball.train_predict(submit_No, use_sub_model, boosting, metric)
 # print('--- predict ball ---')
 
-# コース予測
+
+
+
+# アンサンブル(gbdt + dart)
 use_sub_model = True
-pred_course.train_predict(submit_No, use_sub_model, boosting, metric)
-print('--- predict course ---')
-
-
-
-
-
-# # アンサンブル(gbdt + dart)
-# ensmbl.ensemble(submit_No, 41, 44)
+ensmbl.ensemble(submit_No, 47, 48, use_sub_model, True, False)
 
 # Tuning
 # python main.py 2>> tuning_0705.log

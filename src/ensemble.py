@@ -2,14 +2,19 @@ import os
 import pandas as pd
 import common
 
-def ensemble(model_No, model_1, model_2, isBall=True, isCourse=True):
+def ensemble(model_No, model_1, model_2, use_sub_model, isBall=True, isCourse=True):
 
     # 出力先のフォルダ作成
     os.makedirs(common.SUBMIT_PATH.format(model_No), exist_ok=True)
 
     if isBall:
-        ball_1_csv = common.SUBMIT_BALL_CSV.format(model_1, model_1)
-        ball_2_csv = common.SUBMIT_BALL_CSV.format(model_2, model_2)
+        if use_sub_model:
+            ball_1_csv = common.SUBMIT_BALL_SUB_CSV.format(model_1, model_1)
+            ball_2_csv = common.SUBMIT_BALL_SUB_CSV.format(model_2, model_2)
+        else:
+            ball_1_csv = common.SUBMIT_BALL_CSV.format(model_1, model_1)
+            ball_2_csv = common.SUBMIT_BALL_CSV.format(model_2, model_2)
+            
         submit_ball_csv = common.SUBMIT_BALL_ENSMBL_CSV.format(model_No, model_1, model_2)
 
         ball_kind = ['straight', 'curve', 'slider', 'shoot', 'fork', 'changeup', 'sinker', 'cutball']

@@ -96,7 +96,7 @@ def train_predict(model_No, use_sub_model, boosting, metric):
             FI_RESULT = common.FI_COURSE_F.format(model_No, sample_No)
         
         SUBMIT_F = common.SUBMIT_COURSE_F.format(model_No, model_No, sample_No)
-        OUT_SUBMODEL = common.PREDICT_COURSE.format(model_No, model_No, sample_No)
+        # OUT_SUBMODEL = common.PREDICT_COURSE.format(model_No, model_No, sample_No)
         
         train_d, test_d, train_y = preprocess(model_No, sample_No, use_sub_model)
 
@@ -186,20 +186,20 @@ def train_predict(model_No, use_sub_model, boosting, metric):
         print(SUBMIT_F, submit_f.shape)
 
         # 球種予測で使用
-        if not use_sub_model:
-            train_predict = lgb_model.predict(train_d, num_iteration = lgb_model.best_iteration)
+        # if not use_sub_model:
+        #     train_predict = lgb_model.predict(train_d, num_iteration = lgb_model.best_iteration)
 
-            df_train_predict = pd.DataFrame(train_predict).reset_index()
-            submodel = pd.concat([df_train_predict, submit], ignore_index=True)
-            submodel.drop(columns=['index'], inplace=True)
-            submodel.rename(columns={
-                0: 'predict_0', 1: 'predict_1', 2: 'predict_2', 3: 'predict_3',
-                4: 'predict_4', 5: 'predict_5', 6: 'predict_6', 7: 'predict_7',
-                8: 'predict_8', 9: 'predict_9', 10: 'predict_10', 11: 'predict_11', 12: 'predict_12'
-            }, inplace=True)
+        #     df_train_predict = pd.DataFrame(train_predict).reset_index()
+        #     submodel = pd.concat([df_train_predict, submit], ignore_index=True)
+        #     submodel.drop(columns=['index'], inplace=True)
+        #     submodel.rename(columns={
+        #         0: 'predict_0', 1: 'predict_1', 2: 'predict_2', 3: 'predict_3',
+        #         4: 'predict_4', 5: 'predict_5', 6: 'predict_6', 7: 'predict_7',
+        #         8: 'predict_8', 9: 'predict_9', 10: 'predict_10', 11: 'predict_11', 12: 'predict_12'
+        #     }, inplace=True)
             
-            submodel.to_feather(OUT_SUBMODEL)
-            print(OUT_SUBMODEL, submodel.shape)
+        #     submodel.to_feather(OUT_SUBMODEL)
+        #     print(OUT_SUBMODEL, submodel.shape)
 
     column_cnt = len(train_d.columns)
 
@@ -386,6 +386,7 @@ def train_predict2(model_No, use_sub_model, boosting, metric, LR_HL):
     end = time.time()
     print('Predict_Course: {} [s]'.format(end - start))
 
+
 def ensemble_RLHL(model_No):
     COURSE_TRAIN = '../submit/{}/course_train_{}_{}_{}.f'
 
@@ -459,34 +460,34 @@ def ensemble_RLHL(model_No):
         print(RLHL_F, submit_f.shape)
 
     # 結果まとめ
-    result = common.SUBMIT_COURSE_RLHL_F.format(model_No, model_No, 1)
-    print(result)
-    df = pd.read_feather(result)
-    columns = ['predict_0', 'predict_1', 'predict_2', 'predict_3', 
-            'predict_4', 'predict_5', 'predict_6', 'predict_7',
-            'predict_8', 'predict_9', 'predict_10', 'predict_11', 'predict_12']
+    # result = common.SUBMIT_COURSE_RLHL_F.format(model_No, model_No, 1)
+    # print(result)
+    # df = pd.read_feather(result)
+    # columns = ['predict_0', 'predict_1', 'predict_2', 'predict_3', 
+    #         'predict_4', 'predict_5', 'predict_6', 'predict_7',
+    #         'predict_8', 'predict_9', 'predict_10', 'predict_11', 'predict_12']
 
-    for i in range(2, common.DIVIDE_NUM+1):
-        result = common.SUBMIT_COURSE_RLHL_F.format(model_No, model_No, i)
-        print(result)
-        temp = pd.read_feather(result)
-        for c in columns:
-            df[c] = df[c] + temp[c]
+    # for i in range(2, common.DIVIDE_NUM+1):
+    #     result = common.SUBMIT_COURSE_RLHL_F.format(model_No, model_No, i)
+    #     print(result)
+    #     temp = pd.read_feather(result)
+    #     for c in columns:
+    #         df[c] = df[c] + temp[c]
 
-    for c in columns:
-        df[c] = df[c] / common.DIVIDE_NUM
+    # for c in columns:
+    #     df[c] = df[c] / common.DIVIDE_NUM
 
-    cv_ave = 0
-    for cv in best_cv:
-        cv_ave = cv_ave + cv
+    # cv_ave = 0
+    # for cv in best_cv:
+    #     cv_ave = cv_ave + cv
     
-    if len(best_cv) > 0:
-        cv_ave = cv_ave / len(best_cv)
-        common.write_log(model_No, 'CV(ave) = {}'.format(cv_ave))
+    # if len(best_cv) > 0:
+    #     cv_ave = cv_ave / len(best_cv)
+    #     common.write_log(model_No, 'CV(ave) = {}'.format(cv_ave))
     
-    SUBMIT = '../submit/{}/course_RLHL_{}.csv'.format(model_No, model_No)
-    df = df.reset_index()
-    df.to_csv(SUBMIT, header=False, index=False)
-    print(SUBMIT)
+    # SUBMIT = '../submit/{}/course_RLHL_{}.csv'.format(model_No, model_No)
+    # df = df.reset_index()
+    # df.to_csv(SUBMIT, header=False, index=False)
+    # print(SUBMIT)
 
-    common.write_log(model_No, 'signate submit --competition-id=276 ./{} --note RLHL_cv={}'.format(SUBMIT, cv_ave))
+    # common.write_log(model_No, 'signate submit --competition-id=276 ./{} --note RLHL_cv={}'.format(SUBMIT, cv_ave))

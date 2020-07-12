@@ -95,7 +95,7 @@ def train_predict(model_No, use_sub_model, boosting, metric):
             FI_RESULT = common.FI_BALL_F.format(model_No, sample_No)
 
         SUBMIT_F = common.SUBMIT_BALL_F.format(model_No, model_No, sample_No)
-        OUT_SUBMODEL = common.PREDICT_BALL.format(model_No, model_No, sample_No)
+        # OUT_SUBMODEL = common.PREDICT_BALL.format(model_No, model_No, sample_No)
 
         train_d, test_d, train_y = preprocess(model_No, sample_No, use_sub_model)
 
@@ -184,19 +184,19 @@ def train_predict(model_No, use_sub_model, boosting, metric):
         print(SUBMIT_F, submit_f.shape)
 
         # コース予測で使用
-        if not use_sub_model:
-            train_predict = lgb_model.predict(train_d, num_iteration = lgb_model.best_iteration)
+        # if not use_sub_model:
+        #     train_predict = lgb_model.predict(train_d, num_iteration = lgb_model.best_iteration)
 
-            df_train_predict = pd.DataFrame(train_predict).reset_index()
-            submodel = pd.concat([df_train_predict, submit], ignore_index=True)
-            submodel.drop(columns=['index'], inplace=True)
-            submodel.rename(columns={
-                0: 'predict_straight', 1: 'predict_curve', 2: 'predict_slider', 3: 'predict_shoot', 
-                4: 'predict_fork', 5: 'predict_changeup', 6: 'predict_sinker', 7: 'predict_cutball'
-            }, inplace=True)
+        #     df_train_predict = pd.DataFrame(train_predict).reset_index()
+        #     submodel = pd.concat([df_train_predict, submit], ignore_index=True)
+        #     submodel.drop(columns=['index'], inplace=True)
+        #     submodel.rename(columns={
+        #         0: 'predict_straight', 1: 'predict_curve', 2: 'predict_slider', 3: 'predict_shoot', 
+        #         4: 'predict_fork', 5: 'predict_changeup', 6: 'predict_sinker', 7: 'predict_cutball'
+        #     }, inplace=True)
             
-            submodel.to_feather(OUT_SUBMODEL)
-            print(OUT_SUBMODEL, submodel.shape)
+        #     submodel.to_feather(OUT_SUBMODEL)
+        #     print(OUT_SUBMODEL, submodel.shape)
 
     column_cnt = len(train_d.columns)
 
