@@ -126,7 +126,7 @@ def lightgbm_cv(lgb_param, lgb_train, num_round, metric):
     print('Best num_boost_round:', num_boost_round)
     best_cv_score = cv_results[metric_mean][-1]
     print('Best CV score:', best_cv_score)
-    best_iter = int(num_boost_round * 1.1)
+    best_iter = int(num_boost_round)
     return best_cv_score, best_iter
 
 def feature_importance(lgb_model):

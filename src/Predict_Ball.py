@@ -138,7 +138,7 @@ def train_predict(model_No, use_sub_model, boosting, metric):
             if metric == common.M_LOGLOSS:
                 iter_num = 1400
             else:
-                iter_num = 800
+                iter_num = 700
             if sample_No != 1:
                 is_cv = False
 
