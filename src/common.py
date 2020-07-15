@@ -150,7 +150,7 @@ def tuning(train_x, train_y, num_class, boosting, metric, logfile):
     
     start = time.time()
 
-    X_train, X_test, y_train, y_test = train_test_split(train_x, train_y, random_state=0, test_size=0.1, train_size=0.3)
+    X_train, X_test, y_train, y_test = train_test_split(train_x, train_y, random_state=0)
     print('X_train', X_train.shape)
     print('y_train', y_train.shape)
     print('X_test', X_test.shape)
@@ -169,6 +169,7 @@ def tuning(train_x, train_y, num_class, boosting, metric, logfile):
     lgb_model = lgb_tune.train(lgb_param, lgb_train,
                         valid_sets=lgb_eval,
                         verbose_eval=0,
+                        num_boost_round=700,
                         best_params=best_params,
                         tuning_history=tuning_history)
     

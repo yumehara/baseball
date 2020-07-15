@@ -64,3 +64,4 @@
 |45|gb+da|none|1010|---|2.34621 **|41+44 アンサンブル|
 |46|dart|none|1010|0.76989|2.34667|multi-error dart log1p|
 |47|dart|LRHL|1023|0.76986|2.34677|LRHRサブモデル(m-error/dart)|
+|47-1|dart|none|1010|0.76938|2.34633|m-error/dart tune|
