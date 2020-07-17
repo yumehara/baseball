@@ -11,23 +11,13 @@ import time
 
 def preprocess(model_No, sample_No, use_sub_model, use_RLHL=False):
 
-    if use_sub_model:
-        ALL_MERGE = common.ALL_MERGE_SUB.format(model_No, model_No, sample_No)
-    else:
-        ALL_MERGE = common.ALL_MERGE.format(model_No, model_No, sample_No)
+    # if use_sub_model:
+    #     ALL_MERGE = common.ALL_MERGE_SUB.format(model_No, model_No, sample_No)
+    # else:
+    ALL_MERGE = common.ALL_MERGE.format(model_No, model_No, sample_No)
 
     all_pitch = pd.read_feather(ALL_MERGE)
-
-    # # sub-modelを使用するとき
-    # if use_sub_model:
-    #     all_pitch['predict_curve'] = all_pitch['predict_curve'] / all_pitch['predict_straight']
-    #     all_pitch['predict_slider'] = all_pitch['predict_slider'] / all_pitch['predict_straight']
-    #     all_pitch['predict_shoot'] = all_pitch['predict_shoot'] / all_pitch['predict_straight']
-    #     all_pitch['predict_fork'] = all_pitch['predict_fork'] / all_pitch['predict_straight']
-    #     all_pitch['predict_changeup'] = all_pitch['predict_changeup'] / all_pitch['predict_straight']
-    #     all_pitch['predict_sinker'] = all_pitch['predict_sinker'] / all_pitch['predict_straight']
-    #     all_pitch['predict_cutball'] = all_pitch['predict_cutball'] / all_pitch['predict_straight']
-    #     all_pitch.drop(columns=['predict_straight'], inplace=True)
+    all_pitch = all_pitch.query(common.divide_period_query_train(sample_No))
 
     if use_RLHL:
         cond1 = all_pitch.columns.str.contains('_str_pit')
@@ -37,16 +27,25 @@ def preprocess(model_No, sample_No, use_sub_model, use_RLHL=False):
         cond = ~(cond1 | cond2 | cond3 | cond4)
         all_pitch = all_pitch.loc[:, cond]
 
-    print(all_pitch.shape)
+    print(ALL_MERGE, all_pitch.shape)
+
+    # sub-modelを使用するとき
+    if use_sub_model:
+        OUT_SUBMODEL = common.ALL_MERGE_SUB.format(model_No, model_No, sample_No)
+        sub_model = pd.read_feather(OUT_SUBMODEL)
+        print(OUT_SUBMODEL, sub_model.shape)
+        all_pitch.reset_index(drop=True, inplace=True)
+        all_pitch = pd.concat([all_pitch, sub_model], axis=1)
+
+    print('all_pitch', all_pitch.shape)
 
     # train
     train = all_pitch.dropna(subset=['course'])
-    train = train.query(common.divide_period_query_train(sample_No))
-    print(train.shape)
+    print('train', train.shape)
 
     # test
     test = all_pitch[all_pitch['course'].isnull()]
-    print(test.shape)
+    print('test', test.shape)
 
     del all_pitch
     gc.collect()
@@ -139,7 +138,7 @@ def train_predict(model_No, use_sub_model, boosting, metric):
             if metric == common.M_LOGLOSS:
                 iter_num = 2000
             else:
-                iter_num = 1800
+                iter_num = 1300
             if sample_No != 1:
                 is_cv = False
         
@@ -184,22 +183,6 @@ def train_predict(model_No, use_sub_model, boosting, metric):
         }, inplace=True)
         submit_f.to_feather(SUBMIT_F)
         print(SUBMIT_F, submit_f.shape)
-
-        # 球種予測で使用
-        # if not use_sub_model:
-        #     train_predict = lgb_model.predict(train_d, num_iteration = lgb_model.best_iteration)
-
-        #     df_train_predict = pd.DataFrame(train_predict).reset_index()
-        #     submodel = pd.concat([df_train_predict, submit], ignore_index=True)
-        #     submodel.drop(columns=['index'], inplace=True)
-        #     submodel.rename(columns={
-        #         0: 'predict_0', 1: 'predict_1', 2: 'predict_2', 3: 'predict_3',
-        #         4: 'predict_4', 5: 'predict_5', 6: 'predict_6', 7: 'predict_7',
-        #         8: 'predict_8', 9: 'predict_9', 10: 'predict_10', 11: 'predict_11', 12: 'predict_12'
-        #     }, inplace=True)
-            
-        #     submodel.to_feather(OUT_SUBMODEL)
-        #     print(OUT_SUBMODEL, submodel.shape)
 
     column_cnt = len(train_d.columns)
 
@@ -253,9 +236,9 @@ def train_predict2(model_No, use_sub_model, boosting, metric, LR_HL):
     
     for sample_No in range(1, common.DIVIDE_NUM+1):
 
-        FI_RESULT = '../submit/{}/course_fi_{}_{}.f'.format(model_No, LR_HL, sample_No)
-        SUBMIT_F = '../submit/{}/course_{}_{}_{}.f'.format(model_No, model_No, LR_HL, sample_No)
-        OUT_SUBMODEL = '../submit/{}/course_train_{}_{}_{}.f'.format(model_No, model_No, LR_HL, sample_No)
+        # FI_RESULT = '../submit/{}/course_fi_{}_{}.f'.format(model_No, LR_HL, sample_No)
+        # SUBMIT_F = '../submit/{}/course_{}_{}_{}.f'.format(model_No, model_No, LR_HL, sample_No)
+        OUT_SUBMODEL = common.COURSE_TRAIN.format(model_No, model_No, LR_HL, sample_No)
         
         train_d, test_d, train_y = preprocess(model_No, sample_No, use_sub_model, True)
 
@@ -345,8 +328,8 @@ def train_predict2(model_No, use_sub_model, boosting, metric, LR_HL):
         print('lgb.train: {} [s]'.format(t3 - t2))
 
         # feature importance
-        fi = common.feature_importance(lgb_model)
-        fi.to_feather(FI_RESULT)
+        # fi = common.feature_importance(lgb_model)
+        # fi.to_feather(FI_RESULT)
 
         # predict
         predict = lgb_model.predict(test_d, num_iteration = lgb_model.best_iteration)
@@ -360,10 +343,10 @@ def train_predict2(model_No, use_sub_model, boosting, metric, LR_HL):
         print(submit.shape)
 
         # output feather
-        submit_f = submit.drop(columns=['index'])
-        submit_f.rename(columns=rename_col, inplace=True)
-        submit_f.to_feather(SUBMIT_F)
-        print(SUBMIT_F, submit_f.shape)
+        # submit_f = submit.drop(columns=['index'])
+        # submit_f.rename(columns=rename_col, inplace=True)
+        # submit_f.to_feather(SUBMIT_F)
+        # print(SUBMIT_F, submit_f.shape)
 
         # train predict
         train_predict = lgb_model.predict(train_d, num_iteration = lgb_model.best_iteration)
@@ -388,14 +371,13 @@ def train_predict2(model_No, use_sub_model, boosting, metric, LR_HL):
 
 
 def ensemble_RLHL(model_No):
-    COURSE_TRAIN = '../submit/{}/course_train_{}_{}_{}.f'
 
-    best_cv = []
+    # best_cv = []
 
     for sample_No in range(1, common.DIVIDE_NUM+1):
-        train1 = pd.read_feather(COURSE_TRAIN.format(model_No, model_No, 'LR', sample_No))
+        train1 = pd.read_feather(common.COURSE_TRAIN.format(model_No, model_No, 'LR', sample_No))
         print(train1.shape)
-        train2 = pd.read_feather(COURSE_TRAIN.format(model_No, model_No, 'HL', sample_No))
+        train2 = pd.read_feather(common.COURSE_TRAIN.format(model_No, model_No, 'HL', sample_No))
         print(train2.shape)
         merge = train1.join(train2)
         print(merge.shape)
@@ -408,11 +390,16 @@ def ensemble_RLHL(model_No):
         merge.drop(columns=col1, inplace=True)
         merge.drop(columns=col2, inplace=True)
 
+        OUTPUT_SUB = common.ALL_MERGE_SUB.format(model_No, model_No, sample_No)
+        merge.to_feather(OUTPUT_SUB)
+        print(OUTPUT_SUB, merge.shape)
+'''
         all_pitch = pd.read_feather(common.ALL_MERGE.format(model_No, model_No, sample_No))
         print(all_pitch.shape)
 
         train_test = all_pitch.query(common.divide_period_query_train(sample_No))
         print(train_test.shape)
+
         merge['course'] = train_test['course'].reset_index(drop=True)
         print(merge.shape)
 
@@ -458,6 +445,7 @@ def ensemble_RLHL(model_No):
         }, inplace=True)
         submit_f.to_feather(RLHL_F)
         print(RLHL_F, submit_f.shape)
+        '''
 
     # 結果まとめ
     # result = common.SUBMIT_COURSE_RLHL_F.format(model_No, model_No, 1)

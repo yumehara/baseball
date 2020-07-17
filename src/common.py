@@ -50,7 +50,8 @@ SUBMIT_COURSE_F = '../submit/{}/course_{}_{}.f'
 SUBMIT_COURSE_SUB_CSV = '../submit/{}/course_{}_sub.csv'
 FI_COURSE_F = '../submit/{}/course_fi_{}.f'
 FI_COURSE_SUB_F = '../submit/{}/course_fi_{}_sub.f'
-SUBMIT_COURSE_RLHL_F = '../submit/{}/course_RLHL_{}_{}.f'
+# SUBMIT_COURSE_RLHL_F = '../submit/{}/course_RLHL_{}_{}.f'
+COURSE_TRAIN = '../submit/{}/course_train_{}_{}_{}.f'
 
 # ensemble.py
 SUBMIT_BALL_ENSMBL_CSV = '../submit/{}/ball_ensmbl_{}_{}.csv'

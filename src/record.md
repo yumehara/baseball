@@ -31,6 +31,7 @@
 |48|gbdt|LRHL|1023|0.48964|1.33561|LRHRサブモデル(m-error/gbdt)|
 |49|gb+da|LRHL|1023|---|1.33333|47+48 アンサンブル|
 |47-1|dart|LRHL|1023|0.48815|1.33229 *|LRHRサブモデル(m-error/dart) tune|
+|50|dart|LRHL|1035|0.48736|1.33359|m-error/dart|
 
 # コース予測部門
 
@@ -65,3 +66,4 @@
 |46|dart|none|1010|0.76989|2.34667|multi-error dart log1p|
 |47|dart|LRHL|1023|0.76986|2.34677|LRHRサブモデル(m-error/dart)|
 |47-1|dart|none|1010|0.76938|2.34633|m-error/dart tune|
+|50|dart|LRHL|1035|0.74534|2.35386|m-error/dart|

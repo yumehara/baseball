@@ -17,10 +17,10 @@ def preprocess(model_No, use_sub_model):
         ALL_PLAYER = common.ALLPLAYER.format(sample_No)
 
         # SUB_BALL = common.PREDICT_BALL.format(model_No, model_No, sample_No)
-        SUB_COURSE = common.SUBMIT_COURSE_RLHL_F.format(model_No, model_No, sample_No)
+        # SUB_COURSE = common.SUBMIT_COURSE_RLHL_F.format(model_No, model_No, sample_No)
 
         OUTPUT = common.ALL_MERGE.format(model_No, model_No, sample_No)
-        OUTPUT_SUB = common.ALL_MERGE_SUB.format(model_No, model_No, sample_No)
+        # OUTPUT_SUB = common.ALL_MERGE_SUB.format(model_No, model_No, sample_No)
 
         # 投球情報
         all_pitch = pd.read_feather(ALL_PITCH)
@@ -206,20 +206,23 @@ def preprocess(model_No, use_sub_model):
         print(merge_all.shape)
 
         # 出力
-        if not use_sub_model:
-            # 出力(sub-modelなし)
-            merge_all.to_feather(OUTPUT)
-            print(OUTPUT, merge_all.shape)
-        else:
-            merge_sub = pd.read_feather(SUB_COURSE)
+        # if not use_sub_model:
+        #     # 出力(sub-modelなし)
+        #     merge_all.to_feather(OUTPUT)
+        #     print(OUTPUT, merge_all.shape)
+        # else:
+        #     merge_sub = pd.read_feather(SUB_COURSE)
             
-            # 予測結果を特徴量に加える
-            merge_sub = pd.concat([merge_all, merge_sub], axis=1)
-            print(merge_sub.shape)
-            # 出力(sub-modelあり)
-            merge_sub.to_feather(OUTPUT_SUB)
-            print(OUTPUT_SUB, merge_sub.shape)
-            del merge_sub
+        #     # 予測結果を特徴量に加える
+        #     merge_sub = pd.concat([merge_all, merge_sub], axis=1)
+        #     print(merge_sub.shape)
+        #     # 出力(sub-modelあり)
+        #     merge_sub.to_feather(OUTPUT_SUB)
+        #     print(OUTPUT_SUB, merge_sub.shape)
+        #     del merge_sub
+
+        merge_all.to_feather(OUTPUT)
+        print(OUTPUT, merge_all.shape)
 
         del merge_all
     
