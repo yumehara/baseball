@@ -382,13 +382,13 @@ def ensemble_RLHL(model_No):
         merge = train1.join(train2)
         print(merge.shape)
 
-        col1 = train1.columns
-        col2 = train2.columns
-        for c1 in col1:
-            for c2 in col2:
-                merge[c1+'_x_'+c2] = merge[c1] * merge[c2]
-        merge.drop(columns=col1, inplace=True)
-        merge.drop(columns=col2, inplace=True)
+        # col1 = train1.columns
+        # col2 = train2.columns
+        # for c1 in col1:
+        #     for c2 in col2:
+        #         merge[c1+'_x_'+c2] = merge[c1] * merge[c2]
+        # merge.drop(columns=col1, inplace=True)
+        # merge.drop(columns=col2, inplace=True)
 
         OUTPUT_SUB = common.ALL_MERGE_SUB.format(model_No, model_No, sample_No)
         merge.to_feather(OUTPUT_SUB)

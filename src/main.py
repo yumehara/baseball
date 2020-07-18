@@ -32,7 +32,7 @@ boosting = common.DART
 # # コース予測サブモデル(LRHL)
 # pred_course.train_predict2(submit_No, False, common.GBDT, metric, 'LR')
 # pred_course.train_predict2(submit_No, False, common.GBDT, metric, 'HL')
-# pred_course.ensemble_RLHL(submit_No)
+pred_course.ensemble_RLHL(submit_No)
 # print('--- predict course sub ---')
 
 # コース予測
