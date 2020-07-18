@@ -166,7 +166,7 @@ def preprocess(model_No):
         merge_all.drop(columns=course_kind_bc, inplace=True)
 
         # ダミー変数
-        merge_all = pd.get_dummies(merge_all, columns=['pit_bat'])
+        # merge_all = pd.get_dummies(merge_all, columns=['pit_bat'])
 
         # 不要な列を削除
         merge_all.drop(columns=[
@@ -180,7 +180,7 @@ def preprocess(model_No):
             'プレイ前走者状況', 
             '捕手ID', 
             'opening_date', 'game_date',
-            'start_time', 'game_time', 'elapsed_time'
+            'start_time', 'game_time', 'elapsed_time', 'pit_bat'
         ], inplace=True)
 
         # Rename

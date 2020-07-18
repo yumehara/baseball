@@ -28,13 +28,14 @@ def preprocess():
     all_pitch.replace('左', 'L', inplace=True)
     all_pitch.replace('右', 'R', inplace=True)
     all_pitch['pit_bat'] = all_pitch['投手投球左右'] + '_' + all_pitch['打者打席左右']
-    all_pitch.loc[all_pitch['投手投球左右']=='L', 'pitch_LR']=1
-    all_pitch.loc[all_pitch['投手投球左右']=='R', 'pitch_LR']=0
-    all_pitch.loc[all_pitch['打者打席左右']=='L', 'bat_LR']=1
-    all_pitch.loc[all_pitch['打者打席左右']=='R', 'bat_LR']=0
+    # all_pitch.loc[all_pitch['投手投球左右']=='L', 'pitch_LR']=1
+    # all_pitch.loc[all_pitch['投手投球左右']=='R', 'pitch_LR']=0
+    # all_pitch.loc[all_pitch['打者打席左右']=='L', 'bat_LR']=1
+    # all_pitch.loc[all_pitch['打者打席左右']=='R', 'bat_LR']=0
     # 2017年のデータをマージ
     train_ball = pd.read_feather(INPUT_BALL2017)
     all_pitch = all_pitch.merge(train_ball, on=['ball_cnt', 'pit_bat'], how='left')
+    all_pitch = all_pitch.drop(columns=['ball_cnt'])
     # 一塁走者ID, 二塁走者ID, 三塁走者ID
     all_pitch['first'] = 0
     all_pitch['second'] = 0
@@ -50,8 +51,8 @@ def preprocess():
     all_pitch['role'] = 0
     all_pitch.loc[all_pitch['投手役割']=='先発', 'role']=1
     # 打者守備位置
-    all_pitch['pos_pit']=0
-    all_pitch.loc[all_pitch['打者守備位置']=='投手', 'pos_pit']=1
+    # all_pitch['pos_pit']=0
+    # all_pitch.loc[all_pitch['打者守備位置']=='投手', 'pos_pit']=1
     # 開幕からの日数
     date_min = all_pitch.groupby('年度').agg({'日付': min})
     date_min.rename(columns={'日付': 'opening_date'}, inplace=True)
@@ -99,20 +100,20 @@ def preprocess():
     all_pitch['diff_elapsed_inning'] = all_pitch['min_diff'] - all_pitch['ave_elapsed_inning']
     all_pitch['diff_elapsed_game'] = all_pitch['min_diff'] - all_pitch['ave_elapsed_game']
     # サヨナラの危機
-    all_pitch['sayonara'] = 0
-    all_pitch.loc[(all_pitch['イニング']>=9)&(all_pitch['表裏']=='裏'), 'sayonara']=1
+    # all_pitch['sayonara'] = 0
+    # all_pitch.loc[(all_pitch['イニング']>=9)&(all_pitch['表裏']=='裏'), 'sayonara']=1
     # 延長戦
-    all_pitch['extention'] = 0
-    all_pitch.loc[(all_pitch['イニング']>9), 'extention']=1
+    # all_pitch['extention'] = 0
+    # all_pitch.loc[(all_pitch['イニング']>9), 'extention']=1
     # ナイター
     all_pitch['nighter'] = 0
     all_pitch.loc[all_pitch['game_time'].dt.hour>=18, 'nighter']=1
     # 交流戦
-    all_pitch['ce-pa'] = 0
-    all_pitch.loc[all_pitch['試合種別詳細']=='セ・パ交流戦', 'ce-pa']=1
+    # all_pitch['ce-pa'] = 0
+    # all_pitch.loc[all_pitch['試合種別詳細']=='セ・パ交流戦', 'ce-pa']=1
     # リーグ
-    all_pitch['league'] = 0
-    all_pitch.loc[all_pitch['試合種別詳細']=='セ・リーグ公式戦', 'league']=1
+    # all_pitch['league'] = 0
+    # all_pitch.loc[all_pitch['試合種別詳細']=='セ・リーグ公式戦', 'league']=1
     # ホーム・アウェー
     all_pitch['home']=0
     all_pitch.loc[all_pitch['投手チームID']==all_pitch['ホームチームID'], 'home'] = 1
@@ -127,20 +128,20 @@ def preprocess():
     all_pitch['bant'] = 0
     all_pitch.loc[(all_pitch['first']==1)&(all_pitch['third']==0)&(all_pitch['プレイ前アウト数']==0)&(all_pitch['プレイ前ストライク数']<2), 'bant']=1
     # スクイズの場面
-    all_pitch['squize'] = 0
-    all_pitch.loc[(all_pitch['third']==1)&(all_pitch['プレイ前アウト数']<2)&(all_pitch['プレイ前ストライク数']<2), 'squize']=1
+    # all_pitch['squize'] = 0
+    # all_pitch.loc[(all_pitch['third']==1)&(all_pitch['プレイ前アウト数']<2)&(all_pitch['プレイ前ストライク数']<2), 'squize']=1
     # 上位打線
-    all_pitch['cleanup'] = 0
-    all_pitch.loc[(all_pitch['打者打順']>=1)&(all_pitch['打者打順']<=5), 'cleanup']=1
+    # all_pitch['cleanup'] = 0
+    # all_pitch.loc[(all_pitch['打者打順']>=1)&(all_pitch['打者打順']<=5), 'cleanup']=1
     # 失点ピンチ
-    all_pitch['pinch'] = 0
-    all_pitch.loc[(all_pitch['runner_23']==1)&(all_pitch['cleanup']==1), 'pinch']=1
+    # all_pitch['pinch'] = 0
+    # all_pitch.loc[(all_pitch['runner_23']==1)&(all_pitch['cleanup']==1), 'pinch']=1
     # 押出しの危機
-    all_pitch['fourball'] = 0
-    all_pitch.loc[(all_pitch['base_cnt']==3)&(all_pitch['プレイ前ボール数']>1), 'fourball']=1
+    # all_pitch['fourball'] = 0
+    # all_pitch.loc[(all_pitch['base_cnt']==3)&(all_pitch['プレイ前ボール数']>1), 'fourball']=1
     # セーブがつく場面
-    all_pitch['savepoint'] = 0
-    all_pitch.loc[(all_pitch['イニング']>=9)&(all_pitch['point_diff']<4), 'savepoint']=1
+    # all_pitch['savepoint'] = 0
+    # all_pitch.loc[(all_pitch['イニング']>=9)&(all_pitch['point_diff']<4), 'savepoint']=1
     # 1つ前の投球・ファウル数
     all_pitch['ball_count_sum'] =  all_pitch['プレイ前ボール数'] + all_pitch['プレイ前ストライク数']
     groupby_batter = all_pitch.groupby(['試合ID', 'イニング', 'イニング内打席数'])
@@ -149,7 +150,7 @@ def preprocess():
     all_pitch['pre_ball_strike'] = groupby_batter['プレイ前ストライク数'].diff().fillna(0) + all_pitch['pre_ball_foul']
     all_pitch['pre_foul_sum'] = all_pitch['打席内投球数'] - all_pitch['ball_count_sum']
     # ダミー変数
-    all_pitch = pd.get_dummies(all_pitch, columns=['ball_cnt'])
+    # all_pitch = pd.get_dummies(all_pitch, columns=['ball_cnt'])
     # 不要な列を削除
     all_pitch.drop(columns=[
             '日付', '時刻', 

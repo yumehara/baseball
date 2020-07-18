@@ -20,14 +20,14 @@ def preprocess(is_fill):
     all_player.loc[all_player['出身国']!='日本', 'foreigner'] = 1
 
     # 社会人出身
-    all_player['company'] = 0
-    all_player.loc[~all_player['社会人'].isnull(), 'company'] = 1
+    # all_player['company'] = 0
+    # all_player.loc[~all_player['社会人'].isnull(), 'company'] = 1
     # 大卒
-    all_player['univ']=0
-    all_player.loc[all_player['出身大学ID']!=0, 'univ'] = 1
+    # all_player['univ']=0
+    # all_player.loc[all_player['出身大学ID']!=0, 'univ'] = 1
     # 高卒
-    all_player['highsch'] = 0
-    all_player.loc[(all_player['company']==0)&(all_player['univ']==0)&(all_player['foreigner']==0) , 'highsch'] = 1
+    # all_player['highsch'] = 0
+    # all_player.loc[(all_player['company']==0)&(all_player['univ']==0)&(all_player['foreigner']==0) , 'highsch'] = 1
 
     # 年齢
     all_player['birth_day'] = pd.to_datetime(all_player['生年月日'])
@@ -52,12 +52,12 @@ def preprocess(is_fill):
             'チームID', 'チーム名', '選手名', '背番号', '生年月日', 
             '出身高校ID', '出身高校名', '出身大学ID', '出身大学名', '社会人', 
             'ドラフト年', 'ドラフト種別', 
-            '出身国', '出身地', '血液型', 'birth_day',
+            '出身国', '出身地', '血液型', 'birth_day', '育成選手F'
         ], inplace=True)
 
     # rename
     all_player.rename(columns={
-        '育成選手F': 'firm',
+        # '育成選手F': 'firm',
         '身長': 'height',
         '体重': 'weight',
         'ドラフト順位': 'draft_order',

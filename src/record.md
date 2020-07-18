@@ -34,6 +34,7 @@
 |50|dart|LRHL|1035|0.48736|1.33359|m-error/dart|
 |50-1|dart|LRHL|1020|0.48766|1.33257|m-error/dart|
 |51|gb+da|LRHL|1020|0.48904|1.33280|m-error アンサンブル|
+|52|gb+da|LRHL|980|0.48863|1.33332|m-error 下位の特徴量を除外|
 
 # コース予測部門
 
@@ -70,4 +71,5 @@
 |47-1|dart|none|1010|0.76938|2.34633|m-error/dart tune|
 |50|dart|LRHL|1035|0.74534|2.35386|m-error/dart|
 |50-1|dart|LRHL|1020|0.74690|2.35286|m-error/dart|
-|51|gb+da|none|1010|0.76955||m-error アンサンブル|
+|51|gb+da|none|1010|0.76955|---|m-error アンサンブル|
+|52|gb+da|none|970|0.76971|2.34628|m-error 下位の特徴量を除外|
