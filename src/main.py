@@ -11,7 +11,7 @@ import ensemble as ensmbl
 import common
 
 
-submit_No = '50'
+submit_No = '51'
 metric = common.M_ERROR
 boosting = common.DART
 
@@ -25,43 +25,43 @@ boosting = common.DART
 # pitch.preprocess()
 
 # # 前処理
-# use_sub_model = False
-# merge.preprocess(submit_No, use_sub_model)
+# merge.preprocess(submit_No)
 # print('--- preprocess ---')
 
-# # コース予測サブモデル(LRHL)
-# pred_course.train_predict2(submit_No, False, common.GBDT, metric, 'LR')
-# pred_course.train_predict2(submit_No, False, common.GBDT, metric, 'HL')
-pred_course.ensemble_RLHL(submit_No)
-# print('--- predict course sub ---')
-
-# コース予測
-use_sub_model = True
-pred_course.train_predict(submit_No, use_sub_model, boosting, metric)
-print('--- predict course ---')
-
-# # コース予測サブモデル(LRHL)
-# pred_course.train_predict2(submit_No, False, boosting, metric, 'LR')
-# pred_course.train_predict2(submit_No, False, boosting, metric, 'HL')
+# # # コース予測サブモデル(LRHL)
+# pred_course.train_predict2(submit_No, boosting, metric, 'LR')
+# pred_course.train_predict2(submit_No, boosting, metric, 'HL')
 # pred_course.ensemble_RLHL(submit_No)
 # print('--- predict course sub ---')
 
-# # 前処理
+# コース予測(dart)
+use_sub_model = False
+boosting1 = common.DART
+pred_course.train_predict(submit_No, use_sub_model, boosting1, metric, boosting1)
+print('--- predict course {}---'.format(boosting1))
+
+# コース予測(gbdt)
+boosting2 = common.GBDT
+pred_course.train_predict(submit_No, use_sub_model, boosting2, metric, boosting2)
+print('--- predict course {}---'.format(boosting2))
+
+# アンサンブル(gbdt + dart)
+ensmbl.ensemble(submit_No, boosting1, boosting2, False, True)
+
+# # 球種予測(dart)
 # use_sub_model = True
-# merge.preprocess(submit_No, use_sub_model)
-# print('--- preprocess ---')
+# boosting1 = common.DART
+# pred_ball.train_predict(submit_No, use_sub_model, boosting1, metric, boosting1)
+# print('--- predict ball {}---'.format(boosting1))
 
-# 球種予測
-use_sub_model = True
-pred_ball.train_predict(submit_No, use_sub_model, boosting, metric)
-print('--- predict ball ---')
-
-
-
+# # 球種予測(gbdt)
+# boosting2 = common.GBDT
+# pred_ball.train_predict(submit_No, use_sub_model, boosting2, metric, boosting2)
+# print('--- predict ball {}---'.format(boosting2))
 
 # # アンサンブル(gbdt + dart)
-# use_sub_model = True
-# ensmbl.ensemble(submit_No, 47, 48, use_sub_model, True, False)
+# ensmbl.ensemble(submit_No, boosting1, boosting2, True, False)
+
 
 # Tuning
 # python main.py 2>> tuning_0705.log

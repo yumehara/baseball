@@ -5,7 +5,7 @@ import pandas as pd
 import feather
 import common
 
-def preprocess(model_No, use_sub_model):
+def preprocess(model_No):
 
     # 出力先のフォルダ作成
     os.makedirs(common.OUTPUT_PATH.format(model_No), exist_ok=True)
@@ -204,22 +204,6 @@ def preprocess(model_No, use_sub_model):
         }, inplace=True)
 
         print(merge_all.shape)
-
-        # 出力
-        # if not use_sub_model:
-        #     # 出力(sub-modelなし)
-        #     merge_all.to_feather(OUTPUT)
-        #     print(OUTPUT, merge_all.shape)
-        # else:
-        #     merge_sub = pd.read_feather(SUB_COURSE)
-            
-        #     # 予測結果を特徴量に加える
-        #     merge_sub = pd.concat([merge_all, merge_sub], axis=1)
-        #     print(merge_sub.shape)
-        #     # 出力(sub-modelあり)
-        #     merge_sub.to_feather(OUTPUT_SUB)
-        #     print(OUTPUT_SUB, merge_sub.shape)
-        #     del merge_sub
 
         merge_all.to_feather(OUTPUT)
         print(OUTPUT, merge_all.shape)

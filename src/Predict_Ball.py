@@ -10,9 +10,6 @@ import time
 
 def preprocess(model_No, sample_No, use_sub_model):
     
-    # if use_sub_model:
-    #     ALL_MERGE = common.ALL_MERGE_SUB.format(model_No, model_No, sample_No)
-    # else:
     ALL_MERGE = common.ALL_MERGE.format(model_No, model_No, sample_No)
     
     all_pitch = pd.read_feather(ALL_MERGE)
@@ -67,7 +64,7 @@ def tuning(model_No, use_sub_model, boosting, metric):
     common.tuning(train_d, train_y, 8, boosting, metric, filename)
 
 
-def train_predict(model_No, use_sub_model, boosting, metric):
+def train_predict(model_No, use_sub_model, boosting, metric, sub_str):
 
     # 出力先のフォルダ作成
     os.makedirs(common.SUBMIT_PATH.format(model_No), exist_ok=True)
@@ -77,15 +74,9 @@ def train_predict(model_No, use_sub_model, boosting, metric):
     
     for sample_No in range(1, common.DIVIDE_NUM+1):
         
-        if use_sub_model:
-            SUBMIT = common.SUBMIT_BALL_SUB_CSV.format(model_No, model_No)
-            FI_RESULT = common.FI_BALL_SUB_F.format(model_No, sample_No)
-        else:
-            SUBMIT = common.SUBMIT_BALL_CSV.format(model_No, model_No)
-            FI_RESULT = common.FI_BALL_F.format(model_No, sample_No)
-
+        SUBMIT = common.SUBMIT_BALL_CSV.format(model_No, model_No, sub_str)
+        FI_RESULT = common.FI_BALL_F.format(model_No, sample_No, sub_str)
         SUBMIT_F = common.SUBMIT_BALL_F.format(model_No, model_No, sample_No)
-        # OUT_SUBMODEL = common.PREDICT_BALL.format(model_No, model_No, sample_No)
 
         train_d, test_d, train_y = preprocess(model_No, sample_No, use_sub_model)
 

@@ -38,18 +38,18 @@ OUTPUT_PATH = '../intermediate/{}'
 SUBMIT_PATH = '../submit/{}'
 
 # Predit_Ball.py
-SUBMIT_BALL_CSV = '../submit/{}/ball_{}.csv'
+SUBMIT_BALL_CSV = '../submit/{}/ball_{}_{}.csv'
 SUBMIT_BALL_F = '../submit/{}/ball_{}_{}.f'
-SUBMIT_BALL_SUB_CSV = '../submit/{}/ball_{}_sub.csv'
-FI_BALL_F = '../submit/{}/ball_fi_{}.f'
-FI_BALL_SUB_F = '../submit/{}/ball_fi_{}_sub.f'
+FI_BALL_F = '../submit/{}/ball_fi_{}_{}.f'
+# SUBMIT_BALL_SUB_CSV = '../submit/{}/ball_{}_sub.csv'
+# FI_BALL_SUB_F = '../submit/{}/ball_fi_{}_sub.f'
 
 # Predit_Course.py
-SUBMIT_COURSE_CSV = '../submit/{}/course_{}.csv'
+SUBMIT_COURSE_CSV = '../submit/{}/course_{}_{}.csv'
 SUBMIT_COURSE_F = '../submit/{}/course_{}_{}.f'
-SUBMIT_COURSE_SUB_CSV = '../submit/{}/course_{}_sub.csv'
-FI_COURSE_F = '../submit/{}/course_fi_{}.f'
-FI_COURSE_SUB_F = '../submit/{}/course_fi_{}_sub.f'
+FI_COURSE_F = '../submit/{}/course_fi_{}_{}.f'
+# SUBMIT_COURSE_SUB_CSV = '../submit/{}/course_{}_sub.csv'
+# FI_COURSE_SUB_F = '../submit/{}/course_fi_{}_sub.f'
 # SUBMIT_COURSE_RLHL_F = '../submit/{}/course_RLHL_{}_{}.f'
 COURSE_TRAIN = '../submit/{}/course_train_{}_{}_{}.f'
 

@@ -11,11 +11,7 @@ import time
 
 def preprocess(model_No, sample_No, use_sub_model, use_RLHL=False):
 
-    # if use_sub_model:
-    #     ALL_MERGE = common.ALL_MERGE_SUB.format(model_No, model_No, sample_No)
-    # else:
     ALL_MERGE = common.ALL_MERGE.format(model_No, model_No, sample_No)
-
     all_pitch = pd.read_feather(ALL_MERGE)
     all_pitch = all_pitch.query(common.divide_period_query_train(sample_No))
 
@@ -77,7 +73,7 @@ def tuning(model_No, use_sub_model, boosting, metric):
     common.tuning(train_d, train_y, 13, boosting, metric, filename)
 
 
-def train_predict(model_No, use_sub_model, boosting, metric):
+def train_predict(model_No, use_sub_model, boosting, metric, sub_str):
 
     # 出力先のフォルダ作成
     os.makedirs(common.SUBMIT_PATH.format(model_No), exist_ok=True)
@@ -87,15 +83,9 @@ def train_predict(model_No, use_sub_model, boosting, metric):
     
     for sample_No in range(1, common.DIVIDE_NUM+1):
 
-        if use_sub_model:
-            SUBMIT = common.SUBMIT_COURSE_SUB_CSV.format(model_No, model_No)
-            FI_RESULT = common.FI_COURSE_SUB_F.format(model_No, sample_No)
-        else:
-            SUBMIT = common.SUBMIT_COURSE_CSV.format(model_No, model_No)
-            FI_RESULT = common.FI_COURSE_F.format(model_No, sample_No)
-        
+        SUBMIT = common.SUBMIT_COURSE_CSV.format(model_No, model_No, sub_str)
+        FI_RESULT = common.FI_COURSE_F.format(model_No, sample_No, sub_str)
         SUBMIT_F = common.SUBMIT_COURSE_F.format(model_No, model_No, sample_No)
-        # OUT_SUBMODEL = common.PREDICT_COURSE.format(model_No, model_No, sample_No)
         
         train_d, test_d, train_y = preprocess(model_No, sample_No, use_sub_model)
 
@@ -225,7 +215,7 @@ def train_predict(model_No, use_sub_model, boosting, metric):
     common.write_log(model_No, signate_command)
 
 
-def train_predict2(model_No, use_sub_model, boosting, metric, LR_HL):
+def train_predict2(model_No, boosting, metric, LR_HL):
 
     # 出力先のフォルダ作成
     os.makedirs(common.SUBMIT_PATH.format(model_No), exist_ok=True)
@@ -236,11 +226,9 @@ def train_predict2(model_No, use_sub_model, boosting, metric, LR_HL):
     
     for sample_No in range(1, common.DIVIDE_NUM+1):
 
-        # FI_RESULT = '../submit/{}/course_fi_{}_{}.f'.format(model_No, LR_HL, sample_No)
-        # SUBMIT_F = '../submit/{}/course_{}_{}_{}.f'.format(model_No, model_No, LR_HL, sample_No)
         OUT_SUBMODEL = common.COURSE_TRAIN.format(model_No, model_No, LR_HL, sample_No)
         
-        train_d, test_d, train_y = preprocess(model_No, sample_No, use_sub_model, True)
+        train_d, test_d, train_y = preprocess(model_No, sample_No, False, True)
 
         if LR_HL == 'LR':
             # 目的変数をコースの左右に変更
@@ -327,10 +315,6 @@ def train_predict2(model_No, use_sub_model, boosting, metric, LR_HL):
         t3 = time.time()
         print('lgb.train: {} [s]'.format(t3 - t2))
 
-        # feature importance
-        # fi = common.feature_importance(lgb_model)
-        # fi.to_feather(FI_RESULT)
-
         # predict
         predict = lgb_model.predict(test_d, num_iteration = lgb_model.best_iteration)
 
@@ -341,12 +325,6 @@ def train_predict2(model_No, use_sub_model, boosting, metric, LR_HL):
         submit = pd.DataFrame(predict)
         submit.reset_index(inplace=True)
         print(submit.shape)
-
-        # output feather
-        # submit_f = submit.drop(columns=['index'])
-        # submit_f.rename(columns=rename_col, inplace=True)
-        # submit_f.to_feather(SUBMIT_F)
-        # print(SUBMIT_F, submit_f.shape)
 
         # train predict
         train_predict = lgb_model.predict(train_d, num_iteration = lgb_model.best_iteration)
