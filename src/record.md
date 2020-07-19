@@ -65,7 +65,7 @@
 |42|gbdt|none|1010|0.77013|2.34655|multi-error|
 |43|dart|none|1010|0.76921|2.34666|multi-error dart|
 |44|dart|none|1010|---|2.34630|42+43 アンサンブル|
-|45|gb+da|none|1010|---|2.34621 **|41+44 アンサンブル|
+|45|gb+da|none|1010|---|2.34621|41+44 アンサンブル|
 |46|dart|none|1010|0.76989|2.34667|multi-error dart log1p|
 |47|dart|LRHL|1023|0.76986|2.34677|LRHRサブモデル(m-error/dart)|
 |47-1|dart|none|1010|0.76938|2.34633|m-error/dart tune|
@@ -73,3 +73,4 @@
 |50-1|dart|LRHL|1020|0.74690|2.35286|m-error/dart|
 |51|gb+da|none|1010|0.76955|---|m-error アンサンブル|
 |52|gb+da|none|970|0.76971|2.34628|m-error 下位の特徴量を除外|
+|52-1|gb+da|none|970|2.34133|2.34620 **|m-logloss 下位の特徴量を除外|
