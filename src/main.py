@@ -11,52 +11,54 @@ import ensemble as ensmbl
 import common
 
 
-submit_No = '53'
-metric = common.M_ERROR
+submit_No = '54'
 
-boosting0 = common.GBDT
 boosting1 = common.DART
 boosting2 = common.GBDT
 
-# # playerごと
-# play2017.preprocess()
-# player.preprocess(True)      # 穴埋めあり
+# playerごと
+play2017.preprocess()
+player.preprocess(True)      # 穴埋めあり
 
-# # 投球ごと
-# ball.preprocess()
-# pitch.preprocess()
+# 投球ごと
+ball.preprocess()
+pitch.preprocess()
 
-# # 前処理
-# merge.preprocess(submit_No)
-# print('--- preprocess ---')
+# 前処理
+merge.preprocess(submit_No)
+print('--- preprocess ---')
 
-# # コース予測サブモデル(LRHL)
-# pred_course.train_predict2(submit_No, boosting0, metric, 'LR')
-# pred_course.train_predict2(submit_No, boosting0, metric, 'HL')
-# pred_course.ensemble_RLHL(submit_No)
-# print('--- predict course sub ---')
+# コース予測サブモデル(LRHL)
+metric0 = common.M_LOGLOSS
+boosting0 = common.GBDT
+pred_course.train_predict2(submit_No, boosting0, metric0, 'LR')
+pred_course.train_predict2(submit_No, boosting0, metric0, 'HL')
+pred_course.ensemble_RLHL(submit_No)
+print('--- predict course sub ---')
 
 # # コース予測(1:dart)
 # use_sub_model = False
-# sub_str1 = boosting1 + '_' + metric
-# pred_course.train_predict(submit_No, use_sub_model, boosting1, metric, sub_str1)
+# metric1 = common.M_LOGLOSS
+# sub_str1 = boosting1 + '_' + metric1
+# pred_course.train_predict(submit_No, use_sub_model, boosting1, metric1, sub_str1)
 # print('--- predict course {}---'.format(sub_str1))
 
 # # コース予測(2:gbdt)
-# sub_str2 = boosting2 + '_' + metric
-# pred_course.train_predict(submit_No, use_sub_model, boosting2, metric, sub_str2)
+# sub_str2 = boosting2 + '_' + metric1
+# pred_course.train_predict(submit_No, use_sub_model, boosting2, metric1, sub_str2)
 # print('--- predict course {}---'.format(sub_str2))
 
 
 # 球種予測(1:dart)
 use_sub_model = True
-sub_str1 = boosting1 + '_' + metric
-pred_ball.train_predict(submit_No, use_sub_model, boosting1, metric, sub_str1)
+metric2 = common.M_ERROR
+sub_str1 = boosting1 + '_' + metric2
+pred_ball.train_predict(submit_No, use_sub_model, boosting1, metric2, sub_str1)
 print('--- predict ball {}---'.format(sub_str1))
 
 # 球種予測(2:gbdt)
-sub_str2 = boosting2 + '_' + metric
-pred_ball.train_predict(submit_No, use_sub_model, boosting2, metric, sub_str2)
+sub_str2 = boosting2 + '_' + metric2
+pred_ball.train_predict(submit_No, use_sub_model, boosting2, metric2, sub_str2)
 print('--- predict ball {}---'.format(sub_str2))
 
 

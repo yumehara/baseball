@@ -122,10 +122,11 @@ def preprocess(model_No):
         merge_all.drop(columns=ball_kind_bc, inplace=True)
 
         # コースの組合せ
-        course_kind = ['course_0', 'course_1', 'course_2', 'course_3', 'course_4', 'course_5', 'course_6', 
-                'course_7', 'course_8', 'course_9', 'course_10', 'course_11', 'course_12',
-               'high_str', 'high_ball', 'mid_str', 'low_str', 'low_ball', 
-               'left_str', 'left_ball', 'center_str', 'right_str', 'right_ball']
+        course_kind = [
+            # 'course_0', 'course_1', 'course_2', 'course_3', 'course_4', 'course_5', 'course_6', 
+            # 'course_7', 'course_8', 'course_9', 'course_10', 'course_11', 'course_12',
+            'high_str', 'high_ball', 'mid_str', 'low_str', 'low_ball', 
+            'left_str', 'left_ball', 'center_str', 'right_str', 'right_ball']
 
         for course in course_kind:
             bc_course = 'bc_' + course

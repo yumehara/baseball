@@ -16,8 +16,8 @@ def preprocess(is_fill):
     print(all_player.shape)
 
     # 外国人助っ人
-    # all_player['foreigner']=0
-    # all_player.loc[all_player['出身国']!='日本', 'foreigner'] = 1
+    all_player['foreigner']=0
+    all_player.loc[all_player['出身国']!='日本', 'foreigner'] = 1
 
     # 社会人出身
     # all_player['company'] = 0
@@ -89,7 +89,7 @@ def preprocess(is_fill):
         all_pitcher = all_pitcher.merge(dummy, on='投', how='outer')
 
         all_pitcher = all_pitcher.merge(pit_2017, left_on=['選手ID','pit_bat'], right_on=['投手ID','pit_bat'], how='left')
-        # all_pitcher.loc[(all_pitcher['投手ID'].isnull()) & (all_pitcher['foreigner']==1), '投手ID'] = -1
+        all_pitcher.loc[(all_pitcher['投手ID'].isnull()) & (all_pitcher['foreigner']==1), '投手ID'] = -1
         all_pitcher.loc[all_pitcher['投手ID'].isnull(), '投手ID'] = 0
 
         RightLeft = ['R_L', 'R_R', 'L_R', 'L_L']
@@ -97,8 +97,7 @@ def preprocess(is_fill):
         if is_fill:
             # 日本人平均
             for RL in RightLeft:
-                # pit_mean = all_pitcher[(all_pitcher['foreigner']==0)&(all_pitcher['投手ID']!=0)&(all_pitcher['pit_bat']==RL)].mean()
-                pit_mean = all_pitcher[(all_pitcher['投手ID']!=0)&(all_pitcher['pit_bat']==RL)].mean()
+                pit_mean = all_pitcher[(all_pitcher['foreigner']==0)&(all_pitcher['投手ID']!=0)&(all_pitcher['pit_bat']==RL)].mean()
                 condition = (all_pitcher['投手ID']==0)&(all_pitcher['pit_bat']==RL)
                 # 平均で埋める
                 fill_ball(condition, pit_mean, all_pitcher)
@@ -106,21 +105,21 @@ def preprocess(is_fill):
                 all_pitcher.loc[condition, 'pit_inning_cnt'] = pit_mean['pit_inning_cnt']
                 all_pitcher.loc[condition, 'pit_batter_cnt'] = pit_mean['pit_batter_cnt']
 
-            # #外国人平均
-            # for RL in RightLeft:
-            #     pit_mean = all_pitcher[(all_pitcher['foreigner']==1)&(all_pitcher['投手ID']!=-1)&(all_pitcher['pit_bat']==RL)].mean()
-            #     condition = (all_pitcher['投手ID']==-1)&(all_pitcher['pit_bat']==RL)
-            #     # 平均で埋める
-            #     fill_ball(condition, pit_mean, all_pitcher)
-            #     all_pitcher.loc[condition, 'pit_game_cnt'] = pit_mean['pit_game_cnt']
-            #     all_pitcher.loc[condition, 'pit_inning_cnt'] = pit_mean['pit_inning_cnt']
-            #     all_pitcher.loc[condition, 'pit_batter_cnt'] = pit_mean['pit_batter_cnt']
+            #外国人平均
+            for RL in RightLeft:
+                pit_mean = all_pitcher[(all_pitcher['foreigner']==1)&(all_pitcher['投手ID']!=-1)&(all_pitcher['pit_bat']==RL)].mean()
+                condition = (all_pitcher['投手ID']==-1)&(all_pitcher['pit_bat']==RL)
+                # 平均で埋める
+                fill_ball(condition, pit_mean, all_pitcher)
+                all_pitcher.loc[condition, 'pit_game_cnt'] = pit_mean['pit_game_cnt']
+                all_pitcher.loc[condition, 'pit_inning_cnt'] = pit_mean['pit_inning_cnt']
+                all_pitcher.loc[condition, 'pit_batter_cnt'] = pit_mean['pit_batter_cnt']
 
         # 特徴量を計算
         calc_feature(all_pitcher)
 
         # 不要な列を削除
-        all_pitcher.drop(columns=['投手ID', '位置', '投', '打'], inplace=True)
+        all_pitcher.drop(columns=['投手ID', '位置', '投', '打', 'foreigner'], inplace=True)
 
         # 投手のみ出力
         all_pitcher.to_feather(OUT_PITCHER)
@@ -154,7 +153,7 @@ def preprocess(is_fill):
         calc_feature(all_catcher)
 
         # 不要な列を削除
-        all_catcher.drop(columns=['捕手ID', '位置', '投', '打'], inplace=True)
+        all_catcher.drop(columns=['捕手ID', '位置', '投', '打', 'foreigner'], inplace=True)
 
         # 捕手のみ出力
         all_catcher.to_feather(OUT_CATCHER)
@@ -195,7 +194,7 @@ def preprocess(is_fill):
         calc_feature(all_batter)
 
         # 不要な列を削除
-        all_batter.drop(columns=['打者ID', '位置', '投', '打'], inplace=True)
+        all_batter.drop(columns=['打者ID', '位置', '投', '打', 'foreigner'], inplace=True)
 
         # 全選手出力
         all_batter.to_feather(OUT_ALLPLAYER)
@@ -238,3 +237,6 @@ def calc_feature(target):
     target['center_str'] = target['course_3'] + target['course_4'] + target['course_5'] 
     target['right_str'] = target['course_6'] + target['course_7'] + target['course_8'] 
     target['right_ball'] = target['course_10'] + target['course_12']
+
+    # 元のコースを削除
+    target.drop(columns=course_kind, inplace=True)
