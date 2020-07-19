@@ -54,8 +54,8 @@ FI_COURSE_F = '../submit/{}/course_fi_{}_{}.f'
 COURSE_TRAIN = '../submit/{}/course_train_{}_{}_{}.f'
 
 # ensemble.py
-SUBMIT_BALL_ENSMBL_CSV = '../submit/{}/ball_ensmbl_{}_{}.csv'
-SUBMIT_COURSE_ENSMBL_CSV = '../submit/{}/course_ensmbl_{}_{}.csv'
+SUBMIT_BALL_ENSMBL_CSV = '../submit/{}/ball_ensmbl_{}_{}_{}.csv'
+SUBMIT_COURSE_ENSMBL_CSV = '../submit/{}/course_ensmbl_{}_{}_{}.csv'
 
 # log
 LOG_SUBMIT = '../submit/{}/log.txt'

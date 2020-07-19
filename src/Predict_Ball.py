@@ -202,3 +202,5 @@ def train_predict(model_No, use_sub_model, boosting, metric, sub_str):
 
     signate_command = 'signate submit --competition-id=275 ./{} --note {}_{}_feat={}_cv={}'.format(SUBMIT, boosting, metric, column_cnt, cv_ave)
     common.write_log(model_No, signate_command)
+
+    return cv_ave

@@ -85,6 +85,10 @@ def preprocess():
     train_course_pivot['bc_right_str'] = train_course_pivot['bc_course_6'] + train_course_pivot['bc_course_7'] + train_course_pivot['bc_course_8'] 
     train_course_pivot['bc_right_ball'] = train_course_pivot['bc_course_10'] + train_course_pivot['bc_course_12'] 
 
+    train_course_pivot.drop(columns=[
+        'bc_course_0', 'bc_course_1', 'bc_course_2', 'bc_course_3', 'bc_course_4', 'bc_course_5',
+        'bc_course_6', 'bc_course_7', 'bc_course_8', 'bc_course_9', 'bc_course_10', 'bc_course_11', 'bc_course_12'
+    ], inplace=True)
     print(train_course_pivot.shape)
 
     # マージ

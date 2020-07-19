@@ -2,7 +2,7 @@ import os
 import pandas as pd
 import common
 
-def ensemble(model_No, sub_str_1, sub_str_2, isBall=True, isCourse=True):
+def ensemble(model_No, sub_str_1, sub_str_2, isBall, cv):
 
     # 出力先のフォルダ作成
     os.makedirs(common.SUBMIT_PATH.format(model_No), exist_ok=True)
@@ -10,7 +10,7 @@ def ensemble(model_No, sub_str_1, sub_str_2, isBall=True, isCourse=True):
     if isBall:
         ball_1_csv = common.SUBMIT_BALL_CSV.format(model_No, model_No, sub_str_1)
         ball_2_csv = common.SUBMIT_BALL_CSV.format(model_No, model_No, sub_str_2)
-        submit_ball_csv = common.SUBMIT_BALL_ENSMBL_CSV.format(model_No, sub_str_1, sub_str_2)
+        submit_ball_csv = common.SUBMIT_BALL_ENSMBL_CSV.format(model_No, model_No, sub_str_1, sub_str_2)
 
         ball_kind = ['straight', 'curve', 'slider', 'shoot', 'fork', 'changeup', 'sinker', 'cutball']
         ball_header = ['index'] + ball_kind
@@ -27,13 +27,13 @@ def ensemble(model_No, sub_str_1, sub_str_2, isBall=True, isCourse=True):
 
         ball_ensemble.to_csv(submit_ball_csv, header=False, index=False)
         print(submit_ball_csv, ball_ensemble.shape)
-        signate_command = 'signate submit --competition-id=275 ./{} --note ensemble_{}_{}'.format(submit_ball_csv, sub_str_1, sub_str_2)
+        signate_command = 'signate submit --competition-id=275 ./{} --note ensemble_{}'.format(submit_ball_csv, cv)
         common.write_log(model_No, signate_command)
 
-    if isCourse:
+    else:
         course_1_csv = common.SUBMIT_COURSE_CSV.format(model_No, model_No, sub_str_1)
         course_2_csv = common.SUBMIT_COURSE_CSV.format(model_No, model_No, sub_str_2)
-        submit_course_csv = common.SUBMIT_COURSE_ENSMBL_CSV.format(model_No, sub_str_1, sub_str_2)
+        submit_course_csv = common.SUBMIT_COURSE_ENSMBL_CSV.format(model_No, model_No, sub_str_1, sub_str_2)
 
         course_kind = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12']
         course_header = ['index'] + course_kind
@@ -50,6 +50,6 @@ def ensemble(model_No, sub_str_1, sub_str_2, isBall=True, isCourse=True):
 
         course_ensemble.to_csv(submit_course_csv, header=False, index=False)
         print(submit_course_csv, course_ensemble.shape)
-        signate_command = 'signate submit --competition-id=276 ./{} --note ensemble_{}_{}'.format(submit_course_csv, sub_str_1, sub_str_2)
+        signate_command = 'signate submit --competition-id=276 ./{} --note ensemble_{}'.format(submit_course_csv, cv)
         common.write_log(model_No, signate_command)
     
