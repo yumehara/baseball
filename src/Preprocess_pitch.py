@@ -48,8 +48,8 @@ def preprocess():
     all_pitch['top_bot']=0
     all_pitch.loc[all_pitch['表裏']=='裏', 'top_bot']=1
     # 投手役割
-    all_pitch['role'] = 0
-    all_pitch.loc[all_pitch['投手役割']=='先発', 'role']=1
+    # all_pitch['role'] = 0
+    # all_pitch.loc[all_pitch['投手役割']=='先発', 'role']=1
     # 打者守備位置
     # all_pitch['pos_pit']=0
     # all_pitch.loc[all_pitch['打者守備位置']=='投手', 'pos_pit']=1
@@ -160,7 +160,7 @@ def preprocess():
             '打者打席左右', '打者守備位置',
             '一塁走者ID', '二塁走者ID', '三塁走者ID', 
             '一塁手ID', '二塁手ID', '三塁手ID', '遊撃手ID', '左翼手ID', '中堅手ID', '右翼手ID', 
-            '成績対象投手ID', '成績対象打者ID',
+            '成績対象投手ID', '成績対象打者ID', 'home', 'top_bot'
         ], inplace=True)
     # 出力
     all_pitch.to_feather(OUTPUT)

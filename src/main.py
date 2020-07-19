@@ -11,8 +11,8 @@ import ensemble as ensmbl
 import common
 
 
-submit_No = '52'
-metric = common.M_LOGLOSS
+submit_No = '53'
+metric = common.M_ERROR
 
 boosting0 = common.GBDT
 boosting1 = common.DART
@@ -36,30 +36,32 @@ boosting2 = common.GBDT
 # pred_course.ensemble_RLHL(submit_No)
 # print('--- predict course sub ---')
 
-# コース予測(1:dart)
-use_sub_model = False
+# # コース予測(1:dart)
+# use_sub_model = False
+# sub_str1 = boosting1 + '_' + metric
+# pred_course.train_predict(submit_No, use_sub_model, boosting1, metric, sub_str1)
+# print('--- predict course {}---'.format(sub_str1))
+
+# # コース予測(2:gbdt)
+# sub_str2 = boosting2 + '_' + metric
+# pred_course.train_predict(submit_No, use_sub_model, boosting2, metric, sub_str2)
+# print('--- predict course {}---'.format(sub_str2))
+
+
+# 球種予測(1:dart)
+use_sub_model = True
 sub_str1 = boosting1 + '_' + metric
-pred_course.train_predict(submit_No, use_sub_model, boosting1, metric, sub_str1)
-print('--- predict course {}---'.format(boosting1))
+pred_ball.train_predict(submit_No, use_sub_model, boosting1, metric, sub_str1)
+print('--- predict ball {}---'.format(sub_str1))
 
-# コース予測(2:gbdt)
+# 球種予測(2:gbdt)
 sub_str2 = boosting2 + '_' + metric
-pred_course.train_predict(submit_No, use_sub_model, boosting2, metric, sub_str2)
-print('--- predict course {}---'.format(boosting2))
-
-
-# # 球種予測(1:dart)
-# use_sub_model = True
-# pred_ball.train_predict(submit_No, use_sub_model, boosting1, metric, boosting1)
-# print('--- predict ball {}---'.format(boosting1))
-
-# # 球種予測(2:gbdt)
-# pred_ball.train_predict(submit_No, use_sub_model, boosting2, metric, boosting2)
-# print('--- predict ball {}---'.format(boosting2))
+pred_ball.train_predict(submit_No, use_sub_model, boosting2, metric, sub_str2)
+print('--- predict ball {}---'.format(sub_str2))
 
 
 # アンサンブル(gbdt + dart)
-ensmbl.ensemble(submit_No, sub_str1, sub_str2, False, True)
+ensmbl.ensemble(submit_No, sub_str1, sub_str2, True, False)
 
 
 # Tuning

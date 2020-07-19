@@ -16,8 +16,8 @@ def preprocess(is_fill):
     print(all_player.shape)
 
     # 外国人助っ人
-    all_player['foreigner']=0
-    all_player.loc[all_player['出身国']!='日本', 'foreigner'] = 1
+    # all_player['foreigner']=0
+    # all_player.loc[all_player['出身国']!='日本', 'foreigner'] = 1
 
     # 社会人出身
     # all_player['company'] = 0
@@ -89,7 +89,7 @@ def preprocess(is_fill):
         all_pitcher = all_pitcher.merge(dummy, on='投', how='outer')
 
         all_pitcher = all_pitcher.merge(pit_2017, left_on=['選手ID','pit_bat'], right_on=['投手ID','pit_bat'], how='left')
-        all_pitcher.loc[(all_pitcher['投手ID'].isnull()) & (all_pitcher['foreigner']==1), '投手ID'] = -1
+        # all_pitcher.loc[(all_pitcher['投手ID'].isnull()) & (all_pitcher['foreigner']==1), '投手ID'] = -1
         all_pitcher.loc[all_pitcher['投手ID'].isnull(), '投手ID'] = 0
 
         RightLeft = ['R_L', 'R_R', 'L_R', 'L_L']
@@ -97,7 +97,8 @@ def preprocess(is_fill):
         if is_fill:
             # 日本人平均
             for RL in RightLeft:
-                pit_mean = all_pitcher[(all_pitcher['foreigner']==0)&(all_pitcher['投手ID']!=0)&(all_pitcher['pit_bat']==RL)].mean()
+                # pit_mean = all_pitcher[(all_pitcher['foreigner']==0)&(all_pitcher['投手ID']!=0)&(all_pitcher['pit_bat']==RL)].mean()
+                pit_mean = all_pitcher[(all_pitcher['投手ID']!=0)&(all_pitcher['pit_bat']==RL)].mean()
                 condition = (all_pitcher['投手ID']==0)&(all_pitcher['pit_bat']==RL)
                 # 平均で埋める
                 fill_ball(condition, pit_mean, all_pitcher)
@@ -105,15 +106,15 @@ def preprocess(is_fill):
                 all_pitcher.loc[condition, 'pit_inning_cnt'] = pit_mean['pit_inning_cnt']
                 all_pitcher.loc[condition, 'pit_batter_cnt'] = pit_mean['pit_batter_cnt']
 
-            #外国人平均
-            for RL in RightLeft:
-                pit_mean = all_pitcher[(all_pitcher['foreigner']==1)&(all_pitcher['投手ID']!=-1)&(all_pitcher['pit_bat']==RL)].mean()
-                condition = (all_pitcher['投手ID']==-1)&(all_pitcher['pit_bat']==RL)
-                # 平均で埋める
-                fill_ball(condition, pit_mean, all_pitcher)
-                all_pitcher.loc[condition, 'pit_game_cnt'] = pit_mean['pit_game_cnt']
-                all_pitcher.loc[condition, 'pit_inning_cnt'] = pit_mean['pit_inning_cnt']
-                all_pitcher.loc[condition, 'pit_batter_cnt'] = pit_mean['pit_batter_cnt']
+            # #外国人平均
+            # for RL in RightLeft:
+            #     pit_mean = all_pitcher[(all_pitcher['foreigner']==1)&(all_pitcher['投手ID']!=-1)&(all_pitcher['pit_bat']==RL)].mean()
+            #     condition = (all_pitcher['投手ID']==-1)&(all_pitcher['pit_bat']==RL)
+            #     # 平均で埋める
+            #     fill_ball(condition, pit_mean, all_pitcher)
+            #     all_pitcher.loc[condition, 'pit_game_cnt'] = pit_mean['pit_game_cnt']
+            #     all_pitcher.loc[condition, 'pit_inning_cnt'] = pit_mean['pit_inning_cnt']
+            #     all_pitcher.loc[condition, 'pit_batter_cnt'] = pit_mean['pit_batter_cnt']
 
         # 特徴量を計算
         calc_feature(all_pitcher)
