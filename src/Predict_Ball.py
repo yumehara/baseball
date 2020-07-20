@@ -130,6 +130,7 @@ def train_predict(model_No, use_sub_model, boosting, metric, sub_str):
         if is_cv:
             cv, best_iter = common.lightgbm_cv(lgb_param, lgb_train, iter_num, metric)
             best_cv.append(cv)
+            common.write_log(model_No, 'CV({}) = {}, best_iter = {}'.format(sample_No, cv, best_iter))
 
         t2 = time.time()
         print('lgb.cv: {} [s]'.format(t2 - t1))
@@ -190,7 +191,7 @@ def train_predict(model_No, use_sub_model, boosting, metric, sub_str):
     
     if len(best_cv) > 0:
         cv_ave = cv_ave / len(best_cv)
-        print('CV(ave) = {}'.format(cv_ave))
+        common.write_log(model_No, 'CV(ave) = {}'.format(cv_ave))
 
     # 出力
     df = df.reset_index()

@@ -34,7 +34,7 @@ def preprocess(is_fill):
     all_player['age'] = all_player['年度'] - all_player['birth_day'].dt.year
     # 現役年数
     all_player['play_year'] = all_player['年度'] - all_player['ドラフト年']
-    all_player.loc[all_player['ドラフト年'].isnull(), 'play_year'] = None
+    all_player.loc[all_player['ドラフト年'].isnull(), 'play_year'] = 6
 
     # 球団ごとの年棒順位
     all_player['salary_rank'] = all_player.groupby(['年度', 'チームID'])['年俸'].rank(ascending=False)
@@ -91,8 +91,6 @@ def preprocess(is_fill):
         all_pitcher = all_pitcher.merge(pit_2017, left_on=['選手ID','pit_bat'], right_on=['投手ID','pit_bat'], how='left')
         all_pitcher.loc[(all_pitcher['投手ID'].isnull()) & (all_pitcher['foreigner']==1), '投手ID'] = -1
         all_pitcher.loc[all_pitcher['投手ID'].isnull(), '投手ID'] = 0
-        # 2年未満の選手を除外
-        all_pitcher.loc[all_pitcher['play_year']<2, '投手ID'] = 0
 
         RightLeft = ['R_L', 'R_R', 'L_R', 'L_L']
         # 情報がない投手
@@ -141,8 +139,6 @@ def preprocess(is_fill):
 
         all_catcher = all_catcher.merge(cat_2017, left_on=['選手ID','pit_bat'], right_on=['捕手ID','pit_bat'], how='left')
         all_catcher.loc[all_catcher['捕手ID'].isnull(), '捕手ID'] = 0
-        # 2年未満の選手を除外
-        all_catcher.loc[all_catcher['play_year']<2, '捕手ID'] = 0
 
         # 情報がない捕手
         if is_fill:
@@ -174,8 +170,6 @@ def preprocess(is_fill):
         all_batter = all_batter.merge(dummy2, on='打', how='outer')
         all_batter = all_batter.merge(bat_2017, left_on=['選手ID','pit_bat'], right_on=['打者ID','pit_bat'], how='left')
         all_batter.loc[all_batter['打者ID'].isnull(), '打者ID'] = 0
-        # 2年未満の選手を除外
-        all_batter.loc[all_batter['play_year']<2, '打者ID'] = 0
 
         # 情報がない打者
         if is_fill:
