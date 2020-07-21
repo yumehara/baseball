@@ -43,7 +43,7 @@ def preprocess():
     all_pitch.loc[~np.isnan(all_pitch['一塁走者ID']), 'first'] = 1
     all_pitch.loc[~np.isnan(all_pitch['二塁走者ID']), 'second'] = 1
     all_pitch.loc[~np.isnan(all_pitch['三塁走者ID']), 'third'] = 1
-    # all_pitch['base_cnt'] = all_pitch['first'] + all_pitch['second'] + all_pitch['third']
+    all_pitch['base_cnt'] = all_pitch['first'] + all_pitch['second'] + all_pitch['third']
     # 表裏
     all_pitch['top_bot']=0
     all_pitch.loc[all_pitch['表裏']=='裏', 'top_bot']=1
@@ -106,8 +106,8 @@ def preprocess():
     # all_pitch['extention'] = 0
     # all_pitch.loc[(all_pitch['イニング']>9), 'extention']=1
     # ナイター
-    # all_pitch['nighter'] = 0
-    # all_pitch.loc[all_pitch['game_time'].dt.hour>=18, 'nighter']=1
+    all_pitch['nighter'] = 0
+    all_pitch.loc[all_pitch['game_time'].dt.hour>=18, 'nighter']=1
     # 交流戦
     # all_pitch['ce-pa'] = 0
     # all_pitch.loc[all_pitch['試合種別詳細']=='セ・パ交流戦', 'ce-pa']=1
@@ -122,11 +122,11 @@ def preprocess():
     all_pitch['point_diff'] = point_diff
     all_pitch.loc[all_pitch['home']==0, 'point_diff'] = -point_diff
     # 得点圏にランナーがいる
-    # all_pitch['runner_23'] = 0
-    # all_pitch.loc[(all_pitch['second']==1)|(all_pitch['third']==1), 'runner_23']=1
+    all_pitch['runner_23'] = 0
+    all_pitch.loc[(all_pitch['second']==1)|(all_pitch['third']==1), 'runner_23']=1
     # 送りバントの場面
-    # all_pitch['bant'] = 0
-    # all_pitch.loc[(all_pitch['first']==1)&(all_pitch['third']==0)&(all_pitch['プレイ前アウト数']==0)&(all_pitch['プレイ前ストライク数']<2), 'bant']=1
+    all_pitch['bant'] = 0
+    all_pitch.loc[(all_pitch['first']==1)&(all_pitch['third']==0)&(all_pitch['プレイ前アウト数']==0)&(all_pitch['プレイ前ストライク数']<2), 'bant']=1
     # スクイズの場面
     # all_pitch['squize'] = 0
     # all_pitch.loc[(all_pitch['third']==1)&(all_pitch['プレイ前アウト数']<2)&(all_pitch['プレイ前ストライク数']<2), 'squize']=1
