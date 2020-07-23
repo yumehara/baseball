@@ -10,15 +10,20 @@ import time
 
 def preprocess(model_No, sample_No, use_sub_model):
     
-    ALL_MERGE = common.ALL_MERGE.format(model_No, model_No, sample_No)
+    ALL_MERGE = common.ALL_MERGE.format(model_No, sample_No)
     
     all_pitch = pd.read_feather(ALL_MERGE)
     all_pitch = all_pitch.query(common.divide_period_query_train(sample_No))
     print(ALL_MERGE, all_pitch.shape)
+
+    all_pitch.drop(columns=[
+        'bc_course_0', 'bc_course_1', 'bc_course_2', 'bc_course_3', 'bc_course_4', 'bc_course_5',
+        'bc_course_6', 'bc_course_7', 'bc_course_8', 'bc_course_9', 'bc_course_10', 'bc_course_11', 'bc_course_12'
+    ], inplace=True)
     
     # sub-modelを使用するとき
     if use_sub_model:
-        OUT_SUBMODEL = common.ALL_MERGE_SUB.format(model_No, model_No, sample_No)
+        OUT_SUBMODEL = common.ALL_MERGE_SUB.format(model_No, sample_No)
         sub_model = pd.read_feather(OUT_SUBMODEL)
         print(OUT_SUBMODEL, sub_model.shape)
         all_pitch.reset_index(drop=True, inplace=True)
@@ -119,7 +124,7 @@ def train_predict(model_No, use_sub_model, boosting, metric, sub_str):
             if metric == common.M_LOGLOSS:
                 iter_num = 1400
             else:
-                iter_num = 700
+                iter_num = 800
             if sample_No != 1:
                 is_cv = False
 
@@ -203,5 +208,19 @@ def train_predict(model_No, use_sub_model, boosting, metric, sub_str):
 
     signate_command = 'signate submit --competition-id=275 ./{} --note {}_{}_feat={}_cv={}'.format(SUBMIT, boosting, metric, column_cnt, cv_ave)
     common.write_log(model_No, signate_command)
+
+    # Feature Importance
+    fi_all = pd.read_feather(common.FI_BALL_F.format(model_No, 1, sub_str))
+    for i in range(2, common.DIVIDE_NUM+1):
+        fi_tmp = pd.read_feather(common.FI_BALL_F.format(model_No, i, sub_str))
+        suffix = '_{}'.format(i)
+        fi_all = pd.merge(fi_all, fi_tmp, on='feat_name', suffixes=['', suffix])
+    
+    fi_all['sum'] = fi_all.sum(axis=1)
+    fi_all.sort_values('sum', ascending=False, inplace=True)
+    fi_all.reset_index(inplace=True, drop=True)
+    fi_all.to_feather(common.FI_BALL_F.format(model_No, 'all', sub_str))
+    for i in range(1, common.DIVIDE_NUM+1):
+        os.remove(common.FI_BALL_F.format(model_No, i, sub_str))
 
     return cv_ave

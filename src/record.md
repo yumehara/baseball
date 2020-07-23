@@ -41,6 +41,7 @@
 |56|gb+da|LRHL|645|0.48815|1.33853|m-error 2年未満の選手の集計結果を除外|
 |57|gb+da|LRHL|645|0.48813|1.33400|m-error 54相当|
 |58|gb+da|LRHL|649|0.48792|1.33264|m-error 本当に54相当|
+|59|gb+da|LRHL|636|.488145|1.33339|m-error bc_courseを抜いた|
 
 # コース予測部門
 
@@ -85,3 +86,5 @@
 |57|dart|none|635|2.34164|2.34696|m-logloss 54相当|
 |57|gb+da|none|635|2.34204|2.34684|m-logloss 54相当|
 |58|gb+da|none|639|2.34135|2.34665|m-logloss 本当に54相当|
+|59|dart|none|639|2.34094|2.34681|m-logloss tune|
+|59|gb+da|none|639|2.34131|2.34668|m-logloss tune|

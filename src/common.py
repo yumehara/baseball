@@ -28,11 +28,11 @@ BALL_2017 = '../intermediate/pitch/ball_2017.f'
 ALL_PITCH = '../intermediate/pitch/all_pitch.f'
 
 # Preprocess_All.py
-PREDICT_BALL = '../intermediate/{}/ball_predict_{}_{}.f'
-PREDICT_COURSE = '../intermediate/{}/course_predict_{}_{}.f'
+# PREDICT_BALL = '../intermediate/{}/ball_predict_{}_{}.f'
+# PREDICT_COURSE = '../intermediate/{}/course_predict_{}_{}.f'
 
-ALL_MERGE = '../intermediate/{}/all_merge_{}_{}.f'
-ALL_MERGE_SUB = '../intermediate/{}/all_merge_{}_{}_sub.f'
+ALL_MERGE = '../intermediate/{}/all_merge_{}.f'
+ALL_MERGE_SUB = '../intermediate/{}/all_merge_{}_sub.f'
 
 OUTPUT_PATH = '../intermediate/{}'
 SUBMIT_PATH = '../submit/{}'
@@ -41,24 +41,20 @@ SUBMIT_PATH = '../submit/{}'
 SUBMIT_BALL_CSV = '../submit/{}/ball_{}_{}.csv'
 SUBMIT_BALL_F = '../submit/{}/ball_{}_{}.f'
 FI_BALL_F = '../submit/{}/ball_fi_{}_{}.f'
-# SUBMIT_BALL_SUB_CSV = '../submit/{}/ball_{}_sub.csv'
-# FI_BALL_SUB_F = '../submit/{}/ball_fi_{}_sub.f'
 
 # Predit_Course.py
 SUBMIT_COURSE_CSV = '../submit/{}/course_{}_{}.csv'
 SUBMIT_COURSE_F = '../submit/{}/course_{}_{}.f'
 FI_COURSE_F = '../submit/{}/course_fi_{}_{}.f'
-# SUBMIT_COURSE_SUB_CSV = '../submit/{}/course_{}_sub.csv'
-# FI_COURSE_SUB_F = '../submit/{}/course_fi_{}_sub.f'
 # SUBMIT_COURSE_RLHL_F = '../submit/{}/course_RLHL_{}_{}.f'
-COURSE_TRAIN = '../submit/{}/course_train_{}_{}_{}.f'
+COURSE_TRAIN = '../submit/{}/course_train_{}_{}.f'
 
 # ensemble.py
 SUBMIT_BALL_ENSMBL_CSV = '../submit/{}/ball_ensmbl_{}_{}_{}.csv'
 SUBMIT_COURSE_ENSMBL_CSV = '../submit/{}/course_ensmbl_{}_{}_{}.csv'
 
 # log
-LOG_SUBMIT = '../submit/{}/log.txt'
+LOG_SUBMIT = '../log/log_{}.txt'
 
 # 分割数
 DIVIDE_NUM = 4

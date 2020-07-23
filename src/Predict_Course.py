@@ -11,7 +11,7 @@ import time
 
 def preprocess(model_No, sample_No, use_sub_model, use_RLHL=False):
 
-    ALL_MERGE = common.ALL_MERGE.format(model_No, model_No, sample_No)
+    ALL_MERGE = common.ALL_MERGE.format(model_No, sample_No)
     all_pitch = pd.read_feather(ALL_MERGE)
     all_pitch = all_pitch.query(common.divide_period_query_train(sample_No))
 
@@ -27,7 +27,7 @@ def preprocess(model_No, sample_No, use_sub_model, use_RLHL=False):
 
     # sub-modelを使用するとき
     if use_sub_model:
-        OUT_SUBMODEL = common.ALL_MERGE_SUB.format(model_No, model_No, sample_No)
+        OUT_SUBMODEL = common.ALL_MERGE_SUB.format(model_No, sample_No)
         sub_model = pd.read_feather(OUT_SUBMODEL)
         print(OUT_SUBMODEL, sub_model.shape)
         all_pitch.reset_index(drop=True, inplace=True)
@@ -126,7 +126,7 @@ def train_predict(model_No, use_sub_model, boosting, metric, sub_str):
         else:
             lgb_param = lgb_param_dart
             if metric == common.M_LOGLOSS:
-                iter_num = 2000
+                iter_num = 2300
             else:
                 iter_num = 1300
             if sample_No != 1:
@@ -215,6 +215,20 @@ def train_predict(model_No, use_sub_model, boosting, metric, sub_str):
     signate_command = 'signate submit --competition-id=276 ./{} --note {}_{}_feat={}_cv={}'.format(SUBMIT, boosting, metric, column_cnt, cv_ave)
     common.write_log(model_No, signate_command)
 
+    # Feature Importance
+    fi_all = pd.read_feather(common.FI_COURSE_F.format(model_No, 1, sub_str))
+    for i in range(2, common.DIVIDE_NUM+1):
+        fi_tmp = pd.read_feather(common.FI_COURSE_F.format(model_No, i, sub_str))
+        suffix = '_{}'.format(i)
+        fi_all = pd.merge(fi_all, fi_tmp, on='feat_name', suffixes=['', suffix])
+    
+    fi_all['sum'] = fi_all.sum(axis=1)
+    fi_all.sort_values('sum', ascending=False, inplace=True)
+    fi_all.reset_index(inplace=True, drop=True)
+    fi_all.to_feather(common.FI_COURSE_F.format(model_No, 'all', sub_str))
+    for i in range(1, common.DIVIDE_NUM+1):
+        os.remove(common.FI_COURSE_F.format(model_No, i, sub_str))
+
     return cv_ave
 
 
@@ -229,7 +243,7 @@ def train_predict2(model_No, boosting, metric, LR_HL):
     
     for sample_No in range(1, common.DIVIDE_NUM+1):
 
-        OUT_SUBMODEL = common.COURSE_TRAIN.format(model_No, model_No, LR_HL, sample_No)
+        OUT_SUBMODEL = common.COURSE_TRAIN.format(model_No, LR_HL, sample_No)
         
         train_d, test_d, train_y = preprocess(model_No, sample_No, False, True)
 
@@ -294,7 +308,10 @@ def train_predict2(model_No, boosting, metric, LR_HL):
         else:
             lgb_param = lgb_param_dart
             if metric == common.M_LOGLOSS:
-                iter_num = 2000
+                if LR_HL == 'LR':
+                    iter_num = 3100
+                else:
+                    iter_num = 2400
             else:
                 iter_num = 1300
             if sample_No != 1:
@@ -356,9 +373,9 @@ def ensemble_RLHL(model_No):
     # best_cv = []
 
     for sample_No in range(1, common.DIVIDE_NUM+1):
-        train1 = pd.read_feather(common.COURSE_TRAIN.format(model_No, model_No, 'LR', sample_No))
+        train1 = pd.read_feather(common.COURSE_TRAIN.format(model_No, 'LR', sample_No))
         print(train1.shape)
-        train2 = pd.read_feather(common.COURSE_TRAIN.format(model_No, model_No, 'HL', sample_No))
+        train2 = pd.read_feather(common.COURSE_TRAIN.format(model_No, 'HL', sample_No))
         print(train2.shape)
         merge = train1.join(train2)
         print(merge.shape)
@@ -371,11 +388,11 @@ def ensemble_RLHL(model_No):
         # merge.drop(columns=col1, inplace=True)
         # merge.drop(columns=col2, inplace=True)
 
-        OUTPUT_SUB = common.ALL_MERGE_SUB.format(model_No, model_No, sample_No)
+        OUTPUT_SUB = common.ALL_MERGE_SUB.format(model_No, sample_No)
         merge.to_feather(OUTPUT_SUB)
         print(OUTPUT_SUB, merge.shape)
 '''
-        all_pitch = pd.read_feather(common.ALL_MERGE.format(model_No, model_No, sample_No))
+        all_pitch = pd.read_feather(common.ALL_MERGE.format(model_No, sample_No))
         print(all_pitch.shape)
 
         train_test = all_pitch.query(common.divide_period_query_train(sample_No))

@@ -16,11 +16,7 @@ def preprocess(model_No):
         ALL_CATCHER = common.ALLCATCHER.format(sample_No)
         ALL_PLAYER = common.ALLPLAYER.format(sample_No)
 
-        # SUB_BALL = common.PREDICT_BALL.format(model_No, model_No, sample_No)
-        # SUB_COURSE = common.SUBMIT_COURSE_RLHL_F.format(model_No, model_No, sample_No)
-
-        OUTPUT = common.ALL_MERGE.format(model_No, model_No, sample_No)
-        # OUTPUT_SUB = common.ALL_MERGE_SUB.format(model_No, model_No, sample_No)
+        OUTPUT = common.ALL_MERGE.format(model_No, sample_No)
 
         # 投球情報
         all_pitch = pd.read_feather(ALL_PITCH)

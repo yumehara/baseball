@@ -11,7 +11,7 @@ import ensemble as ensmbl
 import common
 
 
-submit_No = '58'
+submit_No = '59'
 
 boosting1 = common.DART
 boosting2 = common.GBDT
@@ -30,7 +30,7 @@ print('--- preprocess ---')
 
 # コース予測サブモデル(LRHL)
 metric0 = common.M_LOGLOSS
-boosting0 = common.GBDT
+boosting0 = common.DART
 pred_course.train_predict2(submit_No, boosting0, metric0, 'LR')
 pred_course.train_predict2(submit_No, boosting0, metric0, 'HL')
 pred_course.ensemble_RLHL(submit_No)
