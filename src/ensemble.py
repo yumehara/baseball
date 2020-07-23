@@ -1,6 +1,7 @@
 import os
 import pandas as pd
 import common
+import numpy as np
 
 def ensemble(model_No, sub_str_1, sub_str_2, isBall, cv):
 
@@ -21,9 +22,12 @@ def ensemble(model_No, sub_str_1, sub_str_2, isBall, cv):
         print(ball_2.shape)
 
         ball_ensemble = pd.DataFrame(ball_1['index'])
-        # 単純平均
+        
         for ball in ball_kind:
-            ball_ensemble[ball] = (ball_1[ball] + ball_2[ball])/2
+            # 単純平均
+            # ball_ensemble[ball] = (ball_1[ball] + ball_2[ball])/2
+            # 幾何平均
+            ball_ensemble[ball] = np.sqrt(ball_1[ball] * ball_2[ball])
 
         ball_ensemble.to_csv(submit_ball_csv, header=False, index=False)
         print(submit_ball_csv, ball_ensemble.shape)
@@ -44,9 +48,12 @@ def ensemble(model_No, sub_str_1, sub_str_2, isBall, cv):
         print(course_2.shape)
 
         course_ensemble = pd.DataFrame(course_1['index'])
-        # 単純平均
+        
         for course in course_kind:
-            course_ensemble[course] = (course_1[course] + course_2[course])/2
+            # 単純平均
+            # course_ensemble[course] = (course_1[course] + course_2[course])/2
+            # 幾何平均
+            course_ensemble[course] = np.sqrt(course_1[course] * course_2[course])
 
         course_ensemble.to_csv(submit_course_csv, header=False, index=False)
         print(submit_course_csv, course_ensemble.shape)
