@@ -4,7 +4,7 @@ import common
 import numpy as np
 
 # 幾何平均
-geometric_ave = True
+geometric_ave = False
 
 def ensemble(model_No, sub_str_1, sub_str_2, isBall, cv):
 

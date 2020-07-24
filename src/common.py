@@ -3,6 +3,7 @@ import pandas as pd
 import lightgbm as lgb
 import optuna.integration.lightgbm as lgb_tune
 import time
+import datetime
 from sklearn.model_selection import train_test_split
 
 TRAIN_PITCH = '../data/train_pitch.f'
@@ -134,13 +135,15 @@ def feature_importance(lgb_model):
     df_feature_importance.reset_index(inplace=True, drop=True)
     return df_feature_importance
 
+JST = datetime.timezone(datetime.timedelta(hours=+9), 'JST')
+
 def write_log(model_No, content):
     write_text(LOG_SUBMIT.format(model_No), content)
 
 def write_text(filename, content):
     with open(filename, mode='a') as f:
-        f.write(content)
-        f.write('\n')
+        text = '[{}] {} \n'.format(datetime.datetime.now(JST).strftime('%Y-%m-%d %H:%M:%S'), content)
+        f.write(text)
         print(content)
 
 def tuning(train_x, train_y, num_class, boosting, metric, logfile):

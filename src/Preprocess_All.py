@@ -121,8 +121,10 @@ def preprocess(model_No):
         course_kind = [
             # 'course_0', 'course_1', 'course_2', 'course_3', 'course_4', 'course_5', 'course_6', 
             # 'course_7', 'course_8', 'course_9', 'course_10', 'course_11', 'course_12',
-            'high_str', 'high_ball', 'mid_str', 'low_str', 'low_ball', 
-            'left_str', 'left_ball', 'center_str', 'right_str', 'right_ball']
+            # 'high_str', 'high_ball', 'mid_str', 'low_str', 'low_ball', 
+            # 'left_str', 'left_ball', 'center_str', 'right_str', 'right_ball',
+            'high', 'mid', 'low', 'left', 'center', 'right', 'sbstrike', 'sbball'
+            ]
 
         for course in course_kind:
             bc_course = 'bc_' + course
@@ -158,9 +160,9 @@ def preprocess(model_No):
             merge_all['ave_bc_b_' + course] = (merge_all[bc_course] + merge_all[bat_course])/2
             merge_all['ave_b_c_' + course] = (merge_all[bat_course] + merge_all[cat_course])/2
 
-        course_kind_bc = list(map(lambda x: 'bc_' + x, course_kind))
-        merge_all.drop(columns=course_kind, inplace=True)
-        merge_all.drop(columns=course_kind_bc, inplace=True)
+        # course_kind_bc = list(map(lambda x: 'bc_' + x, course_kind))
+        # merge_all.drop(columns=course_kind, inplace=True)
+        # merge_all.drop(columns=course_kind_bc, inplace=True)
 
         # ダミー変数
         # merge_all = pd.get_dummies(merge_all, columns=['pit_bat'])

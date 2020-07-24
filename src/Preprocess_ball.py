@@ -73,22 +73,37 @@ def preprocess():
     train_course_pivot.fillna(0, inplace=True)
 
     # コースの種類
-    train_course_pivot['bc_high_str'] = train_course_pivot['bc_course_0'] + train_course_pivot['bc_course_3'] + train_course_pivot['bc_course_6'] 
-    train_course_pivot['bc_high_ball'] = train_course_pivot['bc_course_9'] + train_course_pivot['bc_course_10'] 
-    train_course_pivot['bc_mid_str'] = train_course_pivot['bc_course_1'] + train_course_pivot['bc_course_4'] + train_course_pivot['bc_course_7'] 
-    train_course_pivot['bc_low_str'] = train_course_pivot['bc_course_2'] + train_course_pivot['bc_course_5'] + train_course_pivot['bc_course_8'] 
-    train_course_pivot['bc_low_ball'] = train_course_pivot['bc_course_11'] + train_course_pivot['bc_course_12'] 
+    # train_course_pivot['bc_high_str'] = train_course_pivot['bc_course_0'] + train_course_pivot['bc_course_3'] + train_course_pivot['bc_course_6'] 
+    # train_course_pivot['bc_high_ball'] = train_course_pivot['bc_course_9'] + train_course_pivot['bc_course_10'] 
+    # train_course_pivot['bc_mid_str'] = train_course_pivot['bc_course_1'] + train_course_pivot['bc_course_4'] + train_course_pivot['bc_course_7'] 
+    # train_course_pivot['bc_low_str'] = train_course_pivot['bc_course_2'] + train_course_pivot['bc_course_5'] + train_course_pivot['bc_course_8'] 
+    # train_course_pivot['bc_low_ball'] = train_course_pivot['bc_course_11'] + train_course_pivot['bc_course_12'] 
+    # train_course_pivot['bc_left_str'] = train_course_pivot['bc_course_0'] + train_course_pivot['bc_course_1'] + train_course_pivot['bc_course_2'] 
+    # train_course_pivot['bc_left_ball'] = train_course_pivot['bc_course_9'] + train_course_pivot['bc_course_11'] 
+    # train_course_pivot['bc_center_str'] = train_course_pivot['bc_course_3'] + train_course_pivot['bc_course_4'] + train_course_pivot['bc_course_5'] 
+    # train_course_pivot['bc_right_str'] = train_course_pivot['bc_course_6'] + train_course_pivot['bc_course_7'] + train_course_pivot['bc_course_8'] 
+    # train_course_pivot['bc_right_ball'] = train_course_pivot['bc_course_10'] + train_course_pivot['bc_course_12'] 
 
-    train_course_pivot['bc_left_str'] = train_course_pivot['bc_course_0'] + train_course_pivot['bc_course_1'] + train_course_pivot['bc_course_2'] 
-    train_course_pivot['bc_left_ball'] = train_course_pivot['bc_course_9'] + train_course_pivot['bc_course_11'] 
-    train_course_pivot['bc_center_str'] = train_course_pivot['bc_course_3'] + train_course_pivot['bc_course_4'] + train_course_pivot['bc_course_5'] 
-    train_course_pivot['bc_right_str'] = train_course_pivot['bc_course_6'] + train_course_pivot['bc_course_7'] + train_course_pivot['bc_course_8'] 
-    train_course_pivot['bc_right_ball'] = train_course_pivot['bc_course_10'] + train_course_pivot['bc_course_12'] 
+    train_course_pivot['bc_high'] = (train_course_pivot['bc_course_0'] + train_course_pivot['bc_course_3'] + train_course_pivot['bc_course_6'] + 
+                                    train_course_pivot['bc_course_9'] + train_course_pivot['bc_course_10'])
+    train_course_pivot['bc_mid'] = (train_course_pivot['bc_course_1'] + train_course_pivot['bc_course_4'] + train_course_pivot['bc_course_7'])
+    train_course_pivot['bc_low'] = (train_course_pivot['bc_course_2'] + train_course_pivot['bc_course_5'] + train_course_pivot['bc_course_8'] + 
+                                    train_course_pivot['bc_course_11'] + train_course_pivot['bc_course_12'])
+    train_course_pivot['bc_left'] = (train_course_pivot['bc_course_0'] + train_course_pivot['bc_course_1'] + train_course_pivot['bc_course_2'] + 
+                                    train_course_pivot['bc_course_9'] + train_course_pivot['bc_course_11'])
+    train_course_pivot['bc_center'] = (train_course_pivot['bc_course_3'] + train_course_pivot['bc_course_4'] + train_course_pivot['bc_course_5'])
+    train_course_pivot['bc_right'] = (train_course_pivot['bc_course_6'] + train_course_pivot['bc_course_7'] + train_course_pivot['bc_course_8'] + 
+                                    train_course_pivot['bc_course_10'] + train_course_pivot['bc_course_12'])
+    train_course_pivot['bc_sbstrike'] = (train_course_pivot['bc_course_0'] + train_course_pivot['bc_course_1'] + train_course_pivot['bc_course_2'] + 
+                                    train_course_pivot['bc_course_3'] + train_course_pivot['bc_course_4'] + train_course_pivot['bc_course_5'] + 
+                                    train_course_pivot['bc_course_6'] + train_course_pivot['bc_course_7'] + train_course_pivot['bc_course_8'])
+    train_course_pivot['bc_sbball'] = (train_course_pivot['bc_course_9'] + train_course_pivot['bc_course_10'] + 
+                                    train_course_pivot['bc_course_11'] + train_course_pivot['bc_course_12'])
 
-    # train_course_pivot.drop(columns=[
-    #     'bc_course_0', 'bc_course_1', 'bc_course_2', 'bc_course_3', 'bc_course_4', 'bc_course_5',
-    #     'bc_course_6', 'bc_course_7', 'bc_course_8', 'bc_course_9', 'bc_course_10', 'bc_course_11', 'bc_course_12'
-    # ], inplace=True)
+    train_course_pivot.drop(columns=[
+        'bc_course_0', 'bc_course_1', 'bc_course_2', 'bc_course_3', 'bc_course_4', 'bc_course_5',
+        'bc_course_6', 'bc_course_7', 'bc_course_8', 'bc_course_9', 'bc_course_10', 'bc_course_11', 'bc_course_12'
+    ], inplace=True)
     print(train_course_pivot.shape)
 
     # マージ

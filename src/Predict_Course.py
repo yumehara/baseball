@@ -249,22 +249,27 @@ def train_predict2(model_No, boosting, metric, LR_HL):
 
         if LR_HL == 'LR':
             # 目的変数をコースの左右に変更
-            # left_str: 0 <- 0, 1, 2
-            # center_str: 1 <- 3, 4, 5
-            # right_str: 2 <- 6, 7, 8
-            # left_ball: 3 <- 9, 11
-            # right_ball: 4 <- 10, 12
-            convert = [0, 0, 0, 1, 1, 1, 2, 2, 2, 3, 4, 3, 4]
-            rename_col = {0: 'left_str', 1: 'center_str', 2: 'right_str', 3: 'left_ball', 4: 'right_ball'}
+            # left: 0 <- 0, 1, 2, 9, 11
+            # center: 1 <- 3, 4, 5
+            # right: 2 <- 6, 7, 8, 10, 12
+            convert = [0, 0, 0, 1, 1, 1, 2, 2, 2, 0, 2, 0, 2]
+            rename_col = {0: 'left', 1: 'center', 2: 'right'}
+            numclass = 3
         elif LR_HL == 'HL':
             # 目的変数をコースの上下に変更
-            # high_str: 0 <- 0, 3, 6
-            # mid_str: 1 <- 1, 4, 7
-            # low_str: 2 <- 2, 5, 8
-            # high_ball: 3 <- 9, 10
-            # low_ball: 4 <- 11, 12
-            convert = [0, 1, 2, 0, 1, 2, 0, 1, 2, 3, 3, 4, 4]
-            rename_col = {0: 'high_str', 1: 'mid_str', 2: 'low_str', 3: 'high_ball', 4: 'low_ball'}
+            # high: 0 <- 0, 3, 6, 9, 10
+            # mid: 1 <- 1, 4, 7
+            # low: 2 <- 2, 5, 8, 11, 12
+            convert = [0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 0, 2, 2]
+            rename_col = {0: 'high', 1: 'mid', 2: 'low'}
+            numclass = 3
+        elif LR_HL == 'SB':
+            # 目的変数をコースのストライク/ボールに変更
+            # strike: 0 <- 0~8
+            # ball: 1 <- 9~12
+            convert = [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1]
+            rename_col = {0: 'sbstrike', 1: 'sbball'}
+            numclass = 2
         else:
             raise Exception('LR_HL error')
 
@@ -275,7 +280,7 @@ def train_predict2(model_No, boosting, metric, LR_HL):
             'objective' : 'multiclass',
             'boosting_type': 'gbdt',
             'metric' : metric,
-            'num_class' : 5,
+            'num_class' : numclass,
             'seed' : 0,
             'learning_rate' : 0.1,
             'lambda_l1': 8.769293390201968, 
@@ -290,7 +295,7 @@ def train_predict2(model_No, boosting, metric, LR_HL):
             'objective' : 'multiclass',
             'boosting_type': 'dart',
             'metric' : metric,
-            'num_class' : 5,
+            'num_class' : numclass,
             'seed' : 0,
             'learning_rate' : 0.1,
             'lambda_l1': 8.074719414659954, 
@@ -377,7 +382,10 @@ def ensemble_RLHL(model_No):
         print(train1.shape)
         train2 = pd.read_feather(common.COURSE_TRAIN.format(model_No, 'HL', sample_No))
         print(train2.shape)
+        train3 = pd.read_feather(common.COURSE_TRAIN.format(model_No, 'SB', sample_No))
+        print(train3.shape)
         merge = train1.join(train2)
+        merge = merge.join(train3)
         print(merge.shape)
 
         # col1 = train1.columns

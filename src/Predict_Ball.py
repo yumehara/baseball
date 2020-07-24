@@ -16,10 +16,10 @@ def preprocess(model_No, sample_No, use_sub_model):
     all_pitch = all_pitch.query(common.divide_period_query_train(sample_No))
     print(ALL_MERGE, all_pitch.shape)
 
-    all_pitch.drop(columns=[
-        'bc_course_0', 'bc_course_1', 'bc_course_2', 'bc_course_3', 'bc_course_4', 'bc_course_5',
-        'bc_course_6', 'bc_course_7', 'bc_course_8', 'bc_course_9', 'bc_course_10', 'bc_course_11', 'bc_course_12'
-    ], inplace=True)
+    # all_pitch.drop(columns=[
+    #     'bc_course_0', 'bc_course_1', 'bc_course_2', 'bc_course_3', 'bc_course_4', 'bc_course_5',
+    #     'bc_course_6', 'bc_course_7', 'bc_course_8', 'bc_course_9', 'bc_course_10', 'bc_course_11', 'bc_course_12'
+    # ], inplace=True)
     
     # sub-modelを使用するとき
     if use_sub_model:
