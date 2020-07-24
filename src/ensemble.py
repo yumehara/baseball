@@ -3,6 +3,9 @@ import pandas as pd
 import common
 import numpy as np
 
+# 幾何平均
+geometric_ave = True
+
 def ensemble(model_No, sub_str_1, sub_str_2, isBall, cv):
 
     # 出力先のフォルダ作成
@@ -23,11 +26,18 @@ def ensemble(model_No, sub_str_1, sub_str_2, isBall, cv):
 
         ball_ensemble = pd.DataFrame(ball_1['index'])
         
-        for ball in ball_kind:
-            # 単純平均
-            # ball_ensemble[ball] = (ball_1[ball] + ball_2[ball])/2
-            # 幾何平均
-            ball_ensemble[ball] = np.sqrt(ball_1[ball] * ball_2[ball])
+        if geometric_ave:   # 幾何平均
+            for ball in ball_kind:
+                ball_ensemble[ball] = np.sqrt(ball_1[ball] * ball_2[ball])
+            ball_ensemble['sum'] = ball_ensemble[ball_kind].sum(axis=1)
+            for ball in ball_kind:
+                ball_ensemble[ball] = ball_ensemble[ball]/ball_ensemble['sum']
+            ball_ensemble.drop(columns=['sum'], inplace=True)
+            print('geometric_ave')
+        else:               # 単純平均
+            for ball in ball_kind:
+                ball_ensemble[ball] = (ball_1[ball] + ball_2[ball])/2
+            print('simple_ave')
 
         ball_ensemble.to_csv(submit_ball_csv, header=False, index=False)
         print(submit_ball_csv, ball_ensemble.shape)
@@ -49,11 +59,18 @@ def ensemble(model_No, sub_str_1, sub_str_2, isBall, cv):
 
         course_ensemble = pd.DataFrame(course_1['index'])
         
-        for course in course_kind:
-            # 単純平均
-            # course_ensemble[course] = (course_1[course] + course_2[course])/2
-            # 幾何平均
-            course_ensemble[course] = np.sqrt(course_1[course] * course_2[course])
+        if geometric_ave:   # 幾何平均
+            for course in course_kind:
+                course_ensemble[course] = np.sqrt(course_1[course] * course_2[course])
+            course_ensemble['sum'] = course_ensemble[course_kind].sum(axis=1)
+            for course in course_kind:
+                course_ensemble[course] = course_ensemble[course]/course_ensemble['sum']
+            course_ensemble.drop(columns=['sum'], inplace=True)
+            print('geometric_ave')
+        else:               # 単純平均
+            for course in course_kind:
+                course_ensemble[course] = (course_1[course] + course_2[course])/2
+            print('simple_ave')
 
         course_ensemble.to_csv(submit_course_csv, header=False, index=False)
         print(submit_course_csv, course_ensemble.shape)
