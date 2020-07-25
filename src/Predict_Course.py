@@ -27,7 +27,8 @@ def preprocess(model_No, sample_No, use_sub_model, use_RLHL=False):
 
     # sub-modelを使用するとき
     if use_sub_model:
-        OUT_SUBMODEL = common.ALL_MERGE_SUB.format(model_No, sample_No)
+        # OUT_SUBMODEL = common.ALL_MERGE_SUB.format(model_No, sample_No)
+        OUT_SUBMODEL = common.LAST_BALL_SUB.format(model_No, sample_No)
         sub_model = pd.read_feather(OUT_SUBMODEL)
         print(OUT_SUBMODEL, sub_model.shape)
         all_pitch.reset_index(drop=True, inplace=True)
@@ -49,13 +50,15 @@ def preprocess(model_No, sample_No, use_sub_model, use_RLHL=False):
     train_d = train.drop([
         'No', 
         'course', 
-        'ball'
+        'ball',
+        'last_ball'
     ], axis=1)
 
     test_d = test.drop([
         'No', 
         'course', 
-        'ball'
+        'ball',
+        'last_ball'
     ], axis=1)
 
     return train_d, test_d, train['course']
@@ -383,100 +386,6 @@ def ensemble_RLHL(model_No):
         merge = train1.join(train2)
         print(merge.shape)
 
-        # col1 = train1.columns
-        # col2 = train2.columns
-        # for c1 in col1:
-        #     for c2 in col2:
-        #         merge[c1+'_x_'+c2] = merge[c1] * merge[c2]
-        # merge.drop(columns=col1, inplace=True)
-        # merge.drop(columns=col2, inplace=True)
-
         OUTPUT_SUB = common.ALL_MERGE_SUB.format(model_No, sample_No)
         merge.to_feather(OUTPUT_SUB)
         print(OUTPUT_SUB, merge.shape)
-'''
-        all_pitch = pd.read_feather(common.ALL_MERGE.format(model_No, sample_No))
-        print(all_pitch.shape)
-
-        train_test = all_pitch.query(common.divide_period_query_train(sample_No))
-        print(train_test.shape)
-
-        merge['course'] = train_test['course'].reset_index(drop=True)
-        print(merge.shape)
-
-        train = merge.dropna(subset=['course'])
-        print(train.shape)
-        test = merge[merge['course'].isnull()]
-        print(test.shape)
-        train_x = train.drop(['course'], axis=1)
-        train_y = train['course']
-        test_x = test.drop(['course'], axis=1)
-        print(train_x.shape)
-        print(train_y.shape)
-        print(test_x.shape)
-
-        lgb_param = {
-            'objective' : 'multiclass',
-            'boosting_type': 'gbdt',
-            'metric' : 'multi_logloss',
-            'num_class' : 13,
-            'seed' : 0,
-            'learning_rate' : 0.01,
-            'num_leaves': 32
-        }
-
-        lgb_train = lgb.Dataset(train_x, train_y)
-        cv, best_iter = common.lightgbm_cv(lgb_param, lgb_train, 2000, 'multi_logloss')
-        common.write_log(model_No, 'CV({}) = {}, best_iter = {}'.format(sample_No, cv, best_iter))
-        best_cv.append(cv)
-
-        lgb_model = lgb.train(lgb_param, lgb_train, num_boost_round=best_iter)
-        predict = lgb_model.predict(test_x, num_iteration = lgb_model.best_iteration)
-
-        submit = pd.DataFrame(predict)
-        submit.reset_index(inplace=True)
-        print(submit.shape)
-
-        RLHL_F = common.SUBMIT_COURSE_RLHL_F.format(model_No, model_No, sample_No)
-        submit_f = submit.drop(columns=['index'])
-        submit_f.rename(columns={
-            0: 'predict_0', 1: 'predict_1', 2: 'predict_2', 3: 'predict_3',
-            4: 'predict_4', 5: 'predict_5', 6: 'predict_6', 7: 'predict_7',
-            8: 'predict_8', 9: 'predict_9', 10: 'predict_10', 11: 'predict_11', 12: 'predict_12'
-        }, inplace=True)
-        submit_f.to_feather(RLHL_F)
-        print(RLHL_F, submit_f.shape)
-        '''
-
-    # 結果まとめ
-    # result = common.SUBMIT_COURSE_RLHL_F.format(model_No, model_No, 1)
-    # print(result)
-    # df = pd.read_feather(result)
-    # columns = ['predict_0', 'predict_1', 'predict_2', 'predict_3', 
-    #         'predict_4', 'predict_5', 'predict_6', 'predict_7',
-    #         'predict_8', 'predict_9', 'predict_10', 'predict_11', 'predict_12']
-
-    # for i in range(2, common.DIVIDE_NUM+1):
-    #     result = common.SUBMIT_COURSE_RLHL_F.format(model_No, model_No, i)
-    #     print(result)
-    #     temp = pd.read_feather(result)
-    #     for c in columns:
-    #         df[c] = df[c] + temp[c]
-
-    # for c in columns:
-    #     df[c] = df[c] / common.DIVIDE_NUM
-
-    # cv_ave = 0
-    # for cv in best_cv:
-    #     cv_ave = cv_ave + cv
-    
-    # if len(best_cv) > 0:
-    #     cv_ave = cv_ave / len(best_cv)
-    #     common.write_log(model_No, 'CV(ave) = {}'.format(cv_ave))
-    
-    # SUBMIT = '../submit/{}/course_RLHL_{}.csv'.format(model_No, model_No)
-    # df = df.reset_index()
-    # df.to_csv(SUBMIT, header=False, index=False)
-    # print(SUBMIT)
-
-    # common.write_log(model_No, 'signate submit --competition-id=276 ./{} --note RLHL_cv={}'.format(SUBMIT, cv_ave))

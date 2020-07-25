@@ -47,8 +47,10 @@ FI_BALL_F = '../submit/{}/ball_fi_{}_{}.f'
 SUBMIT_COURSE_CSV = '../submit/{}/course_{}_{}.csv'
 SUBMIT_COURSE_F = '../submit/{}/course_{}_{}.f'
 FI_COURSE_F = '../submit/{}/course_fi_{}_{}.f'
-# SUBMIT_COURSE_RLHL_F = '../submit/{}/course_RLHL_{}_{}.f'
 COURSE_TRAIN = '../submit/{}/course_train_{}_{}.f'
+
+# Predit_Lastball.py
+LAST_BALL_SUB = '../submit/{}/lastball_sub_{}.f'
 
 # ensemble.py
 SUBMIT_BALL_ENSMBL_CSV = '../submit/{}/ball_ensmbl_{}_{}_{}.csv'

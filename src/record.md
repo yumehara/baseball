@@ -95,3 +95,5 @@
 |60|gb+da|none|590|2.34205|2.34688|m-logloss 上下左右/strike/ball|
 |60-1|dart|LRHLSB|598|2.22900|2.36213|m-logloss sub-model|
 |61|gb+da|none|640|2.31920|2.32270|m-logloss last-ball(leak)|
+|61-1|gb+da|lastball|640|2.31966|2.35255|m-logloss last-ball(predict)|
+|61-2|dart|lastball|640|2.31907|2.35250|m-logloss last-ball(predict)|
