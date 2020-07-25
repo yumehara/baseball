@@ -226,27 +226,16 @@ def calc_feature(target):
         target[course] = target[course] / target['total']
 
     # コースの種類
-    # target['high_str'] = target['course_0'] + target['course_3'] + target['course_6'] 
-    # target['high_ball'] = target['course_9'] + target['course_10'] 
-    # target['mid_str'] = target['course_1'] + target['course_4'] + target['course_7'] 
-    # target['low_str'] = target['course_2'] + target['course_5'] + target['course_8'] 
-    # target['low_ball'] = target['course_11'] + target['course_12'] 
-    # target['left_str'] = target['course_0'] + target['course_1'] + target['course_2'] 
-    # target['left_ball'] = target['course_9'] + target['course_11'] 
-    # target['center_str'] = target['course_3'] + target['course_4'] + target['course_5'] 
-    # target['right_str'] = target['course_6'] + target['course_7'] + target['course_8'] 
-    # target['right_ball'] = target['course_10'] + target['course_12']
-
-    target['high'] = target['course_0'] + target['course_3'] + target['course_6'] + target['course_9'] + target['course_10']
-    target['mid'] = target['course_1'] + target['course_4'] + target['course_7']
-    target['low'] = target['course_2'] + target['course_5'] + target['course_8'] + target['course_11'] + target['course_12']
-    target['left'] = target['course_0'] + target['course_1'] + target['course_2'] + target['course_9'] + target['course_11'] 
-    target['center'] = target['course_3'] + target['course_4'] + target['course_5'] 
-    target['right'] = target['course_6'] + target['course_7'] + target['course_8'] + target['course_10'] + target['course_12']
-    target['sbstrike'] = (target['course_0'] + target['course_1'] + target['course_2'] +
-                        target['course_3'] + target['course_4'] + target['course_5'] +
-                        target['course_6'] + target['course_7'] + target['course_8'])
-    target['sbball'] = target['course_9'] + target['course_10'] + target['course_11'] + target['course_12']
+    target['high_str'] = target['course_0'] + target['course_3'] + target['course_6'] 
+    target['high_ball'] = target['course_9'] + target['course_10'] 
+    target['mid_str'] = target['course_1'] + target['course_4'] + target['course_7'] 
+    target['low_str'] = target['course_2'] + target['course_5'] + target['course_8'] 
+    target['low_ball'] = target['course_11'] + target['course_12'] 
+    target['left_str'] = target['course_0'] + target['course_1'] + target['course_2'] 
+    target['left_ball'] = target['course_9'] + target['course_11'] 
+    target['center_str'] = target['course_3'] + target['course_4'] + target['course_5'] 
+    target['right_str'] = target['course_6'] + target['course_7'] + target['course_8'] 
+    target['right_ball'] = target['course_10'] + target['course_12']
 
     # 元のコースを削除
     target.drop(columns=course_kind, inplace=True)

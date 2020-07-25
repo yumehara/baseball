@@ -149,6 +149,13 @@ def preprocess():
     all_pitch['pre_ball_ball'] = groupby_batter['プレイ前ボール数'].diff().fillna(0)
     all_pitch['pre_ball_strike'] = groupby_batter['プレイ前ストライク数'].diff().fillna(0) + all_pitch['pre_ball_foul']
     all_pitch['pre_foul_sum'] = all_pitch['打席内投球数'] - all_pitch['ball_count_sum']
+    # 最後から何球目か
+    groupby_bat_ball = all_pitch.groupby(['試合ID', 'イニング', 'イニング内打席数'], as_index=False)
+    bat_ball_max = groupby_bat_ball['打席内投球数'].max()
+    bat_ball_max.rename(columns={'打席内投球数': 'bat_ball_max'}, inplace=True)
+    all_pitch = pd.merge(all_pitch, bat_ball_max, on=['試合ID', 'イニング', 'イニング内打席数'], how='left')
+    all_pitch['last_ball'] = all_pitch['bat_ball_max'] - all_pitch['打席内投球数']
+    all_pitch.drop(columns=['bat_ball_max'], inplace=True)
     # ダミー変数
     # all_pitch = pd.get_dummies(all_pitch, columns=['ball_cnt'])
     # 不要な列を削除

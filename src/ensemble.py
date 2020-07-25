@@ -8,6 +8,7 @@ geometric_ave = False
 
 def ensemble(model_No, sub_str_1, sub_str_2, isBall, cv):
 
+    common.write_log(model_No, 'ensemble {}, {}, {}, {}'.format(sub_str_1, sub_str_2, isBall, cv))
     # 出力先のフォルダ作成
     os.makedirs(common.SUBMIT_PATH.format(model_No), exist_ok=True)
 

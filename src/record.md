@@ -44,6 +44,7 @@
 |59|gb+da|LRHL|636|0.488145|1.33339|m-error bc_courseを抜いた|
 |59-1|gb+da|LRHL|636|0.48814|1.33366|m-error アンサンブルを幾何平均で|
 |60|gb+da|LRHLSB|598|0.48715|1.33324|m-error 上下左右/strike/ball|
+|61|gb+da|LRHL|637|0.48708|1.33333|m-error last-ball(leak)|
 
 # コース予測部門
 
@@ -91,4 +92,6 @@
 |59|dart|none|639|2.34094|2.34681|m-logloss tune|
 |59|gb+da|none|639|2.34131|2.34668|m-logloss tune|
 |59-1|gb+da|none|639|2.34131|2.34667|m-logloss アンサンブルを幾何平均で|
-|60|gb+da|none|590|2.34205|2.34688|m-error 上下左右/strike/ball|
+|60|gb+da|none|590|2.34205|2.34688|m-logloss 上下左右/strike/ball|
+|60-1|dart|LRHLSB|598|2.22900|2.36213|m-logloss sub-model|
+|61|gb+da|none|640|2.31920|2.32270|m-logloss last-ball(leak)|

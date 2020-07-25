@@ -11,49 +11,48 @@ import ensemble as ensmbl
 import common
 
 
-submit_No = '60'
+submit_No = '61'
 
 boosting1 = common.DART
 boosting2 = common.GBDT
 
-# playerごと
-play2017.preprocess()
-player.preprocess(True)      # 穴埋めあり
+# # playerごと
+# play2017.preprocess()
+# player.preprocess(True)      # 穴埋めあり
 
-# 投球ごと
-ball.preprocess()
-pitch.preprocess()
+# # 投球ごと
+# ball.preprocess()
+# pitch.preprocess()
 
-# 前処理
-merge.preprocess(submit_No)
-print('--- preprocess ---')
+# # 前処理
+# merge.preprocess(submit_No)
+# print('--- preprocess ---')
 
-# コース予測サブモデル(LRHL)
-metric0 = common.M_LOGLOSS
-boosting0 = common.GBDT
-pred_course.train_predict2(submit_No, boosting0, metric0, 'LR')
-pred_course.train_predict2(submit_No, boosting0, metric0, 'HL')
-pred_course.train_predict2(submit_No, boosting0, metric0, 'SB')
-pred_course.ensemble_RLHL(submit_No)
-print('--- predict course sub ---')
+# # コース予測サブモデル(LRHL)
+# metric0 = common.M_LOGLOSS
+# boosting0 = common.GBDT
+# pred_course.train_predict2(submit_No, boosting0, metric0, 'LR')
+# pred_course.train_predict2(submit_No, boosting0, metric0, 'HL')
+# pred_course.ensemble_RLHL(submit_No)
+# print('--- predict course sub ---')
 
 
-# コース予測(1:dart)
-use_sub_model = False
-metric1 = common.M_LOGLOSS
-sub_str1 = boosting1 + '_' + metric1
-cv1 = pred_course.train_predict(submit_No, use_sub_model, boosting1, metric1, sub_str1)
-print('--- predict course {}---'.format(sub_str1))
+# # コース予測(1:dart)
+# use_sub_model = False
+# metric1 = common.M_LOGLOSS
+# sub_str1 = boosting1 + '_' + metric1
+# cv1 = pred_course.train_predict(submit_No, use_sub_model, boosting1, metric1, sub_str1)
+# print('--- predict course {}---'.format(sub_str1))
 
-# コース予測(2:gbdt)
-sub_str2 = boosting2 + '_' + metric1
-cv2 = pred_course.train_predict(submit_No, use_sub_model, boosting2, metric1, sub_str2)
-print('--- predict course {}---'.format(sub_str2))
+# # コース予測(2:gbdt)
+# sub_str2 = boosting2 + '_' + metric1
+# cv2 = pred_course.train_predict(submit_No, use_sub_model, boosting2, metric1, sub_str2)
+# print('--- predict course {}---'.format(sub_str2))
 
-# アンサンブル(gbdt + dart)
-cv_ave = (cv1 + cv2)/2
-ensmbl.ensemble(submit_No, sub_str1, sub_str2, False, cv_ave)
-print('--- ensemble course ---')
+# # アンサンブル(gbdt + dart)
+# cv_ave = (cv1 + cv2)/2
+# ensmbl.ensemble(submit_No, sub_str1, sub_str2, False, cv_ave)
+# print('--- ensemble course ---')
 
 
 # 球種予測(1:dart)
