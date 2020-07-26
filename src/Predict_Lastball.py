@@ -76,7 +76,7 @@ def train_predict(model_No, boosting, metric):
         lgb_train = lgb.Dataset(train_d, train_y)
         # cross-varidation
         if is_cv:
-            cv, best_iter = common.lightgbm_cv(lgb_param, lgb_train, iter_num, metric)
+            cv, best_iter = common.lightgbm_cv(lgb_param, lgb_train, iter_num, metric, False)
             best_cv.append(cv)
             common.write_log(model_No, 'CV({}) = {}, best_iter = {}'.format(sample_No, cv, best_iter))
 

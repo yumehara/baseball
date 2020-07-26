@@ -46,19 +46,19 @@ print('--- predict lastball sub ---')
 # コース予測(1:dart)
 use_sub_model = True
 metric1 = common.M_LOGLOSS
-sub_str1 = boosting1 + '_' + metric1
-cv1 = pred_course.train_predict(submit_No, use_sub_model, boosting1, metric1, sub_str1)
-print('--- predict course {}---'.format(sub_str1))
+# sub_str1 = boosting1 + '_' + metric1
+# cv1 = pred_course.train_predict(submit_No, use_sub_model, boosting1, metric1, sub_str1)
+# print('--- predict course {}---'.format(sub_str1))
 
 # コース予測(2:gbdt)
 sub_str2 = boosting2 + '_' + metric1
 cv2 = pred_course.train_predict(submit_No, use_sub_model, boosting2, metric1, sub_str2)
 print('--- predict course {}---'.format(sub_str2))
 
-# アンサンブル(gbdt + dart)
-cv_ave = (cv1 + cv2)/2
-ensmbl.ensemble(submit_No, sub_str1, sub_str2, False, cv_ave)
-print('--- ensemble course ---')
+# # アンサンブル(gbdt + dart)
+# cv_ave = (cv1 + cv2)/2
+# ensmbl.ensemble(submit_No, sub_str1, sub_str2, False, cv_ave)
+# print('--- ensemble course ---')
 
 
 # # 球種予測(1:dart)

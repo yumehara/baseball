@@ -154,7 +154,7 @@ def preprocess():
     bat_ball_max = groupby_bat_ball['打席内投球数'].max()
     bat_ball_max.rename(columns={'打席内投球数': 'bat_ball_max'}, inplace=True)
     all_pitch = pd.merge(all_pitch, bat_ball_max, on=['試合ID', 'イニング', 'イニング内打席数'], how='left')
-    all_pitch['last_ball'] = all_pitch['bat_ball_max'] - all_pitch['打席内投球数']
+    all_pitch['last_ball'] = (all_pitch['bat_ball_max'] - all_pitch['打席内投球数'])/all_pitch['bat_ball_max']
     all_pitch.drop(columns=['bat_ball_max'], inplace=True)
     # ダミー変数
     # all_pitch = pd.get_dummies(all_pitch, columns=['ball_cnt'])

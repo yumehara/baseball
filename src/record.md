@@ -97,3 +97,4 @@
 |61|gb+da|none|640|2.31920|2.32270|m-logloss last-ball(leak)|
 |61-1|gb+da|lastball|640|2.31966|2.35255|m-logloss last-ball(predict)|
 |61-2|dart|lastball|640|2.31907|2.35250|m-logloss last-ball(predict)|
+|61-3|gbdt|lastball|640|2.32023|2.35266|m-logloss last-ball(predict/0-1)|

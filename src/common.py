@@ -114,12 +114,13 @@ def divide_period_query_train(sample_No):
     else:
         raise Exception('index error')
 
-def lightgbm_cv(lgb_param, lgb_train, num_round, metric):
+def lightgbm_cv(lgb_param, lgb_train, num_round, metric, stratified=True):
     cv_results = lgb.cv(lgb_param, lgb_train,
                     num_boost_round=num_round,
                     early_stopping_rounds=100,
                     verbose_eval=100,
-                    nfold=4)
+                    nfold=4,
+                    stratified=stratified)
 
     metric_mean = metric + '-mean'
     num_boost_round = len(cv_results[metric_mean])
@@ -148,7 +149,7 @@ def write_text(filename, content):
         f.write(text)
         print(content)
 
-def tuning(train_x, train_y, num_class, boosting, metric, logfile):
+def tuning(train_x, train_y, num_class, boosting, metric, num_round, logfile):
     
     start = time.time()
 
@@ -171,7 +172,7 @@ def tuning(train_x, train_y, num_class, boosting, metric, logfile):
     lgb_model = lgb_tune.train(lgb_param, lgb_train,
                         valid_sets=lgb_eval,
                         verbose_eval=0,
-                        num_boost_round=700,
+                        num_boost_round=num_round,
                         best_params=best_params,
                         tuning_history=tuning_history)
     
