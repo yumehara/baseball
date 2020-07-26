@@ -46,6 +46,7 @@
 |60|gb+da|LRHLSB|598|0.48715|1.33324|m-error 上下左右/strike/ball|
 |61|gb+da|LRHL|637|0.48708|1.33333|m-error last-ball(leak)|
 |62|gb+da|LRHL|637|0.48667|1.33366|m-error last-ball(leak/0-1)|
+|62-1|gbdt|LRHL|637|0.48772|1.33618|m-error only-last-ball(leak)|
 
 # コース予測部門
 
