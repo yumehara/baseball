@@ -50,15 +50,13 @@ def preprocess(model_No, sample_No, use_sub_model, use_RLHL=False):
     train_d = train.drop([
         'No', 
         'course', 
-        'ball',
-        'last_ball'
+        'ball'
     ], axis=1)
 
     test_d = test.drop([
         'No', 
         'course', 
-        'ball',
-        'last_ball'
+        'ball'
     ], axis=1)
 
     return train_d, test_d, train['course']

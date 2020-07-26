@@ -45,6 +45,7 @@
 |59-1|gb+da|LRHL|636|0.48814|1.33366|m-error アンサンブルを幾何平均で|
 |60|gb+da|LRHLSB|598|0.48715|1.33324|m-error 上下左右/strike/ball|
 |61|gb+da|LRHL|637|0.48708|1.33333|m-error last-ball(leak)|
+|62|gb+da|LRHL|637|0.48667|1.33366|m-error last-ball(leak/0-1)|
 
 # コース予測部門
 
@@ -98,3 +99,4 @@
 |61-1|gb+da|lastball|640|2.31966|2.35255|m-logloss last-ball(predict)|
 |61-2|dart|lastball|640|2.31907|2.35250|m-logloss last-ball(predict)|
 |61-3|gbdt|lastball|640|2.32023|2.35266|m-logloss last-ball(predict/0-1)|
+|62|gbdt|none|640|2.31994|2.32365|m-logloss last-ball(leak/0-1)|
