@@ -16,10 +16,10 @@ def preprocess(model_No, sample_No, use_sub_model):
     all_pitch = all_pitch.query(common.divide_period_query_train(sample_No))
     print(ALL_MERGE, all_pitch.shape)
 
-    all_pitch.drop(columns=[
-        'bc_course_0', 'bc_course_1', 'bc_course_2', 'bc_course_3', 'bc_course_4', 'bc_course_5',
-        'bc_course_6', 'bc_course_7', 'bc_course_8', 'bc_course_9', 'bc_course_10', 'bc_course_11', 'bc_course_12'
-    ], inplace=True)
+    # all_pitch.drop(columns=[
+    #     'bc_course_0', 'bc_course_1', 'bc_course_2', 'bc_course_3', 'bc_course_4', 'bc_course_5',
+    #     'bc_course_6', 'bc_course_7', 'bc_course_8', 'bc_course_9', 'bc_course_10', 'bc_course_11', 'bc_course_12'
+    # ], inplace=True)
     
     # sub-modelを使用するとき
     if use_sub_model:
@@ -125,7 +125,7 @@ def train_predict(model_No, use_sub_model, boosting, metric, sub_str):
             if metric == common.M_LOGLOSS:
                 iter_num = 1400
             else:
-                iter_num = 800
+                iter_num = 700
             if sample_No != 1:
                 is_cv = False
 
