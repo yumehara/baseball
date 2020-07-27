@@ -60,23 +60,45 @@ SUBMIT_COURSE_ENSMBL_CSV = '../submit/{}/course_ensmbl_{}_{}_{}.csv'
 LOG_SUBMIT = '../log/log_{}.txt'
 
 # 分割数
-DIVIDE_NUM = 4
-DIVIDE_1 = 60860
-DIVIDE_2 = 120081
-DIVIDE_3 = 180856
-DIVIDE_4 = 257116
+DIVIDE_NUM = 0
+DIVIDE_1 = 0
+DIVIDE_2 = 0
+DIVIDE_3 = 0
+DIVIDE_4 = 0
+DIVIDE_5 = 257116
+SEED = 0
 
-# DIVIDE_NUM = 5
-# DIVIDE_1 = 51506
-# DIVIDE_2 = 100844
-# DIVIDE_3 = 150063
-# DIVIDE_4 = 200447
+def set_divide_num(num):
+    global DIVIDE_NUM
+    global DIVIDE_1
+    global DIVIDE_2
+    global DIVIDE_3
+    global DIVIDE_4
+    global SEED
 
-# DIVIDE_NUM = 3
-# DIVIDE_1 = 80792
-# DIVIDE_2 = 160391
-# DIVIDE_3 = 257116
-# DIVIDE_4 = 257116
+    if num == 4:
+        DIVIDE_NUM = 4
+        DIVIDE_1 = 60860
+        DIVIDE_2 = 120081
+        DIVIDE_3 = 180856
+        DIVIDE_4 = 257116
+        SEED = 0
+    elif num == 5:
+        DIVIDE_NUM = 5
+        DIVIDE_1 = 51506
+        DIVIDE_2 = 100844
+        DIVIDE_3 = 150063
+        DIVIDE_4 = 200447
+        SEED = 99
+    elif num == 3:
+        DIVIDE_NUM = 3
+        DIVIDE_1 = 80792
+        DIVIDE_2 = 160391
+        DIVIDE_3 = 257116
+        DIVIDE_4 = 257116
+        SEED = 999
+    else:
+        raise Exception('divide-num error')
 
 # boosting
 GBDT = 'gbdt'
@@ -95,8 +117,8 @@ def divide_period_query_pre(sample_No):
         return 'index > {} & index <= {}'.format(DIVIDE_2, DIVIDE_3)
     elif sample_No == 4:
         return 'index > {} & index <= {}'.format(DIVIDE_3, DIVIDE_4)
-    # elif sample_No == 5:
-    #     return 'index > {}'.format(DIVIDE_4)
+    elif sample_No == 5:
+        return 'index > {}'.format(DIVIDE_4)
     else:
         raise Exception('index error')
 
@@ -109,8 +131,8 @@ def divide_period_query_train(sample_No):
         return 'index <= {} | index > {}'.format(DIVIDE_2, DIVIDE_3)
     elif sample_No == 4:
         return 'index <= {} | index > {}'.format(DIVIDE_3, DIVIDE_4)
-    # elif sample_No == 5:
-    #     return 'index <= {}'.format(DIVIDE_4)
+    elif sample_No == 5:
+        return 'index <= {} | index > {}'.format(DIVIDE_4, DIVIDE_5)
     else:
         raise Exception('index error')
 
