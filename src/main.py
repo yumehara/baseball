@@ -12,12 +12,12 @@ import ensemble as ensmbl
 import common
 
 
-submit_No = '64'
+submit_No = '63'
 
 boosting1 = common.DART
 boosting2 = common.GBDT
 
-common.set_divide_num(5)
+common.set_divide_num(4)
 
 # playerごと
 play2017.preprocess()

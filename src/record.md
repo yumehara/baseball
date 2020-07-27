@@ -49,6 +49,7 @@
 |62-1|gbdt|LRHL|637|0.48772|1.33618|m-error only-last-ball(leak)|
 |63|gb+da|LRHL|649|0.48805|1.33271|m-error 54,58相当|
 |64|gb+da|LRHL|649|0.48789|1.33400|m-error 5分割|
+|63-1|gb+da|LRHL|649|0.48834|1.33210|m-error learning-rate 0.05|
 
 # コース予測部門
 
@@ -105,3 +106,5 @@
 |62|gbdt|none|640|2.31994|2.32365|m-logloss last-ball(leak/0-1)|
 |63|gb+da|none|639|2.34131||m-logloss 54,58相当|
 |64|gb+da|none|639|2.34119|2.34657|m-logloss 5分割|
+|63-1|gb+da|none|639|2.34129|2.34685|m-logloss learning-rate 0.05|
+|63-2|gbdt|none|639|2.34072|2.34687|m-logloss learning-rate 0.05|

@@ -68,6 +68,8 @@ DIVIDE_4 = 0
 DIVIDE_5 = 257116
 SEED = 0
 
+LEARNING_RATE = 0.05
+
 def set_divide_num(num):
     global DIVIDE_NUM
     global DIVIDE_1
