@@ -128,7 +128,7 @@ def train_predict(model_No, use_sub_model, boosting, metric, sub_str):
         else:
             lgb_param = lgb_param_dart
             if metric == common.M_LOGLOSS:
-                iter_num = 2300
+                iter_num = 4600 #2300
             else:
                 iter_num = 1300
             if sample_No != 1:

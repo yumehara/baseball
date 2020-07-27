@@ -109,3 +109,4 @@
 |64|gb+da|none|639|2.34119|2.34657|m-logloss 5分割|
 |63-1|gb+da|none|639|2.34129|2.34685|m-logloss learning-rate 0.05|
 |63-2|gbdt|none|639|2.34072|2.34687|m-logloss learning-rate 0.05|
+|63-3|gbdt|none|639|2.34069|2.34650|m-logloss learning-rate 0.05 iter_num 4600|
