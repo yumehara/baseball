@@ -30,7 +30,7 @@
 |47|dart|LRHL|1023|0.48817|1.33353|LRHRサブモデル(m-error/dart)|
 |48|gbdt|LRHL|1023|0.48964|1.33561|LRHRサブモデル(m-error/gbdt)|
 |49|gb+da|LRHL|1023|---|1.33333|47+48 アンサンブル|
-|47-1|dart|LRHL|1023|0.48815|1.33229 *|LRHRサブモデル(m-error/dart) tune|
+|47-1|dart|LRHL|1023|0.48815|1.33229|LRHRサブモデル(m-error/dart) tune|
 |50|dart|LRHL|1035|0.48736|1.33359|m-error/dart|
 |50-1|dart|LRHL|1020|0.48766|1.33257|m-error/dart|
 |51|gb+da|LRHL|1020|0.48904|1.33280|m-error アンサンブル|
@@ -49,7 +49,8 @@
 |62-1|gbdt|LRHL|637|0.48772|1.33618|m-error only-last-ball(leak)|
 |63|gb+da|LRHL|649|0.48805|1.33271|m-error 54,58相当|
 |64|gb+da|LRHL|649|0.48789|1.33400|m-error 5分割|
-|63-1|gb+da|LRHL|649|0.48834|1.33210|m-error learning-rate 0.05|
+|63-1|gb+da|LRHL|649|0.48834|1.33210 *|m-error learning-rate 0.05 iter_num 700|
+|63-2|gb+da|LRHL|649|0.48781|1.33297|m-error learning-rate 0.05 iter_num 1400|
 
 # コース予測部門
 
