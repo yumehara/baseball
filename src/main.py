@@ -12,12 +12,12 @@ import ensemble as ensmbl
 import common
 
 
-submit_No = '63'
+submit_No = '65'
 
 boosting1 = common.DART
 boosting2 = common.GBDT
 
-common.set_divide_num(4)
+common.set_divide_num(5)
 
 # playerごと
 play2017.preprocess()
@@ -30,14 +30,6 @@ pitch.preprocess()
 # 前処理
 merge.preprocess(submit_No)
 print('--- preprocess ---')
-
-# コース予測サブモデル(LRHL)
-metric0 = common.M_LOGLOSS
-boosting0 = common.GBDT
-pred_course.train_predict2(submit_No, boosting0, metric0, 'LR')
-pred_course.train_predict2(submit_No, boosting0, metric0, 'HL')
-pred_course.ensemble_RLHL(submit_No)
-print('--- predict course sub ---')
 
 
 # コース予測(1:dart)
@@ -56,6 +48,15 @@ print('--- predict course {}---'.format(sub_str2))
 cv_ave = (cv1 + cv2)/2
 ensmbl.ensemble(submit_No, sub_str1, sub_str2, False, cv_ave)
 print('--- ensemble course ---')
+
+
+# コース予測サブモデル(LRHL)
+metric0 = common.M_LOGLOSS
+boosting0 = common.GBDT
+pred_course.train_predict2(submit_No, boosting0, metric0, 'LR')
+pred_course.train_predict2(submit_No, boosting0, metric0, 'HL')
+pred_course.ensemble_RLHL(submit_No)
+print('--- predict course sub ---')
 
 
 # 球種予測(1:dart)
