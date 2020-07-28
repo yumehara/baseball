@@ -85,9 +85,9 @@ common.set_divide_num(5)
 
 
 # 球種予測(アンサンブル)
-cv_ave = (0.4878164618 + 0.4878935676)/2
-ensmbl.ensemble(submit_No, 63, 'ensmbl', 64, 'ensmbl', True, cv_ave)
+cv_ave = (0.487019 + 0.488301)/2
+ensmbl.ensemble(submit_No, 63, 'dart_multi_error', 64, 'gbdt_multi_error', True, cv_ave)
 
-# コース予測(アンサンブル)
-cv_ave = (2.3406924206 + 2.3403137704)/2
-ensmbl.ensemble(submit_No, 63, 'ensmbl', 65, 'ensmbl', False, cv_ave)
+# # コース予測(アンサンブル)
+# cv_ave = (2.3406924206 + 2.3403137704)/2
+# ensmbl.ensemble(submit_No, 63, 'ensmbl', 65, 'ensmbl', False, cv_ave)

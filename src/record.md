@@ -51,7 +51,8 @@
 |64|gb+da|LRHL|649|0.48789|1.33400|m-error 5分割|
 |63-1|gb+da|LRHL|649|0.48834|1.33210|m-error learning-rate 0.05 iter_num 700|
 |63-2|gb+da|LRHL|649|0.48781|1.33297|m-error learning-rate 0.05 iter_num 1400|
-|66|gb+da|LRHL|649|0.48785|1.33179 **|63-2と64のアンサンブル|
+|66|gb+da|LRHL|649|0.48785|1.33179 **|63-2(ensmbl)と64(ensmbl)のアンサンブル|
+|66-1|gb+da|LRHL|649|0.48766|1.33195|63-2(dart)と64(gbdt)のアンサンブル|
 
 # コース予測部門
 
