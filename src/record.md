@@ -49,8 +49,9 @@
 |62-1|gbdt|LRHL|637|0.48772|1.33618|m-error only-last-ball(leak)|
 |63|gb+da|LRHL|649|0.48805|1.33271|m-error 54,58相当|
 |64|gb+da|LRHL|649|0.48789|1.33400|m-error 5分割|
-|63-1|gb+da|LRHL|649|0.48834|1.33210 *|m-error learning-rate 0.05 iter_num 700|
+|63-1|gb+da|LRHL|649|0.48834|1.33210|m-error learning-rate 0.05 iter_num 700|
 |63-2|gb+da|LRHL|649|0.48781|1.33297|m-error learning-rate 0.05 iter_num 1400|
+|66|gb+da|LRHL|649|0.48785|1.33179 **|63-2と64のアンサンブル|
 
 # コース予測部門
 
@@ -89,7 +90,7 @@
 |50-1|dart|LRHL|1020|0.74690|2.35286|m-error/dart|
 |51|gb+da|none|1010|0.76955|2.34621|m-error アンサンブル|
 |52|gb+da|none|970|0.76971|2.34628|m-error 下位の特徴量を除外|
-|52-1|gb+da|none|970|2.34133|2.34620 **|m-logloss 下位の特徴量を除外|
+|52-1|gb+da|none|970|2.34133|2.34620|m-logloss 下位の特徴量を除外|
 |55|gb+da|none|622|2.34262|2.34715|m-logloss コースの特徴量を減らす2|
 |56|gb+da|none|635|2.34214|2.34706|m-logloss 2年未満の選手の集計結果を除外|
 |57|dart|none|635|2.34164|2.34696|m-logloss 54相当|
@@ -111,3 +112,4 @@
 |63-2|gbdt|none|639|2.34072|2.34687|m-logloss learning-rate 0.05|
 |63-3|gbdt|none|639|2.34069|2.34650|m-logloss learning-rate 0.05, iter_num 4600|
 |65|gb+da|none|639|2.34031|2.34641|m-logloss learning-rate 0.05, iter_num 4600, 5分割|
+|66|gb+da|none|639|2.34050|2.34611 **|63-3と65のアンサンブル|
